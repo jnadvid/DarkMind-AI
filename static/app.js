@@ -339,7 +339,7 @@ function initializeEventListeners() {
       const transcript = _serializeChatTranscript();
       // A new/empty chat has nothing to copy — don't write an empty string and
       // falsely report "Copied".
-      if (!transcript.trim()) { uiModule.showToast('Nothing to copy yet'); return; }
+      if (!transcript.trim()) { uiModule.showToast('Nada que copiar por ahora'); return; }
       await uiModule.copyToClipboard(transcript);
     });
   }
@@ -388,10 +388,10 @@ function initializeEventListeners() {
         if (!res.ok) throw new Error('Failed');
         const doc = await res.json();
         if (documentModule) documentModule.loadDocument(doc.id);
-        uiModule.showToast('Saved to documents');
+        uiModule.showToast('Guardado en documentos');
       } catch (err) {
         console.error('Save to docs failed:', err);
-        uiModule.showError('Failed to save to documents');
+        uiModule.showError('Error al guardar en documentos');
       }
     });
   }
@@ -438,7 +438,7 @@ function initializeEventListeners() {
           const _m = sessionModule.getSessions().find(s => s.id === sid);
           if (_m) _m.name = newName;
           metaEl.textContent = newName;
-          uiModule.showToast('Renamed');
+          uiModule.showToast('Renombrado');
           sessionModule.loadSessions();
         } else {
           metaEl.textContent = origText;
@@ -1206,11 +1206,11 @@ function initializeEventListeners() {
         if (current === mode) {
           sessionModule.setSortMode(null);
           sortDropdown.style.display = 'none';
-          uiModule.showToast('Manual order');
+          uiModule.showToast('Orden manual');
         } else {
           sessionModule.setSortMode(mode);
           sortDropdown.style.display = 'none';
-          uiModule.showToast(`Sorted: ${opt.textContent.trim().toLowerCase()}`);
+          uiModule.showToast(`Ordenado: ${opt.textContent.trim().toLowerCase()}`);
         }
         _syncSortChecks();
       });
@@ -1257,7 +1257,7 @@ function initializeEventListeners() {
             // No-AI path: just report what got cleaned. No "unfiled
             // remaining" prompt because we never tried to file anything.
             const cleaned = (data.deleted_empty || 0) + (data.deleted_throwaway || 0);
-            uiModule.showToast(cleaned ? `Cleaned ${cleaned} empty/throwaway chat${cleaned === 1 ? '' : 's'}` : 'Already clean');
+            uiModule.showToast(cleaned ? `Limpiado${cleaned === 1 ? '' : 's'} ${cleaned} chat${cleaned === 1 ? '' : 's'} vacío${cleaned === 1 ? '' : 's'}/descartable${cleaned === 1 ? '' : 's'}` : 'Ya estaba limpio');
           } else {
             // Tidy now works in batches (15 most-recent unfiled per click)
             // so the user gets fast feedback and a manageable LLM call
@@ -1265,12 +1265,12 @@ function initializeEventListeners() {
             const remaining = data.unfiled_remaining || 0;
             let msg;
             if (data.updated > 0) {
-              msg = `Sorted ${data.updated} into ${data.folders.length} folder${data.folders.length === 1 ? '' : 's'}`;
-              if (remaining > 0) msg += ` — ${remaining} unfiled left, hit Tidy again`;
+              msg = `Ordenado${data.updated === 1 ? '' : 's'} ${data.updated} en ${data.folders.length} carpeta${data.folders.length === 1 ? '' : 's'}`;
+              if (remaining > 0) msg += ` — quedan ${remaining} sin archivar, pulsa Ordenar de nuevo`;
             } else if (remaining > 0) {
-              msg = `${remaining} unfiled chats — hit Tidy again`;
+              msg = `${remaining} chat${remaining === 1 ? '' : 's'} sin archivar — pulsa Ordenar de nuevo`;
             } else {
-              msg = 'All sorted';
+              msg = 'Todo ordenado';
             }
             uiModule.showToast(msg);
           }

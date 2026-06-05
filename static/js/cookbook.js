@@ -591,11 +591,11 @@ async function _fetchDependencies() {
     list.appendChild(_spin.element);
     const label = document.createElement('div');
     label.className = 'hwfit-loading';
-    label.textContent = 'Loading packages…';
+    label.textContent = 'Cargando paquetes…';
     label.style.cssText = 'text-align:center;opacity:0.5;font-size:11px;margin-top:6px;';
     list.appendChild(label);
   } catch {
-    list.innerHTML = '<div class="hwfit-loading">Loading packages...</div>';
+    list.innerHTML = '<div class="hwfit-loading">Cargando paquetes…</div>';
   }
   try {
     // Resolve the target server from the deps dropdown so remote-target
@@ -617,23 +617,23 @@ async function _fetchDependencies() {
     const resp = await fetch('/api/cookbook/packages' + (_pkgParams.toString() ? '?' + _pkgParams.toString() : ''));
     const data = await resp.json();
     const pkgs = data.packages || [];
-    if (!pkgs.length) { list.innerHTML = '<div class="hwfit-loading">No packages found</div>'; return; }
+    if (!pkgs.length) { list.innerHTML = '<div class="hwfit-loading">No se encontraron paquetes</div>'; return; }
     const _winUnsupported = new Set(['diffusers', 'hf_transfer', 'vllm', 'rembg', 'gfpgan']);
 
     const _statusTag = (pkg, isLocal, isSystemDep, winBlocked) => {
       if (winBlocked) return `<span class="cookbook-dep-tag cookbook-dep-na">N/A</span>`;
-      if (pkg.installed && isSystemDep) return `<span class="cookbook-dep-tag cookbook-dep-installed" title="Found on selected server">Installed</span>`;
+      if (pkg.installed && isSystemDep) return `<span class="cookbook-dep-tag cookbook-dep-installed" title="Encontrado en el servidor seleccionado">Instalado</span>`;
       if (pkg.installed && pkg.pip_update_available === false) {
         const tip = esc(pkg.update_note || pkg.status_note || 'Found externally; update outside DarkMind.');
-        return `<span class="cookbook-dep-tag cookbook-dep-installed" title="${tip}">Installed</span>`;
+        return `<span class="cookbook-dep-tag cookbook-dep-installed" title="${tip}">Instalado</span>`;
       }
-      if (pkg.installed) return `<button class="cookbook-dep-tag cookbook-dep-installed cookbook-dep-installed-btn" title="Installed — click for actions"><span class="cookbook-dep-installed-label">Installed</span><span class="cookbook-dep-caret">&#9662;</span></button>`;
+      if (pkg.installed) return `<button class="cookbook-dep-tag cookbook-dep-installed cookbook-dep-installed-btn" title="Instalado — haz clic para ver opciones"><span class="cookbook-dep-installed-label">Instalado</span><span class="cookbook-dep-caret">&#9662;</span></button>`;
       if (isSystemDep) {
         const depTip = esc(pkg.install_hint || 'Install this OS package on the selected server.');
         const depLabel = pkg.applicable === false ? 'N/A ?' : 'Missing';
         return `<span class="cookbook-dep-tag cookbook-dep-na" title="${depTip}">${depLabel}</span>`;
       }
-      return `<button class="cookbook-dep-tag cookbook-dep-install" data-dep-pip="${esc(pkg.pip)}" data-dep-target="${isLocal ? 'local' : 'remote'}">Install</button>`;
+      return `<button class="cookbook-dep-tag cookbook-dep-install" data-dep-pip="${esc(pkg.pip)}" data-dep-target="${isLocal ? 'local' : 'remote'}">Instalar</button>`;
     };
 
     const _depRow = (pkg) => {
@@ -647,7 +647,7 @@ async function _fetchDependencies() {
       // and lives to the LEFT of the category tag (clear affordance before
       // the row "value").
       const _rebuildBtn = (pkg.name === 'llama_cpp')
-        ? `<button type="button" class="cookbook-dep-tag cookbook-dep-rebuild" id="cookbook-rebuild-engine" title="Clear the cached llama.cpp build so the next serve recompiles from source (use after installing a CUDA/ROCm toolkit to turn a CPU-only build into a GPU build).">Rebuild</button>`
+        ? `<button type="button" class="cookbook-dep-tag cookbook-dep-rebuild" id="cookbook-rebuild-engine" title="Borra la compilación en caché de llama.cpp para que el siguiente arranque recompile desde el código fuente (úsalo tras instalar un toolkit CUDA/ROCm para convertir una compilación sin GPU en una con GPU).">Recompilar</button>`
         : '';
       return `<div class="cookbook-dep-row${winBlocked ? ' cookbook-dep-blocked' : ''}" data-pkg-name="${esc(pkg.name)}" data-dep-pip="${esc(pkg.pip || '')}" data-dep-target="${isLocal ? 'local' : 'remote'}" data-dep-kind="${esc(pkg.kind || 'python')}">`
         + `<div class="cookbook-dep-info">`
@@ -672,8 +672,8 @@ async function _fetchDependencies() {
     const _serverDeps = pkgs.filter(p => p.target !== 'local');
 
     list.innerHTML = [
-      _viewingRemote ? '' : _section('DarkMind app', 'Run inside the DarkMind app itself.', _appDeps),
-      _section('Server', 'Run on the server chosen above (Local, or a remote box over SSH).', _serverDeps),
+      _viewingRemote ? '' : _section('DarkMind app', 'Se ejecuta dentro de la propia aplicación DarkMind.', _appDeps),
+      _section('Servidor', 'Se ejecuta en el servidor seleccionado (Local o un equipo remoto por SSH).', _serverDeps),
     ].join('');
 
     // Shared install/update routine — used by the Install button and the
@@ -732,17 +732,17 @@ async function _fetchDependencies() {
           // FastAPI HTTPException returns {detail: …}; the route's own
           // path returns {ok:false, error:…}. Surface whichever we get.
           const reason = data.detail || data.error || `HTTP ${res.status}`;
-          uiModule.showToast('Install failed: ' + String(reason).slice(0, 200));
+          uiModule.showToast('Instalación fallida: ' + String(reason).slice(0, 200));
           return;
         }
         // _dep flags this as a pip dependency/driver install (not a servable
         // model) so the running-task card doesn't offer a "Serve →" button.
         const payload = { repo_id: pipName, _cmd: cmd, remote_host: _envState.remoteHost || '', _dep: true, env_path: _envState.envPath || '' };
         _addTask(data.session_id, 'pip ' + pkgName, 'download', payload);
-        if (statusEl) { statusEl.textContent = upgrade ? 'Updating...' : 'Installing...'; statusEl.disabled = true; }
-        uiModule.showToast(`${upgrade ? 'Updating' : 'Installing'} ${pkgName} on ${targetHost}...`);
+        if (statusEl) { statusEl.textContent = upgrade ? 'Actualizando...' : 'Instalando...'; statusEl.disabled = true; }
+        uiModule.showToast(`${upgrade ? 'Actualizando' : 'Instalando'} ${pkgName} en ${targetHost}...`);
       } catch (err) {
-        uiModule.showToast('Install failed: ' + err.message);
+        uiModule.showToast('Instalación fallida: ' + err.message);
       }
     }
 
@@ -774,8 +774,8 @@ async function _fetchDependencies() {
       const upIco = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>';
       const it = document.createElement('div');
       it.className = 'dropdown-item-compact';
-      it.innerHTML = `<span class="dropdown-icon">${upIco}</span><span>Update</span>`;
-      it.title = `Update ${pkgName} to the latest version (pip install -U)`;
+      it.innerHTML = `<span class="dropdown-icon">${upIco}</span><span>Actualizar</span>`;
+      it.title = `Actualizar ${pkgName} a la última versión (pip install -U)`;
       it.addEventListener('click', async (e) => {
         e.stopPropagation();
         dropdown.remove();
@@ -802,7 +802,7 @@ async function _fetchDependencies() {
       });
     });
   } catch (err) {
-    list.innerHTML = `<div class="hwfit-loading">Error loading packages: ${esc(err.message)}</div>`;
+    list.innerHTML = `<div class="hwfit-loading">Error al cargar paquetes: ${esc(err.message)}</div>`;
   }
 }
 
@@ -994,7 +994,7 @@ function _wireTabEvents(body) {
       if (dirsEl) {
         const dirs = (Array.isArray(srv.modelDirs) ? srv.modelDirs : [srv.modelDir || '~/.cache/huggingface/hub']).map(d => d.replaceAll('✕', '').replaceAll('✖', '').trim()).filter(Boolean);
         dirsEl.innerHTML = dirs.map(d => `<span class="cookbook-serve-dir-pill">${esc(d)}</span>`).join('') +
-          '<span class="cookbook-serve-dir-edit" title="Edit in Settings">edit</span>';
+          '<span class="cookbook-serve-dir-edit" title="Editar en Ajustes">editar</span>';
         dirsEl.querySelector('.cookbook-serve-dir-edit')?.addEventListener('click', () => {
           const settingsTab = body.querySelector('.cookbook-tab[data-backend="Settings"]');
           if (settingsTab) settingsTab.click();
@@ -1042,10 +1042,10 @@ function _wireTabEvents(body) {
       if (sel) _applyServerSelection(sel.value);
       const host = _envState.remoteHost || '';
       const where = host || 'this server';
-      if (!confirm(`Rebuild the llama.cpp engine on ${where}?\n\nThis clears the cached llama-server build so the next serve recompiles from source (with CUDA/HIP if a toolchain is present). It does not download or install anything.`)) return;
+      if (!confirm(`¿Recompilar el motor llama.cpp en ${where}?\n\nEsto borra la compilación de llama-server en caché para que el próximo arranque recompile desde el código fuente (con CUDA/HIP si hay un toolchain disponible). No descarga ni instala nada.`)) return;
       const _label = rebuildBtn.textContent;
       rebuildBtn.disabled = true;
-      rebuildBtn.textContent = 'Clearing...';
+      rebuildBtn.textContent = 'Borrando…';
       try {
         const res = await fetch('/api/cookbook/rebuild-engine', {
           method: 'POST', credentials: 'same-origin',
@@ -1059,12 +1059,12 @@ function _wireTabEvents(body) {
         const data = await res.json().catch(() => ({}));
         if (!res.ok || !data.ok) {
           const reason = data.detail || data.error || `HTTP ${res.status}`;
-          uiModule.showToast('Rebuild failed: ' + String(reason).slice(0, 200));
+          uiModule.showToast('Recompilación fallida: ' + String(reason).slice(0, 200));
         } else {
-          uiModule.showToast(`Cleared llama.cpp build on ${where}. Re-launch the serve task to rebuild with GPU support.`);
+          uiModule.showToast(`Compilación de llama.cpp borrada en ${where}. Relanza la tarea de servicio para recompilar con soporte GPU.`);
         }
       } catch (err) {
-        uiModule.showToast('Rebuild failed: ' + err.message);
+        uiModule.showToast('Recompilación fallida: ' + err.message);
       } finally {
         rebuildBtn.disabled = false;
         rebuildBtn.textContent = _label;
@@ -1096,7 +1096,7 @@ function _wireTabEvents(body) {
   if (selectBtn && bulkBar) {
     selectBtn.addEventListener('click', () => {
       const active = selectBtn.classList.toggle('active');
-      selectBtn.textContent = active ? 'Cancel' : 'Select';
+      selectBtn.textContent = active ? 'Cancelar' : 'Seleccionar';
       bulkBar.classList.toggle('hidden', !active);
       document.querySelectorAll('.serve-select-cb').forEach(dot => {
         dot.style.display = active ? '' : 'none';
@@ -1120,7 +1120,7 @@ function _wireTabEvents(body) {
     function _updateBulkCount() {
       const count = document.querySelectorAll('.serve-select-cb.selected').length;
       const countEl = document.getElementById('serve-bulk-count');
-      if (countEl) countEl.textContent = count + ' selected';
+      if (countEl) countEl.textContent = count + ' seleccionado(s)';
     }
 
     document.getElementById('serve-bulk-cancel')?.addEventListener('click', () => {

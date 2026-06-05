@@ -76,7 +76,7 @@ export function renderAttachStrip() {
     const badge = document.createElement('div');
     badge.className = 'thumb thumb-collapsed';
     const label = document.createElement('span');
-    label.textContent = total + ' file' + (total > 1 ? 's' : '');
+    label.textContent = total + ' archivo' + (total > 1 ? 's' : '');
     label.className = 'thumb-collapsed-label';
     badge.appendChild(label);
     badge.title = pendingFiles.map(f => f.name || 'pasted-image').join('\n');
@@ -89,7 +89,7 @@ export function renderAttachStrip() {
     const x = document.createElement('button');
     x.className = 'thumb-collapsed-x';
     x.textContent = '\u00d7';
-    x.title = 'Remove all';
+    x.title = 'Eliminar todos';
     x.addEventListener('click', (e) => { e.stopPropagation(); clearPending(); });
     badge.appendChild(x);
     strip.appendChild(badge);
@@ -120,7 +120,7 @@ function _createChip(f, idx) {
   }
   const x = document.createElement('button');
   x.textContent = '\u00d7';
-  x.setAttribute('aria-label', 'Remove attachment');
+  x.setAttribute('aria-label', 'Eliminar adjunto');
   x.addEventListener('click', (e) => { e.stopPropagation(); removePending(idx); });
   chip.appendChild(x);
   return chip;
@@ -178,7 +178,7 @@ export async function uploadPending() {
       // pendingFiles so the strip re-renders for a retry (see finally below).
       let detail = '';
       try { const e = await res.json(); detail = e.detail || e.error || ''; } catch (_) {}
-      _showToast('Upload failed' + (detail ? ': ' + detail : ` (HTTP ${res.status})`));
+      _showToast('Error al subir' + (detail ? ': ' + detail : ` (HTTP ${res.status})`));
       return [];
     }
     const data = await res.json();
@@ -205,7 +205,7 @@ export async function uploadPending() {
 export function addFiles(files) {
   for (const f of files) {
     if (pendingFiles.length >= MAX_FILES) {
-      _showToast(`Max ${MAX_FILES} files allowed`);
+      _showToast(`Máximo ${MAX_FILES} archivos permitidos`);
       break;
     }
     pendingFiles.push(f);

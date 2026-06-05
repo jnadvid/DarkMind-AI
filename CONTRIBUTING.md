@@ -1,121 +1,104 @@
-# Contributing to DarkMind
+# Contribuir a DarkMind-AI
 
-Thanks for helping. The project is moving quickly, so the best contributions are focused, easy to review, and easy to test.
+Gracias por tu ayuda. El proyecto avanza rápidamente, así que las mejores contribuciones son las que están enfocadas, son fáciles de revisar y fáciles de probar.
 
-## Branch model
+## Modelo de ramas
 
-DarkMind has two branches:
+DarkMind-AI tiene dos ramas:
 
-- **`dev`** — where all PRs land. Things can be in flux here; the merge button gets used freely.
-- **`main`** — what users run. Curated and tested by the maintainer. Fast-forwarded to a stable `dev` commit at each release.
+- **`dev`** — donde aterrizan todos los PRs. Las cosas pueden estar en flujo aquí; el botón de fusión se usa con libertad.
+- **`main`** — lo que ejecutan los usuarios. Curado y probado por el mantenedor. Se avanza en forma rápida a un commit estable de `dev` en cada versión.
 
-**Open your PR against `dev`, not `main`.** The GitHub "base" dropdown defaults to `dev`. If you opened a PR against `main` by accident, click "Edit" on the PR and change the base — no rebase needed.
+**Abre tu PR contra `dev`, no contra `main`.** El desplegable «base» de GitHub tiene `dev` por defecto. Si abriste un PR contra `main` por error, haz clic en «Edit» en el PR y cambia la base — no es necesario hacer *rebase*.
 
-End-users cloning the repo will land on `dev` by default. To run the curated/stable version: `git checkout main` after clone.
+Los usuarios que clonen el repositorio aterrizarán en `dev` por defecto. Para ejecutar la versión curada/estable: `git checkout main` tras clonar.
 
-## Before You Start
+## Antes de empezar
 
-- Search existing issues and pull requests before opening a new one.
-- Prefer one bug fix or feature per pull request.
-- Avoid broad rewrites, formatting-only changes, or moving many files unless the issue is specifically about structure.
-- If you want to work on a large feature, open an issue first and describe the approach.
+- Busca en los *issues* y *pull requests* existentes antes de abrir uno nuevo.
+- Prefiere un solo arreglo de error o funcionalidad por *pull request*.
+- Evita reescrituras amplias, cambios solo de formato o mover muchos archivos a menos que el *issue* trate específicamente de estructura.
+- Si quieres trabajar en una funcionalidad grande, abre primero un *issue* y describe el enfoque.
 
-## Setup
+## Configuración
 
-Docker is the recommended path for normal testing:
-
-```bash
-git clone https://github.com/pewdiepie-archdaemon/darkmind.git
-cd darkmind
-cp .env.example .env
-docker compose up -d --build
-```
-
-Manual development uses Python 3.11+:
+El desarrollo manual usa Python 3.11+:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-python -m uvicorn app:app --host 0.0.0.0 --port 7000
+python setup.py
+python -m uvicorn app:app --host 127.0.0.1 --port 7000
 ```
 
-Windows is not actively tested. Docker on Linux or a Linux/macOS manual install is the safer path for now.
+En Windows, usa `launch-windows.ps1` o `iniciar.bat` para un lanzamiento en un solo paso.
 
-## Running Checks
+## Ejecución de comprobaciones
 
-Run the smallest relevant checks for your change:
+Ejecuta las comprobaciones más pequeñas relevantes para tu cambio:
 
 ```bash
 python -m pytest
 python -m py_compile app.py routes/*.py src/*.py
-node --check static/js/<file-you-changed>.js
+node --check static/js/<archivo-que-cambiaste>.js
 ```
 
-For Docker-related changes:
-
-```bash
-docker compose config
-docker compose up -d --build
-docker compose logs --tail=120 darkmind
-```
-
-Mention what you ran in the pull request description. If you could not run a check, say so.
+Menciona qué ejecutaste en la descripción del *pull request*. Si no pudiste ejecutar alguna comprobación, indícalo.
 
 ## Pull Requests
 
-Good pull requests usually include:
+Los buenos *pull requests* suelen incluir:
 
-- A short explanation of the bug or feature.
-- The files or areas changed.
-- Manual test steps or automated test results from running the actual app, not just the test suite.
-- Screenshots or short recordings for UI changes.
-- Links to related issues, for example `Fixes #123`.
+- Una breve explicación del error o la funcionalidad.
+- Los archivos o áreas modificados.
+- Pasos de prueba manual o resultados de pruebas automatizadas de la ejecución real de la aplicación, no solo del conjunto de pruebas.
+- Capturas de pantalla o grabaciones cortas para cambios de interfaz.
+- Vínculos a los *issues* relacionados, por ejemplo `Fixes #123`.
 
-Please keep PRs small. Large PRs that mix unrelated cleanup, formatting, refactors, and behavior changes are much harder to review.
+Mantén los PRs pequeños. Los PRs grandes que mezclan limpieza no relacionada, formato, refactorizaciones y cambios de comportamiento son mucho más difíciles de revisar.
 
-> **Auto-generated PRs.** If you are running an LLM agent (Devin, Cursor, OpenHands, Claude Code, etc.) against this repo: please open an issue describing the problem first instead of opening a PR directly. Bulk agent-generated PRs that don't match the project's visual style or contribution format will be closed without review, even when the underlying fix is correct.
+> **PRs generados automáticamente.** Si estás ejecutando un agente LLM (Devin, Cursor, OpenHands, Claude Code, etc.) contra este repositorio: por favor, abre primero un *issue* describiendo el problema en lugar de abrir un PR directamente. Los PRs generados en masa por agentes que no coinciden con el estilo visual o el formato de contribución del proyecto se cerrarán sin revisión, aunque el arreglo subyacente sea correcto.
 
-## Style and visual changes
+## Estilo y cambios visuales
 
-DarkMind has an intentional visual style. PRs that ignore it will be closed without merge, no matter how correct the underlying code is.
+DarkMind-AI tiene un estilo visual intencional. Los PRs que lo ignoren se cerrarán sin fusión, sin importar lo correcto que sea el código subyacente.
 
-Before submitting any change that affects what the app looks like — buttons, icons, fonts, colors, spacing, layout, CSS, HTML, SVG, or any `static/js/` module that draws to the DOM — please:
+Antes de enviar cualquier cambio que afecte al aspecto de la aplicación — botones, iconos, fuentes, colores, espaciado, diseño, CSS, HTML, SVG o cualquier módulo `static/js/` que dibuje en el DOM — por favor:
 
-1. **Run the app locally** and view the change in a browser. Type-checks and unit tests are not enough.
-2. **Attach a screenshot or short clip** of the change in the running app. Add a mobile screenshot too if the change affects mobile.
-3. **Match the existing visual language.** Specifically:
-   - Reuse existing CSS variables (`--red`, `--fg`, `--bg`, `--card`, `--border`, …). Do not introduce new color values, font sizes, or spacing units.
-   - Reuse existing button, input, card, and border classes. Don't invent parallel styling for similar widgets.
-   - **No Unicode emoji in UI or code.** Use inline SVG (matching the monochrome icon style already in `static/index.html`) or plain text.
-   - Monospaced font (`Fira Code`) for primary UI text. Don't override.
-   - Dark theme is the default; any light-mode work goes through the existing theme system, not hard-coded.
-4. **Don't add parallel components.** If a similar widget already exists in the app, extend it instead of writing a new one.
+1. **Ejecuta la aplicación localmente** y visualiza el cambio en un navegador. Las comprobaciones de tipos y las pruebas unitarias no son suficientes.
+2. **Adjunta una captura de pantalla o un clip corto** del cambio en la aplicación en ejecución. Añade también una captura de pantalla en móvil si el cambio afecta al móvil.
+3. **Respeta el lenguaje visual existente.** En concreto:
+   - Reutiliza las variables CSS existentes (`--red`, `--fg`, `--bg`, `--card`, `--border`, …). No introduzcas nuevos valores de color, tamaños de fuente ni unidades de espaciado.
+   - Reutiliza las clases existentes de botón, entrada, tarjeta y borde. No inventes estilos paralelos para widgets similares.
+   - **Sin emoji Unicode en la interfaz ni en el código.** Usa SVG en línea (siguiendo el estilo de iconos monocromo ya presente en `static/index.html`) o texto plano.
+   - Fuente monoespaciada (`Fira Code`) para el texto principal de la interfaz. No la sobreescribas.
+   - El tema oscuro es el predeterminado; cualquier trabajo en modo claro va a través del sistema de temas existente, sin valores codificados directamente.
+4. **No añadas componentes paralelos.** Si ya existe un widget similar en la aplicación, extiéndelo en lugar de escribir uno nuevo.
 
-If you are unsure whether a change is "visual," it is. Default to attaching a screenshot.
+Si no estás seguro de si un cambio es «visual», lo es. Por defecto, adjunta una captura de pantalla.
 
-## Issue Reports
+## Informes de errores
 
-For bugs, include:
+Para los errores, incluye:
 
-- Install method: Docker, manual Python, WSL, etc.
-- OS, browser, and device if relevant.
-- Exact steps to reproduce.
-- Expected behavior and actual behavior.
-- Logs, screenshots, or terminal output.
+- Método de instalación: Python manual, WSL, etc.
+- Sistema operativo, navegador y dispositivo si son relevantes.
+- Pasos exactos para reproducir el error.
+- Comportamiento esperado y comportamiento real.
+- Registros, capturas de pantalla o salida del terminal.
 
-For model-serving issues, include:
+Para problemas de servicio de modelos, incluye:
 
 - Backend: Ollama, vLLM, SGLang, llama.cpp, LM Studio, etc.
-- Model name.
-- GPU/CPU and operating system.
-- Cookbook task logs or server logs.
+- Nombre del modelo.
+- GPU/CPU y sistema operativo.
+- Registros de tareas de Cookbook o registros del servidor.
 
-Issues with only "help", "does not work", or a screenshot without context may be closed as not actionable.
+Los *issues* con solo «ayuda», «no funciona» o una captura de pantalla sin contexto pueden cerrarse por no ser accionables.
 
-## Security
+## Seguridad
 
-Do not post secrets, API keys, private logs, personal documents, or public IPs in issues or pull requests.
+No publiques secretos, claves de API, registros privados, documentos personales o IPs públicas en *issues* o *pull requests*.
 
-For security reports, follow [SECURITY.md](SECURITY.md).
-
+Para informes de seguridad, sigue [SECURITY.md](SECURITY.md).

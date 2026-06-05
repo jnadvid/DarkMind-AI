@@ -41,7 +41,7 @@ export async function loadPersonalDocs() {
 
     if (files.length === 0) {
       const placeholder = document.createElement('div');
-      placeholder.textContent = 'Drop files above to add to RAG';
+      placeholder.textContent = 'Arrastra archivos arriba para añadir a RAG';
       placeholder.style.cssText = 'color:var(--color-muted);font-size:12px;padding:4px 0;';
       box.appendChild(placeholder);
       return;
@@ -67,7 +67,7 @@ export async function loadPersonalDocs() {
       const del = document.createElement('button');
       del.className = 'rag-file-delete';
       del.textContent = 'x';
-      del.title = 'Remove from RAG';
+      del.title = 'Eliminar de RAG';
       del.style.cssText = 'background:none;border:none;color:var(--color-error);cursor:pointer;padding:2px 4px;font-size:12px;flex-shrink:0;';
       del.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -81,14 +81,14 @@ export async function loadPersonalDocs() {
     console.error(e);
     box.innerHTML = '';
     const error = document.createElement('div');
-    error.textContent = 'Failed to load files';
+    error.textContent = 'Error al cargar los archivos';
     error.style.color = 'var(--color-error)';
     box.appendChild(error);
   }
 }
 
 async function _deleteFile(filepath, displayName) {
-  if (!await uiModule.styledConfirm(`Remove "${displayName}" from RAG?`, { confirmText: 'Remove', danger: true })) return;
+  if (!await uiModule.styledConfirm(`¿Eliminar "${displayName}" de RAG?`, { confirmText: 'Eliminar', danger: true })) return;
   try {
     const res = await fetch(`${API_BASE}/api/personal/file?filepath=${encodeURIComponent(filepath)}`, {
       method: 'DELETE',
@@ -98,7 +98,7 @@ async function _deleteFile(filepath, displayName) {
     await loadPersonalDocs();
   } catch (e) {
     console.error('Delete failed:', e);
-    alert('Failed to delete file: ' + e.message);
+    alert('Error al eliminar el archivo: ' + e.message);
   }
 }
 
@@ -109,7 +109,7 @@ export async function uploadRagFiles(fileList) {
   if (!fileList || !fileList.length) return;
 
   const zone = document.getElementById('rag-upload-zone');
-  if (zone) zone.textContent = 'Uploading…';
+  if (zone) zone.textContent = 'Subiendo…';
 
   const fd = new FormData();
   for (const file of fileList) {
@@ -126,13 +126,13 @@ export async function uploadRagFiles(fileList) {
     if (!res.ok) throw new Error(await res.text());
 
     const data = await res.json();
-    if (zone) zone.textContent = 'Drop files here or click to upload';
+    if (zone) zone.textContent = 'Arrastra archivos aquí o haz clic para subir';
     await loadPersonalDocs();
     return data;
   } catch (e) {
     console.error('Upload failed:', e);
-    if (zone) zone.textContent = 'Drop files here or click to upload';
-    alert('Upload failed: ' + e.message);
+    if (zone) zone.textContent = 'Arrastra archivos aquí o haz clic para subir';
+    alert('Error al subir: ' + e.message);
   }
 }
 

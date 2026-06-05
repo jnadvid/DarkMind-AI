@@ -177,7 +177,7 @@ async function _fetchModelEndpoints() {
 }
 
 function _endpointLabel(ep) {
-  return ep.name + (ep.online ? '' : ' (offline)');
+  return ep.name + (ep.online ? '' : ' (sin conexión)');
 }
 
 function _fillEndpointSelect(selectEl, endpoints, selected, keepBlank) {
@@ -313,7 +313,7 @@ function _bindFallbackWidget(opts) {
       enabledEps().forEach(function(ep) {
         var o = document.createElement('option');
         o.value = ep.id;
-        o.textContent = ep.name + (ep.online ? '' : ' (offline)');
+        o.textContent = ep.name + (ep.online ? '' : ' (sin conexión)');
         epS.appendChild(o);
       });
       var first = enabledEps()[0];
@@ -337,7 +337,7 @@ function _bindFallbackWidget(opts) {
       var rm = document.createElement('button');
       rm.type = 'button';
       rm.className = 'settings-fallback-remove';
-      rm.title = 'Remove fallback';
+      rm.title = 'Eliminar alternativa';
       rm.innerHTML = '&times;';
       rm.addEventListener('click', function() {
         current.splice(idx, 1);
@@ -416,7 +416,7 @@ async function initDefaultChat() {
       enabledEndpoints().forEach(function(ep) {
         var o = document.createElement('option');
         o.value = ep.id;
-        o.textContent = ep.name + (ep.online ? '' : ' (offline)');
+        o.textContent = ep.name + (ep.online ? '' : ' (sin conexión)');
         epS.appendChild(o);
       });
       var first = enabledEndpoints()[0];
@@ -441,7 +441,7 @@ async function initDefaultChat() {
       var rm = document.createElement('button');
       rm.type = 'button';
       rm.className = 'settings-fallback-remove';
-      rm.title = 'Remove fallback';
+      rm.title = 'Eliminar alternativa';
       rm.innerHTML = '&times;';
       rm.addEventListener('click', function() {
         _fallbacks.splice(idx, 1);
