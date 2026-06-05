@@ -2261,7 +2261,7 @@ export function openGallery() {
           method: 'POST', credentials: 'same-origin',
         });
         listRes = await r.json();
-      } catch (e) { uiModule.showError('Failed to fetch tag queue'); return; }
+      } catch (e) { uiModule.showError('No se pudo obtener la cola de etiquetas'); return; }
       if (!listRes.ok || !Array.isArray(listRes.image_ids) || listRes.image_ids.length === 0) {
         uiModule.showToast(`No untagged photos in ${scope}`);
         return;
@@ -2351,7 +2351,7 @@ export function openGallery() {
           method: 'POST', credentials: 'same-origin',
         });
         const d = await r.json();
-        if (!d.ok) throw new Error(d.error || 'Clear failed');
+        if (!d.ok) throw new Error(d.error || 'Error al borrar');
         uiModule.showToast(`Cleared AI tags on ${d.cleared} photo${d.cleared === 1 ? '' : 's'}`);
         await _fetchLibrary(false);
       } catch (e) {
@@ -2568,7 +2568,7 @@ export function openGallery() {
     // the anchor, so the button itself has to do its own dismiss.
     const existing = document.querySelector('.gallery-bulk-menu');
     if (existing) { existing.remove(); return; }
-    if (!_selectedIds().length) { uiModule.showToast('Select photos first'); return; }
+    if (!_selectedIds().length) { uiModule.showToast('Selecciona primero las fotos'); return; }
     _showGalleryBulkMenu(e.currentTarget);
   });
 
@@ -2621,7 +2621,7 @@ export function openGallery() {
         _exitSelectMode();
         if (uiModule) uiModule.showToast(`Downloaded ${ids.length} photos (zip)`);
       } catch (e) {
-        if (uiModule) uiModule.showError('Failed to create zip');
+        if (uiModule) uiModule.showError('No se pudo crear el zip');
       }
       return;
     }
@@ -2759,7 +2759,7 @@ export function openGallery() {
 function _doCloseGallery() {
   const editorMounted = !!document.querySelector('#gallery-editor-container .gallery-editor');
   if ((window.__galleryEditLive || isEditorOpen() || editorMounted) && !window.__galleryAllowCloseEditor) {
-    if (uiModule) uiModule.showToast('Close the edit tab first');
+    if (uiModule) uiModule.showToast('Cierra primero la pestaña de edición');
     return;
   }
   _open = false;

@@ -3850,7 +3850,7 @@ async function initUnifiedIntegrations() {
       row.querySelector('.contact-del')?.addEventListener('click', async () => {
         const ok = uiModule.styledConfirm
           ? await uiModule.styledConfirm('¿Eliminar este contacto?', { confirmText: 'Eliminar', danger: true })
-          : window.confirm('Delete this contact?');
+          : window.confirm('¿Eliminar este contacto?');
         if (!ok) return;
         try {
           await fetch('/api/contacts/' + encodeURIComponent(uid), { method: 'DELETE', credentials: 'same-origin' });
@@ -4025,7 +4025,7 @@ async function initUnifiedIntegrations() {
         const orig = copyBtn.innerHTML;
         const ok = await _copyProviderUrl(url);
         if (!ok) {
-          uiModule.showError?.('Copy failed');
+          uiModule.showError?.('Error al copiar');
           return;
         }
         uiModule.showToast?.('Copied');
@@ -4655,17 +4655,17 @@ async function initUnifiedIntegrations() {
     } catch (_) {}
 
     const toolScopes = [
-      { key: 'todos:read', label: 'Todos', detail: 'Read notes and checklists' },
-      { key: 'todos:write', label: 'Todos write', detail: 'Create, update, delete, and toggle todo items' },
-      { key: 'documents:read', label: 'Documents', detail: 'Read documents when a document API is enabled' },
-      { key: 'documents:write', label: 'Documents write', detail: 'Create and update draft documents' },
-      { key: 'email:read', label: 'Email', detail: 'Read email when an email API is enabled' },
-      { key: 'email:draft', label: 'Email drafts', detail: 'Create email reply drafts without sending' },
-      { key: 'email:send', label: 'Email send', detail: 'Send email directly' },
-      { key: 'calendar:read', label: 'Calendar', detail: 'Read calendar events when enabled' },
-      { key: 'calendar:write', label: 'Calendar write', detail: 'Create and update calendar events' },
-      { key: 'memory:read', label: 'Memory', detail: 'Read memory when enabled' },
-      { key: 'memory:write', label: 'Memory write', detail: 'Write memory when enabled' },
+      { key: 'todos:read', label: 'Tareas', detail: 'Leer notas y listas de tareas' },
+      { key: 'todos:write', label: 'Escritura de tareas', detail: 'Crear, actualizar, eliminar y marcar tareas' },
+      { key: 'documents:read', label: 'Documentos', detail: 'Leer documentos cuando la API de documentos está activada' },
+      { key: 'documents:write', label: 'Escritura de documentos', detail: 'Crear y actualizar borradores de documentos' },
+      { key: 'email:read', label: 'Correo', detail: 'Leer correo cuando la API de correo está activada' },
+      { key: 'email:draft', label: 'Borradores de correo', detail: 'Crear borradores de respuesta sin enviarlos' },
+      { key: 'email:send', label: 'Envío de correo', detail: 'Enviar correo directamente' },
+      { key: 'calendar:read', label: 'Calendario', detail: 'Leer eventos del calendario cuando está activado' },
+      { key: 'calendar:write', label: 'Escritura de calendario', detail: 'Crear y actualizar eventos del calendario' },
+      { key: 'memory:read', label: 'Memoria', detail: 'Leer la memoria cuando está activada' },
+      { key: 'memory:write', label: 'Escritura de memoria', detail: 'Escribir en la memoria cuando está activada' },
     ];
     // Strict name-prefix match keeps Codex and Claude tokens in their own forms.
     const agentTokens = (Array.isArray(tokens) ? tokens : []).filter(tok =>
@@ -4852,26 +4852,26 @@ async function initUnifiedIntegrations() {
       const btn = el('uf-codex-copy-setup');
       if (!token) {
         if (btn) {
-          btn.textContent = 'Add agent first';
-          setTimeout(() => { const latest = el('uf-codex-copy-setup'); if (latest) latest.textContent = 'Copy setup'; }, 1600);
+          btn.textContent = 'Añade primero un agente';
+          setTimeout(() => { const latest = el('uf-codex-copy-setup'); if (latest) latest.textContent = 'Copiar configuración'; }, 1600);
         }
         return;
       }
       const setup = setupForToken(token);
       const ok = await _copyCodexToken(setup);
       if (!btn) return;
-      btn.textContent = ok ? 'Copied setup' : 'Select setup';
+      btn.textContent = ok ? 'Configuración copiada' : 'Selecciona la configuración';
       if (!ok) _selectTextFallback(setup, 'uf-codex-reveal');
-      setTimeout(() => { const latest = el('uf-codex-copy-setup'); if (latest) latest.textContent = 'Copy setup'; }, 1600);
+      setTimeout(() => { const latest = el('uf-codex-copy-setup'); if (latest) latest.textContent = 'Copiar configuración'; }, 1600);
     });
     el('uf-codex-copy-token')?.addEventListener('click', async () => {
       const token = el('uf-codex-token')?.textContent || '';
       const ok = await _copyCodexToken(token);
       const btn = el('uf-codex-copy-token');
       if (!btn) return;
-      btn.textContent = ok ? 'Copied token' : 'Select token';
+      btn.textContent = ok ? 'Token copiado' : 'Selecciona el token';
       if (!ok) _selectTextFallback(token, 'uf-codex-reveal');
-      setTimeout(() => { const latest = el('uf-codex-copy-token'); if (latest) latest.textContent = 'Copy token'; }, 1600);
+      setTimeout(() => { const latest = el('uf-codex-copy-token'); if (latest) latest.textContent = 'Copiar token'; }, 1600);
     });
     formEl.querySelectorAll('.uf-codex-revoke').forEach(btn => {
       btn.addEventListener('click', async () => {
@@ -4894,7 +4894,7 @@ async function initUnifiedIntegrations() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name }),
           });
-          if (!r.ok) throw new Error('Save failed');
+          if (!r.ok) throw new Error('Error al guardar');
           input.style.borderColor = 'var(--green, #50fa7b)';
           setTimeout(() => { input.style.borderColor = 'transparent'; }, 800);
           await renderList();
