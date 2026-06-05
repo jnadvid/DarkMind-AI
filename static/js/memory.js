@@ -89,11 +89,11 @@ function buildCategoryChips() {
 async function syncToggles() {
   // The settings tab no longer hosts a separate "Memory in context" toggle —
   // the header toggle owns that pref directly now.
-  await syncPrefToggle('memory-enabled-header-toggle', 'memory_enabled', 'Memory enabled', 'Memory disabled', false);
+  await syncPrefToggle('memory-enabled-header-toggle', 'memory_enabled', 'Memoria activada', 'Memoria desactivada', false);
   // The Skills header toggle owns the `skills_enabled` pref (was never wired —
   // toggling it did nothing, so skills stayed on). Now it actually gates skill
   // injection (see chat_helpers.py: uprefs.skills_enabled).
-  await syncPrefToggle('skills-enabled-header-toggle', 'skills_enabled', 'Skills enabled', 'Skills disabled', false);
+  await syncPrefToggle('skills-enabled-header-toggle', 'skills_enabled', 'Habilidades activadas', 'Habilidades desactivadas', false);
   await syncPrefToggle('auto-memory-toggle', 'auto_memory', 'Auto-extract memories enabled', 'Auto-extract memories disabled', false);
   await syncPrefToggle('auto-skills-toggle', 'auto_skills', 'Auto-extract skills enabled', 'Auto-extract skills disabled', false);
   await syncPrefToggle('auto-approve-skills-toggle', 'auto_approve_skills', 'Auto-approve skills enabled', 'Auto-approve skills disabled', false);
@@ -180,11 +180,11 @@ async function syncPrefSlider(elementId, prefKey, labelId, defaultVal) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ value: pref })
         });
-        if (!res.ok) { showError('Failed to save preference'); return; }
-        showToast(pref === 0 ? 'Skill confidence: All' : `Skill confidence ≥ ${Math.round(pref * 100)}%`);
+        if (!res.ok) { showError('No se pudo guardar la preferencia'); return; }
+        showToast(pref === 0 ? 'Confianza de habilidad: Todas' : `Confianza de habilidad ≥ ${Math.round(pref * 100)}%`);
       } catch (e) {
         console.error(`Failed to save ${prefKey} pref:`, e);
-        showError('Failed to save preference');
+        showError('No se pudo guardar la preferencia');
       }
     });
   }
@@ -222,11 +222,11 @@ async function syncPrefNumber(elementId, prefKey, defaultVal) {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ value: v })
         });
-        if (!res.ok) { showError('Failed to save preference'); return; }
-        showToast(v === 0 ? 'No skills injected' : `Max injected skills: ${v}`);
+        if (!res.ok) { showError('No se pudo guardar la preferencia'); return; }
+        showToast(v === 0 ? 'No se inyectan habilidades' : `Máx. de habilidades inyectadas: ${v}`);
       } catch (e) {
         console.error(`Failed to save ${prefKey} pref:`, e);
-        showError('Failed to save preference');
+        showError('No se pudo guardar la preferencia');
       }
     });
   }
@@ -259,7 +259,7 @@ async function syncPrefToggle(elementId, prefKey, onMsg, offMsg, dimBelow = true
           console.error(`PUT ${prefKey} returned ${res.status}`);
           toggle.checked = !toggle.checked; // revert
           if (dimBelow) syncToggleDim(toggle);
-          showError('Failed to save preference');
+          showError('No se pudo guardar la preferencia');
           return;
         }
         showToast(toggle.checked ? onMsg : offMsg);
@@ -267,7 +267,7 @@ async function syncPrefToggle(elementId, prefKey, onMsg, offMsg, dimBelow = true
         console.error(`Failed to save ${prefKey} pref:`, e);
         toggle.checked = !toggle.checked; // revert
         if (dimBelow) syncToggleDim(toggle);
-        showError('Failed to save preference');
+        showError('No se pudo guardar la preferencia');
       }
     });
   }
@@ -370,7 +370,7 @@ function toggleSelectAll() {
 async function bulkDelete() {
   if (selectedIds.size === 0) return;
   const count = selectedIds.size;
-  if (!await uiModule.styledConfirm(`Delete ${count} ${count === 1 ? 'memory' : 'memories'}?`, { confirmText: 'Delete', danger: true })) return;
+  if (!await uiModule.styledConfirm(`¿Eliminar ${count} ${count === 1 ? 'recuerdo' : 'recuerdos'}?`, { confirmText: 'Eliminar', danger: true })) return;
 
   let deleted = 0;
   const deletedIds = [];
@@ -422,14 +422,14 @@ export async function tidyMemories() {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Audit failed');
+      throw new Error(err.detail || 'La auditoría falló');
     }
 
     const data = await res.json();
     if ((data.removed || 0) === 0) {
       if (tidySpinner) tidySpinner.destroy();
       if (tidyBtn) { tidyBtn.disabled = false; tidyBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:2px;"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg> Tidy'; }
-      showToast('Already clean');
+      showToast('Ya está limpio');
       return;
     }
 
@@ -450,7 +450,7 @@ export async function tidyMemories() {
       }
     }
 
-    if (tidySpinner) tidySpinner.updateMessage('Tidying memories');
+    if (tidySpinner) tidySpinner.updateMessage('Ordenando recuerdos');
 
     // Animate the diff on the currently rendered list
     await animateTidyDiff(removed, edited);
@@ -464,7 +464,7 @@ export async function tidyMemories() {
     showToast(`Tidied: ${data.removed} removed (${data.before} \u2192 ${data.after})`);
   } catch (error) {
     console.error('Tidy failed:', error);
-    showError('Tidy failed — check console');
+    showError('Falló la limpieza — revisa la consola');
   } finally {
     if (tidySpinner) tidySpinner.destroy();
     if (tidyBtn) {
@@ -665,7 +665,7 @@ export function renderMemoryList() {
       const useSpan = document.createElement('span');
       useSpan.className = 'memory-item-uses';
       useSpan.textContent = `${uses}×`;
-      useSpan.title = `Injected into chat context ${uses} time${uses === 1 ? '' : 's'}`;
+      useSpan.title = `Inyectado en el contexto del chat ${uses} ${uses === 1 ? 'vez' : 'veces'}`;
       meta.appendChild(useSpan);
     }
 
@@ -939,14 +939,14 @@ async function saveInlineEdit(id, newText, newCategory) {
 
     if (response.ok) {
       await loadMemories();
-      showToast('Memory updated');
+      showToast('Recuerdo actualizado');
     } else {
       const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to update memory');
+      throw new Error(errorData.detail || 'No se pudo actualizar el recuerdo');
     }
   } catch (error) {
     console.error('Error updating memory:', error);
-    showError('Failed to update memory');
+    showError('No se pudo actualizar el recuerdo');
   }
 }
 
@@ -979,7 +979,7 @@ export async function addNewMemory() {
   const text = input.value.trim();
 
   if (!text) {
-    showError('Memory text cannot be empty');
+    showError('El texto del recuerdo no puede estar vacío');
     return;
   }
 
@@ -997,15 +997,15 @@ export async function addNewMemory() {
     if (response.ok) {
       input.value = '';
       await loadMemories();
-      showToast('Memory added');
+      showToast('Recuerdo añadido');
     } else {
       const errorData = await response.json();
       console.error('Server error details:', errorData);
-      throw new Error(errorData.detail || 'Failed to add memory');
+      throw new Error(errorData.detail || 'No se pudo añadir el recuerdo');
     }
   } catch (error) {
     console.error('Error adding memory:', error);
-    showError('Failed to add memory');
+    showError('No se pudo añadir el recuerdo');
   }
 }
 
@@ -1013,7 +1013,7 @@ export async function editMemory(id) {
   const memory = memories.find(m => m.id === id);
   if (!memory) return;
 
-  const newText = prompt('Edit memory:', memory.text);
+  const newText = prompt('Editar recuerdo:', memory.text);
   if (!newText || newText === memory.text) return;
 
   await saveInlineEdit(id, newText);
@@ -1033,7 +1033,7 @@ async function togglePin(id, pinned) {
     }
   } catch (e) {
     console.error('Failed to toggle pin:', e);
-    showError('Failed to update pin');
+    showError('No se pudo actualizar el anclaje');
   }
 }
 
@@ -1041,7 +1041,7 @@ export async function deleteMemory(id) {
   const memory = memories.find(m => m.id === id);
   if (!memory) return;
 
-  if (!await uiModule.styledConfirm(`Delete this memory?\n"${memory.text}"`, { confirmText: 'Delete', danger: true })) return;
+  if (!await uiModule.styledConfirm(`¿Eliminar este recuerdo?\n"${memory.text}"`, { confirmText: 'Eliminar', danger: true })) return;
 
   try {
     const response = await fetch(`${window.location.origin}/api/memory/${id}`, {
@@ -1051,12 +1051,12 @@ export async function deleteMemory(id) {
     if (response.ok) {
       await animateMemoryRemoval([id]);
       await loadMemories();
-      showToast('Memory deleted');
+      showToast('Recuerdo eliminado');
     } else {
-      throw new Error('Failed to delete');
+      throw new Error('No se pudo eliminar');
     }
   } catch (error) {
-    showError('Failed to delete memory');
+    showError('No se pudo eliminar el recuerdo');
   }
 }
 
@@ -1066,7 +1066,7 @@ export async function extractMemory(sessionId) {
     body: new URLSearchParams({ session: sessionId })
   });
   if (!res.ok) {
-    showError('Failed to extract memory suggestions');
+    showError('No se pudieron extraer sugerencias de recuerdos');
     return;
   }
   const data = await res.json();
@@ -1119,7 +1119,7 @@ export async function extractMemory(sessionId) {
         });
         btn.disabled = true;
         btn.textContent = 'saved';
-        showToast('Saved to memory');
+        showToast('Guardado en la memoria');
       });
       div.appendChild(txt);
       div.appendChild(btn);
@@ -1134,7 +1134,7 @@ export async function extractMemory(sessionId) {
 
 export function exportMemories() {
   if (!memories || memories.length === 0) {
-    showToast('No memories to export');
+    showToast('No hay recuerdos que exportar');
     return;
   }
   const data = JSON.stringify(memories, null, 2);
@@ -1187,7 +1187,7 @@ async function handleImportFile(file) {
 
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.detail || 'Import failed');
+      throw new Error(err.detail || 'La importación falló');
     }
 
     const data = await res.json();
@@ -1219,7 +1219,7 @@ async function handleImportFile(file) {
       const headerTitle = document.createElement('span');
       const updateHeaderTitle = () => {
         const remaining = reviewItems.filter((item) => item.active).length;
-        headerTitle.textContent = `Imported from ${data.filename || file.name} (${remaining}) Review`;
+        headerTitle.textContent = `Importado de ${data.filename || file.name} (${remaining}) Revisar`;
       };
       updateHeaderTitle();
       const headerActions = document.createElement('div');
@@ -1292,7 +1292,7 @@ async function handleImportFile(file) {
           updateHeaderTitle();
           btn.disabled = true;
           btn.textContent = 'saved';
-          showToast('Saved to memory');
+          showToast('Guardado en la memoria');
         });
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'memory-item-btn delete';

@@ -699,7 +699,7 @@ function createSessionItem(s) {
         dropdown.style.display = 'none';
         uiModule.showToast('Sesión archivada');
       } else {
-        throw new Error('Failed to archive session');
+        throw new Error('No se pudo archivar la sesión');
       }
     } catch (error) {
       console.error('Error archiving session:', error);
@@ -1546,7 +1546,7 @@ export async function selectSession(id, { keepSidebar = false } = {}) {
     if (sendBtn && sendBtn.dataset.mode === 'streaming') {
       sendBtn.dataset.mode = '';
       sendBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-      sendBtn.title = 'Send message';
+      sendBtn.title = 'Enviar mensaje';
     }
     // Deactivate compare mode on session switch
     if (window.compareModule) {
@@ -2174,7 +2174,7 @@ async function _checkServerStream(sessionId) {
     const bodyDiv = holder.querySelector('.body');
 
     const spinnerMod = await import('./spinner.js');
-    const spinner = spinnerMod.default.create('Generating response...', 'right');
+    const spinner = spinnerMod.default.create('Generando respuesta...', 'right');
     bodyDiv.appendChild(spinner.createElement());
     spinner.start();
     box.appendChild(holder);
@@ -3005,7 +3005,7 @@ export function openArchive() {
             <option value="alpha">A\u2013Z</option>
           </select>
           <input type="text" class="memory-search-input" id="archive-search" placeholder="Filter\u2026" style="flex:1;" />
-          <button class="memory-toolbar-btn" id="archive-select-btn" title="Select sessions">Select</button>
+          <button class="memory-toolbar-btn" id="archive-select-btn" title="Seleccionar sesiones">Seleccionar</button>
         </div>
         <div class="memory-bulk-bar hidden" id="archive-bulk-bar">
           <label class="memory-bulk-check-all"><input type="checkbox" id="archive-select-all"> All</label>
