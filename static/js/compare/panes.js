@@ -129,7 +129,7 @@ async function rerollPane(paneIdx, overrideTimeout) {
       if (data.error) {
         aiBody.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;">Error: ' + escapeHtml(data.error) + '</div>';
       } else if (!data.results || data.results.length === 0) {
-        aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No results found</div>';
+        aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No se encontraron resultados</div>';
       } else {
         aiBody.appendChild(_renderSearchResults(data));
       }
@@ -210,7 +210,7 @@ function _autoPreviewHtml(paneIdx, accumulated) {
   // Show the play button
   previewBtn.style.display = '';
   previewBtn.innerHTML = ICON_PLAY;
-  previewBtn.title = 'Run preview';
+  previewBtn.title = 'Ejecutar vista previa';
 }
 
 /** Toggle between iframe preview and code view for a pane. */
@@ -226,7 +226,7 @@ function togglePanePreview(paneIdx) {
     iframe.style.display = 'none';
     hist.style.display = '';
     btn.innerHTML = ICON_PLAY;
-    btn.title = 'Run preview';
+    btn.title = 'Ejecutar vista previa';
     btn.classList.remove('active');
   } else {
     // Switch to preview — load on first click
@@ -234,7 +234,7 @@ function togglePanePreview(paneIdx) {
     iframe.style.display = '';
     hist.style.display = 'none';
     btn.innerHTML = ICON_CODE;
-    btn.title = 'Show code';
+    btn.title = 'Mostrar código';
     btn.classList.add('active');
   }
 }
@@ -269,7 +269,7 @@ async function copyPaneResponse(paneIdx) {
     ta.value = text; document.body.appendChild(ta); ta.select();
     document.execCommand('copy'); ta.remove();
   }
-  if (uiModule) uiModule.showToast(lastAi._imageData ? 'Prompt copied!' : 'Copied!');
+  if (uiModule) uiModule.showToast(lastAi._imageData ? '¡Instrucción copiada!' : '¡Copiado!');
 }
 
 // ── Add / create / remove panes ──
@@ -454,7 +454,7 @@ async function _createAndAppendPane(m) {
     if (shuffleBtn) {
       const bubble = document.createElement('div');
       bubble.style.cssText = 'position:absolute;top:100%;right:0;margin-top:6px;background:var(--panel);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:11px;white-space:nowrap;z-index:10000;box-shadow:0 4px 12px rgba(0,0,0,0.25);pointer-events:none;opacity:0;transition:opacity 0.2s;';
-      bubble.textContent = 'Shuffle models?';
+      bubble.textContent = '¿Barajar modelos?';
       shuffleBtn.style.position = 'relative';
       shuffleBtn.appendChild(bubble);
       requestAnimationFrame(() => { bubble.style.opacity = '1'; });

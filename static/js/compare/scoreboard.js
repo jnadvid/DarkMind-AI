@@ -188,7 +188,7 @@ export function showScoreboard() {
     confirmRow.style.cssText = 'display:flex;gap:8px;justify-content:center;align-items:center;margin-top:8px;padding:8px 12px;border:1px solid color-mix(in srgb, var(--red) 40%, var(--border));border-radius:6px;background:color-mix(in srgb, var(--red) 5%, transparent);';
     const confirmLabel = document.createElement('span');
     confirmLabel.style.cssText = 'font-size:12px;opacity:0.7;';
-    confirmLabel.textContent = 'Clear all vote history?';
+    confirmLabel.textContent = '¿Borrar todo el historial de votos?';
     const yesBtn = document.createElement('button');
     yesBtn.textContent = 'Clear';
     yesBtn.style.cssText = 'padding:4px 12px;background:var(--red);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;';

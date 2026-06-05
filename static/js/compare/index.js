@@ -196,7 +196,7 @@ async function deactivate(teardown) {
 /** Build the compare UI: sessions, header bar, grid of panes, vote bar, eval dropdown. */
 async function _buildCompareUI() {
   if (state._selectedModels.length < 1) {
-    if (uiModule) uiModule.showError('Select at least 1 model');
+    if (uiModule) uiModule.showError('Selecciona al menos 1 modelo');
     return;
   }
 
@@ -220,7 +220,7 @@ async function _buildCompareUI() {
         fd.append('skip_validation', 'true');
       }
       const res = await fetch(`${state.API_BASE}/api/session`, { method: 'POST', body: fd });
-      if (!res.ok) throw new Error('Failed to create session for ' + modelShorts[i]);
+      if (!res.ok) throw new Error('No se pudo crear la sesión para ' + modelShorts[i]);
       const data = await res.json();
       sessionIds.push(data.id);
     }
@@ -325,7 +325,7 @@ async function _buildCompareUI() {
   const checkBtn = document.createElement('button');
   checkBtn.id = 'compare-check-btn';
   checkBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg><span style="font-size:11px;margin-left:3px;">Probe</span>';
-  checkBtn.title = 'Probe unverified models with a small test request';
+  checkBtn.title = 'Sondear modelos no verificados con una pequeña petición de prueba';
   checkBtn.style.cssText = _btnCSS;
   checkBtn.addEventListener('click', () => _checkUnprobed());
   headerActions.appendChild(checkBtn);
@@ -346,7 +346,7 @@ async function _buildCompareUI() {
   const exportBtn = document.createElement('button');
   exportBtn.id = 'compare-export-btn';
   exportBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span style="font-size:11px;margin-left:3px;">Export</span>';
-  exportBtn.title = 'Export options';
+  exportBtn.title = 'Opciones de exportación';
   exportBtn.style.cssText = _btnCSS;
   exportBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -358,7 +358,7 @@ async function _buildCompareUI() {
   const shuffleBtn = document.createElement('button');
   shuffleBtn.id = 'compare-shuffle-btn';
   shuffleBtn.innerHTML = ICON_DICE + '<span style="font-size:11px;margin-left:3px;">Shuffle</span>';
-  shuffleBtn.title = 'Shuffle pane positions';
+  shuffleBtn.title = 'Barajar posiciones de los paneles';
   shuffleBtn.style.cssText = _btnCSS;
   shuffleBtn.addEventListener('click', () => shufflePanePositions());
   headerActions.appendChild(shuffleBtn);
@@ -366,7 +366,7 @@ async function _buildCompareUI() {
   const addBtn = document.createElement('button');
   addBtn.id = 'compare-add-btn';
   addBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:11px;margin-left:3px;">Add</span>';
-  addBtn.title = 'Add model pane';
+  addBtn.title = 'Añadir panel de modelo';
   addBtn.style.cssText = _btnCSS;
   addBtn.addEventListener('click', () => _addPane(addBtn));
   headerActions.appendChild(addBtn);
@@ -374,7 +374,7 @@ async function _buildCompareUI() {
   const closeBtn = document.createElement('button');
   closeBtn.className = 'compare-close-btn';
   closeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
-  closeBtn.title = 'Close compare mode';
+  closeBtn.title = 'Cerrar el modo comparar';
   // Match Export/Score/Shuffle/Model styling so the X sits flush with
   // the rest of the toolbar instead of being a 24×24 bordered square.
   closeBtn.style.cssText = _btnCSS;
@@ -507,14 +507,14 @@ function _setSendBtn(mode) {
   if (!btn) return;
   if (mode === 'stop') {
     btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
-    btn.title = 'Stop all models';
+    btn.title = 'Detener todos los modelos';
     btn.dataset.mode = 'streaming';
     btn.classList.remove('mic-mode', 'newchat-mode');
   } else {
     btn.dataset.mode = '';
     btn.innerHTML = SEND_SVG;
     btn.style.color = '';
-    btn.title = 'Send to all models';
+    btn.title = 'Enviar a todos los modelos';
     btn.classList.remove('mic-mode', 'newchat-mode', 'newchat-expanded');
   }
 }
@@ -696,7 +696,7 @@ async function _executeCompare(message) {
               if (data.error) {
                 aiBody.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;">Error: ' + escapeHtml(data.error) + '</div>';
               } else if (!data.results || data.results.length === 0) {
-                aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No results found</div>';
+                aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No se encontraron resultados</div>';
               } else {
                 aiBody.appendChild(_renderSearchResults(data));
               }
@@ -748,7 +748,7 @@ async function _executeCompare(message) {
         if (data.error) {
           aiBody.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;">Error: ' + escapeHtml(data.error) + '</div>';
         } else if (!data.results || data.results.length === 0) {
-          aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No results found</div>';
+          aiBody.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 50%, transparent);font-size:0.85em;font-style:italic;">No se encontraron resultados</div>';
         } else {
           aiBody.appendChild(_renderSearchResults(data));
         }
@@ -827,7 +827,7 @@ async function _executeCompare(message) {
       buildVoteBar(n);
     } catch (err) {
       console.error('Search compare error:', err);
-      if (uiModule) uiModule.showError('Search compare failed: ' + err.message);
+      if (uiModule) uiModule.showError('Falló la comparación de búsqueda: ' + err.message);
     } finally {
       state._streaming = false;
       _setSendBtn('send');
@@ -958,7 +958,7 @@ async function _executeCompare(message) {
 
   } catch (err) {
     console.error('Compare error:', err);
-    if (uiModule) uiModule.showError('Compare failed: ' + err.message);
+    if (uiModule) uiModule.showError('La comparación falló: ' + err.message);
   } finally {
     state._streaming = false;
     _setSendBtn('send');
@@ -1024,7 +1024,7 @@ function _toggleExportMenu(btn) {
   m.className = 'compare-export-menu';
   m.style.cssText = 'position:fixed;z-index:10001;top:' + (r.bottom + 4) + 'px;left:' + r.left + 'px;background:var(--panel,var(--bg));border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.3);padding:4px;font-size:12px;display:flex;flex-direction:column;min-width:170px;';
   const opts = [
-    { label: 'Copy as Markdown', fn: () => _exportCopyMarkdown(btn) },
+    { label: 'Copiar como Markdown', fn: () => _exportCopyMarkdown(btn) },
     { label: 'Download .md',     fn: () => _exportDownloadMarkdown() },
     { label: 'Print / Save PDF', fn: () => _exportPrint() },
   ];
@@ -1062,9 +1062,9 @@ async function _exportCopyMarkdown(_btn) {
       document.body.appendChild(ta);
       ta.select(); document.execCommand('copy'); ta.remove();
     }
-    try { window.uiModule?.showToast?.('Copied comparison to clipboard'); } catch {}
+    try { window.uiModule?.showToast?.('Comparación copiada al portapapeles'); } catch {}
   } catch (e) {
-    try { window.uiModule?.showToast?.('Copy failed'); } catch {}
+    try { window.uiModule?.showToast?.('Error al copiar'); } catch {}
   }
 }
 

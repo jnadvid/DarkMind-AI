@@ -12,7 +12,7 @@ function _clearProbeWaves() {
 async function _checkUnprobed() {
   const unprobed = state._selectedModels.filter(m => !state._probed.has(m.model));
   if (unprobed.length === 0) {
-    if (uiModule) uiModule.showToast('All models verified');
+    if (uiModule) uiModule.showToast('Todos los modelos verificados');
     return;
   }
 

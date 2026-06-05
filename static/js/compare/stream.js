@@ -88,7 +88,7 @@ async function _runSynthForPane(modelToUse, synthPrompt, synthBody, spinner, his
     const createRes = await fetch(`${state.API_BASE}/api/session`, { method: 'POST', body: fd });
     if (!createRes.ok) {
       const errData = await createRes.json().catch(() => ({}));
-      throw new Error(errData.detail || 'Failed to create session');
+      throw new Error(errData.detail || 'No se pudo crear la sesión');
     }
     const createData = await createRes.json();
 
@@ -139,7 +139,7 @@ async function _runSynthForPane(modelToUse, synthPrompt, synthBody, spinner, his
     fetch(`${state.API_BASE}/api/session/${createData.id}`, { method: 'DELETE' }).catch(() => {});
   } catch (e) {
     if (spinner) spinner.stop();
-    synthBody.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;">Synthesis failed: ' + escapeHtml(e.message) + '</div>';
+    synthBody.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;">Fallo en la síntesis: ' + escapeHtml(e.message) + '</div>';
   }
 }
 
@@ -490,7 +490,7 @@ async function streamToPane(paneIdx, sessionId, message, aiMsgEl, opts) {
       const copyBtn = document.createElement('button');
       copyBtn.className = 'footer-copy-btn';
       copyBtn.type = 'button';
-      copyBtn.title = 'Copy prompt';
+      copyBtn.title = 'Copiar instrucción';
       copyBtn.textContent = '\u2398';
       copyBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -499,14 +499,14 @@ async function streamToPane(paneIdx, sessionId, message, aiMsgEl, opts) {
         else { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
         copyBtn.textContent = '\u2713';
         setTimeout(() => { copyBtn.textContent = '\u2398'; }, 1500);
-        if (uiModule) uiModule.showToast('Prompt copied!');
+        if (uiModule) uiModule.showToast('¡Instrucción copiada!');
       });
       actions.appendChild(copyBtn);
 
       const dlBtn = document.createElement('button');
       dlBtn.className = 'footer-copy-btn';
       dlBtn.type = 'button';
-      dlBtn.title = 'Download image';
+      dlBtn.title = 'Descargar imagen';
       dlBtn.textContent = '\u2913';
       dlBtn.addEventListener('click', async (e) => {
         e.stopPropagation();
@@ -561,7 +561,7 @@ async function streamToPane(paneIdx, sessionId, message, aiMsgEl, opts) {
         const _cost1k = _cost * 1000;
         const costSpan = document.createElement('span');
         costSpan.style.color = 'var(--color-success, #4caf50)';
-        costSpan.title = 'Estimated cost per 1,000 responses like this one';
+        costSpan.title = 'Coste estimado por cada 1000 respuestas como esta';
         costSpan.textContent = ' | $' + (_cost1k < 1 ? _cost1k.toFixed(2) : _cost1k.toFixed(0)) + '/1k';
         span.appendChild(costSpan);
       }
@@ -590,7 +590,7 @@ async function streamToPane(paneIdx, sessionId, message, aiMsgEl, opts) {
         notice.style.cssText = 'color:#ff9800;font-size:0.8em;margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;';
         const text = document.createElement('span');
         text.style.fontStyle = 'italic';
-        text.textContent = 'Timed out after ' + effectiveTimeout + 's' + (accumulated.trim() ? ' \u2014 response may be incomplete' : '');
+        text.textContent = 'Tiempo agotado tras ' + effectiveTimeout + 's' + (accumulated.trim() ? ' \u2014 la respuesta puede estar incompleta' : '');
         notice.appendChild(text);
         const retryBtn = document.createElement('button');
         retryBtn.textContent = 'Retry +' + effectiveTimeout + 's';
@@ -702,7 +702,7 @@ function _stampGradeBadge(paneIdx, response, expected) {
   if (prev) prev.remove();
   const badge = document.createElement('span');
   badge.className = 'pane-grade-badge ' + (pass ? 'pass' : 'fail');
-  badge.title = pass ? 'Response contains the expected answer' : 'Expected answer not found in response';
+  badge.title = pass ? 'La respuesta contiene la respuesta esperada' : 'No se encontró la respuesta esperada';
   badge.textContent = pass ? '✓' : '✗';
   // Insert just before the finish badge if present, else after the title
   const finBadge = header.querySelector('.pane-finish-badge');

@@ -29,7 +29,7 @@ function _toggleSynapseMinimized() {
     .forEach(h => h.classList.toggle('synapse-collapsed', _synapseMinimized));
   document.querySelectorAll('.research-synapse-toggle').forEach(b => {
     b.classList.toggle('active', _synapseMinimized);
-    b.title = _synapseMinimized ? 'Show visualization' : 'Minimize visualization';
+    b.title = _synapseMinimized ? 'Mostrar visualización' : 'Minimizar visualización';
     b.innerHTML = _synapseMinimized ? _vizExpandIcon : _vizCollapseIcon;
   });
 }
@@ -353,7 +353,7 @@ function _buildPanelHTML() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;opacity:0.8;"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h4v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
           <span>Multi-step web research with an LLM-in-the-loop agent</span>
         </p>
-        <div id="research-no-past-hint" class="memory-desc doclib-desc" style="display:none;margin-top:-2px;font-size:11px;opacity:0.7;">All past research found in <button type="button" class="research-library-link">Library, Research</button></div>
+        <div id="research-no-past-hint" class="memory-desc doclib-desc" style="display:none;margin-top:-2px;font-size:11px;opacity:0.7;">Toda la investigación anterior está en <button type="button" class="research-library-link">Biblioteca, Investigación</button></div>
         <textarea id="research-query" class="research-query" placeholder="e.g. Trace DarkMind's ten-year journey home from Troy — every island, monster, and detour, and why each one cost him" rows="4"></textarea>
         <div class="research-category-row" id="research-category-row">
           <button class="research-cat active" data-cat="" title="LLM auto-detects the best format">Auto</button>
@@ -371,7 +371,7 @@ function _buildPanelHTML() {
             <select id="research-rounds">${roundOpts}</select>
           </label>
           <label class="research-setting">
-            <span class="research-setting-label">Search engine</span>
+            <span class="research-setting-label">Motor de búsqueda</span>
             <select id="research-search-provider">${providerOpts}</select>
           </label>
           <label class="research-setting">
@@ -585,7 +585,7 @@ async function _handleStart() {
   if (_mobile) _dismissKeyboard(queryEl); else queryEl.focus();
   _resetCategoryToAuto();
   jobs.startJob(query, settings).catch((e) => {
-    if (typeof uiModule !== 'undefined' && uiModule?.showError) uiModule.showError('Failed to start research');
+    if (typeof uiModule !== 'undefined' && uiModule?.showError) uiModule.showError('No se pudo iniciar la investigación');
     queryEl.value = query; // restore so user can retry
   });
 }
@@ -790,7 +790,7 @@ function _renderJobs() {
     if (key === 'past') {
       const hint = document.createElement('div');
       hint.className = 'memory-desc doclib-desc research-library-hint';
-      hint.innerHTML = 'All past research found in <button type="button" class="research-library-link">Library, Research</button>';
+      hint.innerHTML = 'Toda la investigación anterior está en <button type="button" class="research-library-link">Biblioteca, Investigación</button>';
       hint.querySelector('.research-library-link').addEventListener('click', (e) => {
         e.stopPropagation();
         // Close the research panel first so the Library opens ABOVE it on mobile
@@ -927,7 +927,7 @@ function _buildJobCard(job) {
         <span class="research-job-query">${_esc(job.query)}</span>${job.category ? `<span class="research-cat-badge">${_esc(job.category)}</span>` : ""}
         ${modelTag}
         <span class="research-job-time">${elapsed}</span>
-        <button class="research-synapse-toggle${_synapseMinimized ? ' active' : ''}" title="${_synapseMinimized ? 'Show visualization' : 'Minimize visualization'}">${_synapseMinimized ? _vizExpandIcon : _vizCollapseIcon}</button>
+        <button class="research-synapse-toggle${_synapseMinimized ? ' active' : ''}" title="${_synapseMinimized ? 'Mostrar visualización' : 'Minimizar visualización'}">${_synapseMinimized ? _vizExpandIcon : _vizCollapseIcon}</button>
         <button class="research-job-cancel" title="Cancel research">${_cancelIcon}</button>
       </div>
       <div class="research-job-phase">${phase}</div>
@@ -1023,7 +1023,7 @@ function _buildJobCard(job) {
     card.querySelector('[data-action="delete"]').addEventListener('click', async (e) => {
       e.stopPropagation();
       if (window.styledConfirm) {
-        const ok = await window.styledConfirm('Delete this research? This permanently removes it from disk.', { confirmText: 'Eliminar', danger: true });
+        const ok = await window.styledConfirm('¿Eliminar esta investigación? Se borra permanentemente del disco.', { confirmText: 'Eliminar', danger: true });
         if (!ok) return;
       }
       try { await fetch(`${_apiBase}/api/research/${job.id}`, { method: 'DELETE', credentials: 'same-origin' }); } catch {}
@@ -1079,7 +1079,7 @@ const _CAT_LABELS = {
 };
 
 function _renderResult(job) {
-  if (!job.result) return '<div class="research-job-loading">Loading result...</div>';
+  if (!job.result) return '<div class="research-job-loading">Cargando resultado...</div>';
   const cat = job.category || '';
   const catIcon = _CAT_ICONS[cat] || '';
   const catLabel = _CAT_LABELS[cat] || '';
@@ -1220,7 +1220,7 @@ async function _chatAboutResearch(researchId, btn) {
     } else {
       // 200 OK but no session_id — server contract violation. Don't leave
       // the button stuck on 'Creating…'; surface the failure instead.
-      throw new Error('Server returned no session id');
+      throw new Error('El servidor no devolvió ningún id de sesión');
     }
   } catch (e) {
     if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }

@@ -132,8 +132,8 @@ async function showModelSelector() {
       uiModule.showToast('Mode: Blind ' + (state._blindMode ? 'on' : 'off'));
       _updateModeLabel();
       _setModeHint(state._blindMode
-        ? '<span style="color:var(--color-blind-orange)">Blind mode</span>: model names stay hidden until you vote.'
-        : '<span style="color:var(--color-blind-orange)">Blind mode off</span>: model names are shown.');
+        ? '<span style="color:var(--color-blind-orange)">Modo a ciegas</span>: los nombres de los modelos permanecen ocultos hasta que votes.'
+        : '<span style="color:var(--color-blind-orange)">Modo a ciegas desactivado</span>: se muestran los nombres de los modelos.');
     });
     toggleRow.appendChild(blindBtn);
 
@@ -148,7 +148,7 @@ async function showModelSelector() {
       state._parallel = !state._parallel;
       parallelBtn.classList.toggle('active', state._parallel);
       parallelBtn.innerHTML = (state._parallel ? ICON_PARALLEL : ICON_SEQUENTIAL) + _toggleLabel(state._parallel ? 'Parallel' : 'Sequential');
-      parallelBtn.title = state._parallel ? 'Switch to one at a time' : 'Run side by side';
+      parallelBtn.title = state._parallel ? 'Cambiar a uno cada vez' : 'Ejecutar en paralelo';
       renderModelRows();
       uiModule.showToast('Mode: ' + (state._parallel ? 'Parallel' : 'Sequential'));
       _updateModeLabel();
@@ -173,7 +173,7 @@ async function showModelSelector() {
         renderModelRows();
         uiModule.showToast('Mode: Shuffle off');
         _updateModeLabel();
-        _setModeHint('<span style="color:var(--red)">Shuffle off</span>: choose the models yourself.');
+        _setModeHint('<span style="color:var(--red)">Barajar desactivado</span>: elige tú mismo los modelos.');
         return;
       }
       // Randomly pick models from filtered list for each slot
@@ -229,7 +229,7 @@ async function showModelSelector() {
       _updateModeLabel();
       _setModeHint(state._saveOnClose
         ? '<span style="color:var(--color-save-green)">Save</span>: keep these sessions after you close Compare.'
-        : '<span style="color:var(--color-save-green)">Save off</span>: sessions are discarded when you close Compare.');
+        : '<span style="color:var(--color-save-green)">Guardar desactivado</span>: las sesiones se descartan al cerrar Comparar.');
     });
     toggleRow.appendChild(saveBtn);
 
@@ -267,7 +267,7 @@ async function showModelSelector() {
 
     const desc = document.createElement('p');
     desc.style.cssText = 'color:color-mix(in srgb, var(--fg) 55%, transparent);font-size:0.85em;margin:0 0 12px;';
-    desc.textContent = 'Select models to compare side-by-side. Send the same prompt to all.';
+    desc.textContent = 'Selecciona modelos para compararlos en paralelo. Envía la misma instrucción a todos.';
     body.appendChild(desc);
 
     // Options row
@@ -388,7 +388,7 @@ async function showModelSelector() {
       _loadingDiv.appendChild(_loadSpinner.createElement());
       _loadSpinner.start();
     } else {
-      _loadingDiv.textContent = 'Loading models\u2026';
+      _loadingDiv.textContent = 'Cargando modelos\u2026';
     }
     listContainer.appendChild(_loadingDiv);
 
@@ -465,7 +465,7 @@ async function showModelSelector() {
         if (matches.length === 0) {
           const empty = document.createElement('div');
           empty.style.cssText = 'padding:8px 12px;color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.82em;font-style:italic;';
-          empty.textContent = 'No matches';
+          empty.textContent = 'Sin coincidencias';
           dropdown.appendChild(empty);
           return;
         }
@@ -569,18 +569,18 @@ async function showModelSelector() {
       if (state._compareMode === 'search') {
         listContainer.innerHTML = '';
         if (!state._cachedProviders) {
-          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:left;">Loading search providers\u2026</div>';
+          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:left;">Cargando proveedores de búsqueda\u2026</div>';
           fetch(`${state.API_BASE}/api/search/providers`).then(r => r.json()).then(providers => {
             state._cachedProviders = providers;
             renderModelRows();
           }).catch(() => {
-            listContainer.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;padding:12px 0;">Failed to load search providers</div>';
+            listContainer.innerHTML = '<div style="color:var(--color-error);font-size:0.85em;padding:12px 0;">No se pudieron cargar los proveedores de búsqueda</div>';
           });
           return;
         }
         const available = state._cachedProviders.filter(p => p.available);
         if (available.length === 0) {
-          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:center;font-style:italic;">No search providers configured</div>';
+          listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;text-align:center;font-style:italic;">No hay proveedores de búsqueda configurados</div>';
           if (addBtn) addBtn.style.display = 'none';
           return;
         }
@@ -676,7 +676,7 @@ async function showModelSelector() {
       // Research mode needs search providers too — fetch if not cached
       const needsProviders = state._compareMode === 'research';
       if (needsProviders && !state._cachedProviders) {
-        listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;">Loading search providers\u2026</div>';
+        listContainer.innerHTML = '<div style="color:color-mix(in srgb, var(--fg) 40%, transparent);font-size:0.85em;padding:12px 0;">Cargando proveedores de búsqueda\u2026</div>';
         fetch(`${state.API_BASE}/api/search/providers`).then(r => r.json()).then(providers => {
           state._cachedProviders = providers;
           renderModelRows();
@@ -758,7 +758,7 @@ async function showModelSelector() {
         if (needsProviders && researchProviders.length > 0 && !_shuffled) {
           const provSelect = document.createElement('select');
           provSelect.className = 'cmp-form-control cmp-prov-select';
-          provSelect.title = 'Search provider';
+          provSelect.title = 'Proveedor de búsqueda';
           researchProviders.forEach((p, pi) => {
             const optEl = document.createElement('option');
             optEl.value = p.id;
@@ -924,7 +924,7 @@ async function showModelSelector() {
       probeOverlay.className = 'compare-probe-overlay';
       const probeCard = document.createElement('div');
       probeCard.className = 'compare-probe-card';
-      probeCard.innerHTML = '<div class="compare-probe-title">Checking models...</div>';
+      probeCard.innerHTML = '<div class="compare-probe-title">Comprobando modelos...</div>';
       let _probeSkipped = false;
       const probeList = document.createElement('div');
       probeList.className = 'compare-probe-list';
@@ -1166,7 +1166,7 @@ async function showModelSelector() {
                   const spinner = row.querySelector('.compare-probe-spinner');
                   const status = row.querySelector('.compare-probe-status');
                   if (spinner) { spinner.textContent = '\u2717'; spinner.classList.add('fail'); spinner.style.color = ''; }
-                  if (status) { status.textContent = 'No replacement'; }
+                  if (status) { status.textContent = 'Sin reemplazo'; }
                 }
               }
             }
@@ -1187,7 +1187,7 @@ async function showModelSelector() {
 
           if (providers.length > 0) {
             const titleEl = probeOverlay.querySelector('.compare-probe-title');
-            titleEl.textContent = 'Checking search providers...';
+            titleEl.textContent = 'Comprobando proveedores de búsqueda...';
 
             // Add provider rows
             const providerRows = [];
