@@ -1067,7 +1067,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     try {
       // Fetch full content of the source document
       const srcRes = await fetch(`${API_BASE}/api/document/${doc.id}`);
-      if (!srcRes.ok) throw new Error('Failed to fetch document');
+      if (!srcRes.ok) throw new Error('No se pudo obtener el documento');
       const src = await srcRes.json();
 
       // Deduplicate title — append (2), (3), etc. if name already exists in session
@@ -1098,7 +1098,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
           content: src.current_content || '',
         }),
       });
-      if (!res.ok) throw new Error('Failed to create document');
+      if (!res.ok) throw new Error('No se pudo crear el documento');
       const created = await res.json();
       closeLibrary();
       _addDocToTabs(created, sessionId);
@@ -1541,7 +1541,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ title: sheetTitle, language: 'csv', content: csv }),
             });
-            if (!res.ok) throw new Error('Server error');
+            if (!res.ok) throw new Error('Error del servidor');
           }
           imported++;
         } else {
@@ -1551,7 +1551,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ title: baseTitle, language, content }),
           });
-          if (!res.ok) throw new Error('Server error');
+          if (!res.ok) throw new Error('Error del servidor');
           imported++;
         }
       } catch (e) {

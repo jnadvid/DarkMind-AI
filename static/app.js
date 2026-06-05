@@ -1494,7 +1494,7 @@ function initializeEventListeners() {
           // Refresh the sessions list
         await sessionModule.loadSessions();
         } else {
-          throw new Error(result.detail || 'Failed to rename session');
+          throw new Error(result.detail || 'No se pudo renombrar la sesión');
         }
       } catch (e) {
         uiModule.showError('Error al renombrar la sesión: ' + e.message);

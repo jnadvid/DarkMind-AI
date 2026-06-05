@@ -298,7 +298,7 @@ function _initModelPickerDropdown() {
       if (m.stale) {
         row.classList.add('model-switch-stale');
         row.style.opacity = '0.45';
-        row.title = `Local server appears offline: ${m.staleReason}. Click to try anyway, or relaunch in Cookbook.`;
+        row.title = `El servidor local parece estar desconectado: ${m.staleReason}. Haz clic para intentarlo igualmente o relánzalo en Cookbook.`;
       }
       const _mlogo = providerLogo(m.mid);
       if (_mlogo) {

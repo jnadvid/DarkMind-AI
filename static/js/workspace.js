@@ -105,7 +105,7 @@ function _getModal() {
       </div>
       <input type="text" class="styled-prompt-input workspace-cur" id="workspace-cur-path"
              spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off"
-             placeholder="Type or paste a folder path, then press Enter" />
+             placeholder="Escribe o pega la ruta de una carpeta y pulsa Intro" />
       <div class="modal-body workspace-body" id="workspace-body"></div>
       <div class="modal-footer workspace-footer">
         <button type="button" class="confirm-btn confirm-btn-secondary" id="workspace-cancel">Cancel</button>
@@ -125,7 +125,7 @@ function _getModal() {
   });
   _modal.querySelector('#workspace-use').addEventListener('click', () => {
     setWorkspace(_curPath);
-    if (uiModule && uiModule.showToast) uiModule.showToast(`Workspace set: ${_basename(_curPath)}`);
+    if (uiModule && uiModule.showToast) uiModule.showToast(`Espacio de trabajo definido: ${_basename(_curPath)}`);
     closeWorkspaceBrowser();
   });
   const content = _modal.querySelector('.modal-content');

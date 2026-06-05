@@ -172,7 +172,7 @@ function loadPyodide() {
     };
     script.onerror = () => {
       pyodideLoading = false;
-      const err = new Error('Failed to load Pyodide');
+      const err = new Error('No se pudo cargar Pyodide');
       pyodideQueue.forEach(q => q.reject(err));
       pyodideQueue.length = 0;
       reject(err);
@@ -217,7 +217,7 @@ finally:
   try {
     const result = await Promise.race([
       py.runPythonAsync(wrapper),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Execution timed out (10 s)')), 10000))
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de ejecución agotado (10 s)')), 10000))
     ]);
 
     const stdout = result.toJs ? result.toJs()[0] : (result[0] || '');

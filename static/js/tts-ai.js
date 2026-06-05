@@ -142,7 +142,7 @@ class AITTSManager {
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.detail?.message || 'Synthesis failed');
+                throw new Error(error.detail?.message || 'Fallo en la síntesis');
             }
 
             const audioBlob = await response.blob();
@@ -322,7 +322,7 @@ class AITTSManager {
                     audio.onerror = (e) => {
                         this.isPlaying = false;
                         if (this.currentAudio === audio) this.currentAudio = null;
-                        reject(new Error('Audio playback error'));
+                        reject(new Error('Error de reproducción de audio'));
                     };
                     audio.onpause = () => {
                         if (this.currentAudio !== audio) {
