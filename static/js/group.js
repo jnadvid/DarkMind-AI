@@ -260,7 +260,7 @@ function _initGroupTab() {
         // Long-press / right-click to delete
         chip.addEventListener('contextmenu', async (e) => {
           e.preventDefault();
-          if (await window.styledConfirm('Delete preset "' + (g.name || 'Group') + '"?', { confirmText: 'Eliminar', danger: true })) {
+          if (await window.styledConfirm('¿Eliminar el preajuste "' + (g.name || 'Group') + '"?', { confirmText: 'Eliminar', danger: true })) {
             groups.splice(idx, 1);
             fetch(API_BASE + '/api/presets/groups', {
               method: 'POST', credentials: 'same-origin',

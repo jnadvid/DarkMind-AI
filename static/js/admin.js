@@ -1483,7 +1483,7 @@ async function loadMcpServers() {
     });
     list.querySelectorAll('[data-adm-mcp-delete]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!await uiModule.styledConfirm('Delete this MCP server?', { confirmText: 'Eliminar', danger: true })) return;
+        if (!await uiModule.styledConfirm('¿Eliminar este servidor MCP?', { confirmText: 'Eliminar', danger: true })) return;
         await fetch(`/api/mcp/servers/${btn.dataset.admMcpDelete}`, { method: 'DELETE', credentials: 'same-origin' });
         loadMcpServers();
       });
@@ -1976,7 +1976,7 @@ async function loadWebhooks() {
     });
     list.querySelectorAll('[data-adm-wh-delete]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!await uiModule.styledConfirm('Delete this webhook?', { confirmText: 'Eliminar', danger: true })) return;
+        if (!await uiModule.styledConfirm('¿Eliminar este webhook?', { confirmText: 'Eliminar', danger: true })) return;
         await fetch(`/api/webhooks/${btn.dataset.admWhDelete}`, { method: 'DELETE', credentials: 'same-origin' }); loadWebhooks();
       });
     });

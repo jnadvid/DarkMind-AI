@@ -2530,7 +2530,7 @@ async function _reconnectTask(el, task) {
                   : 'Suggested action: hit Reconnect to re-attach to the tmux session. If that fails, retry — HuggingFace resumes incomplete files when possible.',
                 fixes: isDisk
                   ? [
-                      { label: 'Retry download', action: () => _retryTask(el, task) },
+                      { label: 'Reintentar descarga', action: () => _retryTask(el, task) },
                       { label: 'Copy last 50 lines', action: () => {
                         const last = String(lastOutput || '').split('\n').slice(-50).join('\n');
                         _copyText(last || 'No download log available.');
@@ -2538,7 +2538,7 @@ async function _reconnectTask(el, task) {
                     ]
                   : [
                       _reconnectFix,
-                      { label: 'Retry download', action: () => _retryTask(el, task) },
+                      { label: 'Reintentar descarga', action: () => _retryTask(el, task) },
                       { label: 'Copy last 50 lines', action: () => {
                         const last = String(lastOutput || '').split('\n').slice(-50).join('\n');
                         _copyText(last || 'No download log available.');

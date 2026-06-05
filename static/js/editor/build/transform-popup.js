@@ -44,8 +44,8 @@ export function transformPopupHTML() {
         <label>↻</label>
         <input type="number" class="ge-transform-popup-input ge-transform-popup-input-rot" id="ge-transform-rot" step="1" value="0" />
         <span class="ge-transform-spin" data-spin-for="ge-transform-rot">
-          <button type="button" data-spin="down" tabindex="-1" aria-label="Rotate -1°">−</button>
-          <button type="button" data-spin="up" tabindex="-1" aria-label="Rotate +1°">+</button>
+          <button type="button" data-spin="down" tabindex="-1" aria-label="Girar -1°">−</button>
+          <button type="button" data-spin="up" tabindex="-1" aria-label="Girar +1°">+</button>
         </span>
       </div>
       <button type="button" class="ge-btn ge-btn-sm" id="ge-transform-cancel-btn">Cancelar</button>

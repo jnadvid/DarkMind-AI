@@ -120,7 +120,7 @@ async function transcribeOnServer(audioBlob) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail?.message || 'Transcription failed');
+    throw new Error(err.detail?.message || 'La transcripción falló');
   }
 
   const data = await res.json();

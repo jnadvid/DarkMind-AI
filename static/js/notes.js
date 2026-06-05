@@ -4402,7 +4402,7 @@ async function _copyNote(noteId, btnEl) {
     }
     uiModule.showToast?.('Copied');
   } else {
-    uiModule.showError?.('Copy failed');
+    uiModule.showError?.('Error al copiar');
   }
   return ok;
 }
@@ -4418,7 +4418,7 @@ function _editNote(id) {
   const { note: _n, restored } = _applyDraftToNote(note, id);
   const form = _buildForm(_n);
   card.replaceWith(form);
-  if (restored) uiModule.showToast('Restored unsaved changes');
+  if (restored) uiModule.showToast('Cambios sin guardar restaurados');
   // Pinned notes live in the first masonry column — the edit form has
   // column-span:all, which can leave the form rendered above the fold or
   // visually buried under neighboring pinned cards. Bring it into view
@@ -4466,7 +4466,7 @@ function _editNote(id) {
 async function _deleteNote(id) {
   const ok = uiModule?.styledConfirm
     ? await uiModule.styledConfirm('¿Eliminar esta nota?', { confirmText: 'Eliminar', danger: true })
-    : confirm('Delete this note?');
+    : confirm('¿Eliminar esta nota?');
   if (!ok) return;
   try { await _deleteNoteApi(id); await _fetchNotes(); _renderNotes(); uiModule.showToast('Deleted'); }
   catch (err) { uiModule.showError(err.message); }
@@ -4513,7 +4513,7 @@ function _openMobileFullscreenEdit(id, fromCard) {
   const { note: _n, restored } = _applyDraftToNote(note, id);
   const form = _buildForm(_n);
   body.appendChild(form);
-  if (restored) uiModule.showToast('Restored unsaved changes');
+  if (restored) uiModule.showToast('Cambios sin guardar restaurados');
   document.body.appendChild(overlay);
   _mobileFsOverlay = overlay;
 

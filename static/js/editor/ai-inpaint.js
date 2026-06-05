@@ -151,7 +151,7 @@ export function wireInpaintButtons({
       }
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      if (!data.image) throw new Error('No image returned from inpaint endpoint');
+      if (!data.image) throw new Error('El endpoint de retoque no devolvió ninguna imagen');
       // Load result as a new layer and clip with the user-drawn mask
       // so only the inpainted region is visible. Cache the
       // unfeathered (AI image + hard mask) on the layer so the live

@@ -1769,7 +1769,7 @@ async function _showSkillSource(name) {
     const data = await res.json();
     md = data.markdown || '';
   } catch (e) {
-    uiModule.showError('Failed to load SKILL.md');
+    uiModule.showError('No se pudo cargar SKILL.md');
     return;
   }
 

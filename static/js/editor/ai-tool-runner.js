@@ -90,7 +90,7 @@ export function createApplyImageTool({
       }
       const data = await res.json();
       if (data.error) throw new Error(data.error);
-      if (!data.image) throw new Error('No image returned');
+      if (!data.image) throw new Error('No se devolvió ninguna imagen');
       const img = new Image();
       img.onload = () => {
         if (!state.editorOpen) return; // user closed mid-decode (v2 review HIGH-4)

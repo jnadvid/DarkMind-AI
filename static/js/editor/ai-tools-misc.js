@@ -122,7 +122,7 @@ export function wireAIToolsMisc({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageB64, scale: 2 }),
       });
-      if (!res.ok) throw new Error('Server returned ' + res.status);
+      if (!res.ok) throw new Error('El servidor devolvió ' + res.status);
       const data = await res.json();
       if (data.image) {
         const img = new Image();
@@ -146,7 +146,7 @@ export function wireAIToolsMisc({
         };
         img.src = 'data:image/png;base64,' + data.image;
       } else {
-        throw new Error(data.error || 'No image returned');
+        throw new Error(data.error || 'No se devolvió ninguna imagen');
       }
     } catch (e) {
       uiModule.showToast('Error al ampliar con IA: ' + e.message);
@@ -174,7 +174,7 @@ export function wireAIToolsMisc({
       fd.append('prompt', prompt);
       fd.append('strength', String(strength));
       const res = await fetch(`${apiBase}/api/gallery/style-transfer`, { method: 'POST', credentials: 'same-origin', body: fd });
-      if (!res.ok) throw new Error('Server returned ' + res.status);
+      if (!res.ok) throw new Error('El servidor devolvió ' + res.status);
       const data = await res.json();
       if (data.image) {
         const img = new Image();
@@ -191,7 +191,7 @@ export function wireAIToolsMisc({
         };
         img.src = 'data:image/png;base64,' + data.image;
       } else {
-        throw new Error(data.error || 'No image returned');
+        throw new Error(data.error || 'No se devolvió ninguna imagen');
       }
     } catch (e) {
       uiModule.showToast('Error en la transferencia de estilo: ' + e.message);

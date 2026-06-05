@@ -1369,7 +1369,7 @@ function removeOverlays() {
 async function showShufflePoolEditor() {
   let models;
   try { models = await fetchModels(); } catch (e) {
-    if (uiModule) uiModule.showError('Failed to load models');
+    if (uiModule) uiModule.showError('No se pudieron cargar los modelos');
     return;
   }
 

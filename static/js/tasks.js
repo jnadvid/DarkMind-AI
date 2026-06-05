@@ -1615,12 +1615,12 @@ async function _doDelete(id) {
 
 async function _doRevert(id) {
   const ok = uiModule?.styledConfirm
-    ? await uiModule.styledConfirm('Revert this built-in task to its default schedule and settings?', { confirmText: 'Revert' })
+    ? await uiModule.styledConfirm('¿Restablecer esta tarea integrada a su programación y ajustes predeterminados?', { confirmText: 'Revert' })
     : confirm('Revert this built-in task to its default?');
   if (!ok) return;
   try {
     const res = await fetch(`${API_BASE}/api/tasks/${id}/revert`, { method: 'POST', credentials: 'same-origin' });
-    if (!res.ok) throw new Error('Failed to revert task');
+    if (!res.ok) throw new Error('No se pudo restablecer la tarea');
     if (uiModule) uiModule.showToast('Reverted to default');
     await _fetchTasks();
     _renderMainView();
@@ -2023,10 +2023,10 @@ function _wireActivityRows(list) {
       if (!entry?.taskId) return;
       try {
         await _stopTask(entry.taskId);
-        uiModule.showToast('Task stopped');
+        uiModule.showToast('Tarea detenida');
         _renderActivityView();
       } catch (err) {
-        uiModule.showError(err.message || 'Failed to stop task');
+        uiModule.showError(err.message || 'No se pudo detener la tarea');
       }
     });
     row.querySelector('.task-log-run-again')?.addEventListener('click', (e) => {
@@ -2044,7 +2044,7 @@ function _wireActivityRows(list) {
       try {
         uiModule.copyToClipboard(txt);
         uiModule.showToast('Log copied');
-      } catch (_) { uiModule.showError('Copy failed'); }
+      } catch (_) { uiModule.showError('Error al copiar'); }
     });
     row.querySelector('.task-log-clear-cache')?.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -2384,7 +2384,7 @@ async function _aiDraftTask(inputEl, btnEl) {
     });
     const data = await res.json();
     if (!data.success || !data.draft) {
-      if (uiModule) uiModule.showError(data.message || 'Could not draft task');
+      if (uiModule) uiModule.showError(data.message || 'No se pudo redactar la tarea');
       return;
     }
     const draft = data.draft;

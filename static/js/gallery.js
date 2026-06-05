@@ -1745,18 +1745,18 @@ function _openDetail(img) {
         uiModule.showToast('Portada del álbum actualizada');
         await _fetchAlbums();
       } else {
-        uiModule.showError('Failed to set cover');
+        uiModule.showError('No se pudo establecer la portada');
       }
     } catch (e) {
-      uiModule.showError('Failed to set cover');
+      uiModule.showError('No se pudo establecer la portada');
     }
   });
 
   document.getElementById('gallery-delete-btn').addEventListener('click', async () => {
-    if (!await uiModule.styledConfirm('Delete this photo? This cannot be undone.', { confirmText: 'Eliminar', danger: true })) return;
+    if (!await uiModule.styledConfirm('¿Eliminar esta foto? No se puede deshacer.', { confirmText: 'Eliminar', danger: true })) return;
     const ok = await _deleteImage(img.id);
     if (!ok) {
-      uiModule.showError('Failed to delete photo');
+      uiModule.showError('No se pudo eliminar la foto');
       return;
     }
     detail.style.display = 'none';
@@ -1764,7 +1764,7 @@ function _openDetail(img) {
     _total = Math.max(0, _total - 1);
     _renderGrid();
     _renderStats();
-    if (uiModule) uiModule.showToast('Photo deleted');
+    if (uiModule) uiModule.showToast('Foto eliminada');
   });
 
   // Tag input — Enter saves; also strips a leading '#' from each tag so
@@ -1788,7 +1788,7 @@ function _openDetail(img) {
         if (uiModule) uiModule.showToast('Renamed');
         window.dispatchEvent(new CustomEvent('gallery-refresh'));
       } catch {
-        if (uiModule) uiModule.showError('Failed to rename');
+        if (uiModule) uiModule.showError('No se pudo renombrar');
       }
     };
     _nameInput.addEventListener('keydown', (e) => {
@@ -1830,7 +1830,7 @@ function _openDetail(img) {
       if (!added.length) return;
       const cleaned = merged.join(', ');
       const ok = await _patchImage(img.id, { tags: cleaned });
-      if (!ok) { if (uiModule) uiModule.showError('Failed to save tags'); return; }
+      if (!ok) { if (uiModule) uiModule.showError('No se pudieron guardar las etiquetas'); return; }
       img.tags = cleaned;
       img.user_tags = cleaned;
       const chips = document.getElementById('gallery-user-tag-chips');
@@ -1843,7 +1843,7 @@ function _openDetail(img) {
           b.textContent = t;
           const x = document.createElement('span');
           x.className = 'gallery-tag-x';
-          x.title = 'Remove tag';
+          x.title = 'Quitar etiqueta';
           x.setAttribute('aria-label', 'Remove tag');
           x.textContent = '×';
           b.appendChild(x);
@@ -1862,9 +1862,9 @@ function _openDetail(img) {
   document.getElementById('gallery-detail-album').addEventListener('change', async (e) => {
     const albumId = e.target.value;
     const ok = await _patchImage(img.id, { album_id: albumId || '' });
-    if (!ok) { uiModule.showError('Failed to update album'); return; }
+    if (!ok) { uiModule.showError('No se pudo actualizar el álbum'); return; }
     img.album_id = albumId || null;
-    uiModule.showToast(albumId ? 'Added to album' : 'Removed from album');
+    uiModule.showToast(albumId ? 'Añadida al álbum' : 'Quitada del álbum');
   });
 }
 
@@ -1925,7 +1925,7 @@ export function openGallery() {
         <button class="gallery-tab" data-tab="editor" id="gallery-editor-tab">
           <span class="gallery-tab-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg></span>
           <span class="gallery-tab-label">Edit</span>
-          <span class="gallery-tab-close" id="gallery-editor-tab-close" title="Close edit" aria-label="Close edit">×</span>
+          <span class="gallery-tab-close" id="gallery-editor-tab-close" title="Close edit" aria-label="Cerrar edición">×</span>
         </button>
         <button class="gallery-tab" data-tab="settings">
           <span class="gallery-tab-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
@@ -1944,7 +1944,7 @@ export function openGallery() {
         <div class="gallery-album-chips gallery-people-chips" id="gallery-people-chips" style="display:none"></div>
         <div class="gallery-toolbar">
           <div class="gallery-search-wrap">
-            <input type="text" class="gallery-search" id="gallery-search" placeholder="Search photos, tags..." />
+            <input type="text" class="gallery-search" id="gallery-search" placeholder="Buscar fotos, etiquetas..." />
             <span class="gallery-search-enter-hint" aria-hidden="true"><svg class="gallery-enter-key" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>to tag</span>
           </div>
           <span class="gallery-toolbar-break" aria-hidden="true"></span>

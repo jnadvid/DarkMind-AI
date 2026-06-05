@@ -1172,7 +1172,7 @@ function _rerenderCachedModels() {
           del.addEventListener('click', async (e) => {
             e.stopPropagation();
             const label = p.label || `Config ${idx + 1}`;
-            if (!await window.styledConfirm(`Delete saved config "${label}"?`, { confirmText: 'Eliminar', danger: true })) return;
+            if (!await window.styledConfirm(`¿Eliminar la configuración guardada "${label}"?`, { confirmText: 'Eliminar', danger: true })) return;
             const cur = _loadPresets();
             const toRemove = _presetsForModel(cur, repo)[idx];
             if (toRemove) {

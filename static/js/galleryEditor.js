@@ -3707,7 +3707,7 @@ function _setEditTabLabel(name) {
 export function closeEditor() {
   const editorMounted = _galleryEditMounted();
   if ((state.editorOpen || editorMounted) && !window.__galleryAllowCloseEditor) {
-    try { uiModule.showToast('Close the edit tab first'); } catch {}
+    try { uiModule.showToast('Cierra primero la pestaña de edición'); } catch {}
     return false;
   }
   // Flush any pending debounced persist + fire one final save so closing

@@ -2498,9 +2498,9 @@ async function initReminderSettings() {
           }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Server error');
+        if (!res.ok) throw new Error(data.detail || 'Error del servidor');
         if (channelSel.value === 'email' && !data.email_sent) {
-          throw new Error(data.email_error || 'Email reminder was not sent');
+          throw new Error(data.email_error || 'No se envió el recordatorio por correo');
         }
         if (channelSel.value === 'ntfy' && !data.ntfy_sent) {
           throw new Error(data.ntfy_error || 'ntfy reminder was not sent');
@@ -2602,7 +2602,7 @@ async function initEmailAccountsSettings() {
       });
       row.querySelector('.email-acc-del-btn')?.addEventListener('click', async (e) => {
         e.stopPropagation();
-        if (!await window.styledConfirm(`Delete account "${accs.find(a => a.id === id)?.name}"?`, { confirmText: 'Eliminar', danger: true })) return;
+        if (!await window.styledConfirm(`¿Eliminar la cuenta "${accs.find(a => a.id === id)?.name}"?`, { confirmText: 'Eliminar', danger: true })) return;
         await fetch(`/api/email/accounts/${id}`, { method: 'DELETE', credentials: 'same-origin' });
         renderList();
       });
@@ -3068,7 +3068,7 @@ async function initIntegrations() {
         notifyIntegrationsChanged();
       } else {
         const err = await res.json().catch(() => ({}));
-        statusEl.textContent = err.detail || 'Save failed';
+        statusEl.textContent = err.detail || 'Error al guardar';
         statusEl.style.color = 'var(--red)';
       }
     } catch (e) {
@@ -3095,7 +3095,7 @@ async function initIntegrations() {
 
   // Delete
   async function doDelete(id) {
-    if (!await window.styledConfirm('Delete this integration?', { confirmText: 'Eliminar', danger: true })) return;
+    if (!await window.styledConfirm('¿Eliminar esta integración?', { confirmText: 'Eliminar', danger: true })) return;
     try {
       await fetch(`/api/auth/integrations/${id}`, { method: 'DELETE', credentials: 'same-origin' });
       if (editingId === id) { formCard.style.display = 'none'; editingId = null; }
@@ -3321,7 +3321,7 @@ async function initUnifiedIntegrations() {
     listEl.querySelectorAll('.intg-del-btn').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         e.stopPropagation();
-        if (!await window.styledConfirm('Remove this integration?', { confirmText: 'Quitar', danger: true })) return;
+        if (!await window.styledConfirm('¿Quitar esta integración?', { confirmText: 'Quitar', danger: true })) return;
         const type = btn.dataset.intgType;
         const id = btn.dataset.intgId;
         try {
@@ -3707,7 +3707,7 @@ async function initUnifiedIntegrations() {
       if (btn) { btn.textContent = 'Exportando...'; btn.disabled = true; }
       try {
         const res = await fetch(`/api/contacts/export?format=${encodeURIComponent(format)}`, { credentials: 'same-origin' });
-        if (!res.ok) throw new Error('Export failed');
+        if (!res.ok) throw new Error('La exportación falló');
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -3718,7 +3718,7 @@ async function initUnifiedIntegrations() {
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       } catch (_) {
-        uiModule.showError ? uiModule.showError('Export failed') : alert('Export failed');
+        uiModule.showError ? uiModule.showError('La exportación falló') : alert('La exportación falló');
       } finally {
         if (btn) { btn.textContent = orig; btn.disabled = false; }
       }
@@ -3760,11 +3760,11 @@ async function initUnifiedIntegrations() {
         };
         if (vcfParts.length) await _postImport({ vcf: vcfParts.join('\n') });
         if (csvParts.length) await _postImport({ csv: csvParts.join('\n') });
-        if (!vcfParts.length && !csvParts.length) throw new Error('No contact data found');
+        if (!vcfParts.length && !csvParts.length) throw new Error('No se encontraron datos de contacto');
         const msg = `Imported ${imported}/${total}` + (failed ? ` (${failed} failed)` : '');
         uiModule.showToast ? uiModule.showToast(msg) : null;
       } catch (err) {
-        uiModule.showError ? uiModule.showError(err?.message || 'Import failed') : alert(err?.message || 'Import failed');
+        uiModule.showError ? uiModule.showError(err?.message || 'La importación falló') : alert(err?.message || 'La importación falló');
       } finally {
         if (btn) { btn.textContent = orig; btn.disabled = false; }
         e.target.value = '';
@@ -3849,7 +3849,7 @@ async function initUnifiedIntegrations() {
       });
       row.querySelector('.contact-del')?.addEventListener('click', async () => {
         const ok = uiModule.styledConfirm
-          ? await uiModule.styledConfirm('Delete this contact?', { confirmText: 'Eliminar', danger: true })
+          ? await uiModule.styledConfirm('¿Eliminar este contacto?', { confirmText: 'Eliminar', danger: true })
           : window.confirm('Delete this contact?');
         if (!ok) return;
         try {
