@@ -485,7 +485,7 @@ async function _deleteEmailAndAdvance(em, card, opts = {}) {
   if (!em || em.uid == null) return;
   if (opts.confirm !== false) {
     const subject = em.subject || '(no subject)';
-    const ok = await styledConfirm(`Delete "${subject}"?`, { confirmText: 'Delete', cancelText: 'Cancel', danger: true });
+    const ok = await styledConfirm(`¿Eliminar "${subject}"?`, { confirmText: 'Eliminar', cancelText: 'Cancelar', danger: true });
     if (!ok) return;
   }
   const wasExpanded = !!card?.classList?.contains('doclib-card-expanded');
@@ -497,7 +497,7 @@ async function _deleteEmailAndAdvance(em, card, opts = {}) {
     await fetch(`${API_BASE}/api/email/delete/${em.uid}?folder=${encodeURIComponent(state._libFolder)}${_acct()}`, { method: 'DELETE' });
   } catch (err) {
     console.error('Failed to delete email:', err);
-    showToast('Failed to delete email');
+    showToast('Error al eliminar el correo');
     return;
   }
   await _animateEmailCardRemoval([em.uid]);
@@ -506,7 +506,7 @@ async function _deleteEmailAndAdvance(em, card, opts = {}) {
   _updateBulkBar();
   _renderGrid();
   _libCacheWriteBack();
-  showToast('Moved to Trash');
+  showToast('Movido a la papelera');
   if (!wasExpanded || !nextUid) return;
   const grid = document.getElementById('email-lib-grid');
   const nextCard = grid?.querySelector(`.doclib-card[data-uid="${CSS.escape(String(nextUid))}"]`);
@@ -566,7 +566,7 @@ function _openSettingsTab(tab) {
 
 function _emailSetupHintHtml() {
   return '<div style="margin-top:6px;opacity:0.72;font-size:11px;">' +
-    'Setup: <a href="#" data-open-settings="integrations" style="color:var(--accent,var(--red));text-decoration:underline;">Settings &rsaquo; Integrations</a>' +
+    'Configuración: <a href="#" data-open-settings="integrations" style="color:var(--accent,var(--red));text-decoration:underline;">Ajustes &rsaquo; Integraciones</a>' +
     '</div>';
 }
 
@@ -634,7 +634,7 @@ function _resetEmailListForFreshLoad() {
   const grid = document.getElementById('email-lib-grid');
   if (grid) _renderEmailLoading(grid);
   const stats = document.getElementById('email-lib-stats');
-  if (stats) stats.textContent = 'Loading...';
+  if (stats) stats.textContent = 'Cargando...';
 }
 
 function _loadEmailsFresh() {

@@ -382,8 +382,8 @@ export function capture(opts = {}) {
     const overlay = _modal(`
       <div class="modal-content" style="width:min(560px,94vw);">
         <div class="modal-header">
-          <h4>Draw your signature</h4>
-          <button class="sig-close modal-close" title="Close">×</button>
+          <h4>Dibuja tu firma</h4>
+          <button class="sig-close modal-close" title="Cerrar">×</button>
         </div>
         <div class="modal-body">
           <canvas class="sig-canvas" width="900" height="280" data-no-swipe-dismiss></canvas>

@@ -67,13 +67,13 @@ export function controlsHTML({ color, brushSize, wandTolerance }) {
       </div>
       <div class="ge-control-row ge-eraser-row ge-sel-refine" id="ge-wand-refine-feather" style="display:none;">
         <span class="ge-eraser-preview" id="ge-wand-feather-preview" aria-hidden="true"></span>
-        <label>Feather <span id="ge-wand-feather-label">0px</span></label>
-        <input type="range" id="ge-wand-feather" min="0" max="200" value="0" title="Soften the selection edge — feathers the mask alpha." />
+        <label>Suavizar borde <span id="ge-wand-feather-label">0px</span></label>
+        <input type="range" id="ge-wand-feather" min="0" max="200" value="0" title="Suaviza el borde de la selección — aplica desenfoque al alfa de la máscara." />
       </div>
       <div class="ge-control-row ge-eraser-row ge-sel-refine" id="ge-wand-refine-grow" style="display:none;">
         <span class="ge-eraser-preview" id="ge-wand-grow-preview" aria-hidden="true"></span>
-        <label>Edge stroke <span id="ge-wand-grow-label">0px</span></label>
-        <input type="range" id="ge-wand-grow" min="-40" max="40" value="0" title="Expand (+) or contract (−) the selection before baking." />
+        <label>Trazo de borde <span id="ge-wand-grow-label">0px</span></label>
+        <input type="range" id="ge-wand-grow" min="-40" max="40" value="0" title="Expandir (+) o contraer (−) la selección antes de aplicar." />
       </div>
       <div class="ge-control-row ge-actions" style="margin-top:4px;flex-wrap:wrap;">
         <button class="ge-btn ge-btn-sm ge-mask-vis-btn visible" id="ge-wand-vis" title="Hide selection overlay" aria-label="Toggle selection overlay">

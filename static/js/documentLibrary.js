@@ -1665,21 +1665,21 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
           </div>
           <div id="doclib-panel-research" data-doclib-panel="research" class="admin-card" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;margin-top:10px;">
-              <h2 style="margin:0;padding:0;line-height:1;">Research <span id="doclib-research-stats" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal"></span></h2>
+              <h2 style="margin:0;padding:0;line-height:1;">Investigación <span id="doclib-research-stats" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal"></span></h2>
             </div>
-            <p class="memory-desc doclib-desc" style="position:relative;top:-1px;">Completed deep research reports. Click to view.</p>
+            <p class="memory-desc doclib-desc" style="position:relative;top:-1px;">Informes de investigación profunda completados. Haz clic para ver.</p>
             <div class="memory-toolbar">
               <div class="memory-category-filters">
                 <select class="memory-sort-select" id="doclib-research-sort">
-                  <option value="recent">Recent</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="most-sources">Most sources</option>
+                  <option value="recent">Recientes</option>
+                  <option value="oldest">M\u00e1s antiguos</option>
+                  <option value="most-sources">M\u00e1s fuentes</option>
                   <option value="alpha">A\u2013Z</option>
                 </select>
-                <button class="memory-toolbar-btn" id="doclib-research-select-btn">Select</button>
-                <button class="memory-toolbar-btn" id="doclib-research-tidy-btn" title="Tidy: delete research with no sources or empty reports">Tidy</button>
+                <button class="memory-toolbar-btn" id="doclib-research-select-btn">Seleccionar</button>
+                <button class="memory-toolbar-btn" id="doclib-research-tidy-btn" title="Organizar: eliminar investigaciones sin fuentes o informes vac\u00edos">Organizar</button>
               </div>
-              <input type="text" id="doclib-research-search" placeholder="Search research\u2026" class="memory-search-input" />
+              <input type="text" id="doclib-research-search" placeholder="Buscar investigaciones\u2026" class="memory-search-input" />
             </div>
             <div id="doclib-research-bulk" class="memory-bulk-bar hidden" style="margin-bottom:5px;">
               <label class="memory-bulk-check-all" style="position:relative;top:0px;left:1px;"><input type="checkbox" id="doclib-research-select-all"> All</label>

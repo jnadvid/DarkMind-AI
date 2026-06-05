@@ -282,27 +282,27 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /NCCL error|ncclSystemError|ncclInternalError/i,
-    message: 'Multi-GPU communication (NCCL) failed.',
+    message: 'Falló la comunicación multi-GPU (NCCL).',
     fixes: [
-      { label: 'Set TP to 1 (single GPU)', action: (panel) => _setPanelField(panel, 'tp', '1') },
-      { label: 'Enable enforce eager', action: (panel) => _setPanelCheckbox(panel, 'enforce_eager', true) },
+      { label: 'Establecer TP a 1 (GPU única)', action: (panel) => _setPanelField(panel, 'tp', '1') },
+      { label: 'Activar enforce eager', action: (panel) => _setPanelCheckbox(panel, 'enforce_eager', true) },
     ],
   },
   {
     pattern: /KV cache.*too (small|large)|max_model_len.*exceeds|maximum.*context/i,
-    message: 'Context length too large for available GPU memory.',
+    message: 'Longitud de contexto demasiado grande para la memoria de GPU disponible.',
     fixes: [
-      { label: 'Lower to 8192', action: (panel) => _setPanelField(panel, 'ctx', '8192') },
-      { label: 'Lower to 4096', action: (panel) => _setPanelField(panel, 'ctx', '4096') },
-      { label: 'Lower to 2048', action: (panel) => _setPanelField(panel, 'ctx', '2048') },
+      { label: 'Reducir a 8192', action: (panel) => _setPanelField(panel, 'ctx', '8192') },
+      { label: 'Reducir a 4096', action: (panel) => _setPanelField(panel, 'ctx', '4096') },
+      { label: 'Reducir a 2048', action: (panel) => _setPanelField(panel, 'ctx', '2048') },
     ],
   },
   {
     pattern: /vllm.*command not found|No module named vllm/i,
-    message: 'vLLM is not installed or not in PATH.',
+    message: 'vLLM no está instalado o no está en el PATH.',
     fixes: [
-      { label: 'Open Dependencies', action: () => _openCookbookDependencies('vllm') },
-      { label: 'Check environment is set', action: (panel) => {
+      { label: 'Abrir Dependencias', action: () => _openCookbookDependencies('vllm') },
+      { label: 'Comprobar que el entorno está configurado', action: (panel) => {
         const el = panel.querySelector('[data-field="env_type"]');
         if (el) { el.focus(); el.style.borderColor = 'var(--red)'; }
       }},
@@ -310,10 +310,10 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /sglang.*command not found|No module named sglang|SGLang is not installed/i,
-    message: 'SGLang is not installed or not in PATH.',
+    message: 'SGLang no está instalado o no está en el PATH.',
     fixes: [
-      { label: 'Open Dependencies', action: () => _openCookbookDependencies('sglang') },
-      { label: 'Copy install command', action: () => _copyText('python3 -m pip install "sglang[all]"') },
+      { label: 'Abrir Dependencias', action: () => _openCookbookDependencies('sglang') },
+      { label: 'Copiar comando de instalación', action: () => _copyText('python3 -m pip install "sglang[all]"') },
     ],
   },
   {

@@ -496,7 +496,7 @@ export function mdToHtml(src, opts) {
   // generic "→ open" link text so it still renders as a button.
   s = s.replace(
     new RegExp(`\\[#(${ANCHOR_KIND}-[A-Za-z0-9_-]+)\\]`, 'g'),
-    '[→ open](#$1)',
+    '[→ abrir](#$1)',
   );
   // Case C: bare `#kind-id` in plain text — only when it's word-
   // boundary delimited and NOT already inside a markdown link or
@@ -806,8 +806,8 @@ function _setThinkingExpanded(content, toggle, header, expanded) {
   toggle.classList.toggle('expanded', expanded);
   const label_el = header?.querySelector('.thinking-header-left span');
   if (label_el) {
-    const label = label_el.dataset.label || 'thinking process';
-    label_el.textContent = expanded ? `Hide ${label}` : `View ${label}`;
+    const label = label_el.dataset.label || 'proceso de razonamiento';
+    label_el.textContent = expanded ? `Ocultar ${label}` : `Ver ${label}`;
   }
 }
 
