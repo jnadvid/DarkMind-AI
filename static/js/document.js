@@ -96,7 +96,7 @@ import * as Modals from './modalManager.js';
     const accounts = await _getEmailAccountsCached();
     const activeAccount = accounts.find(a => String(a.id) === String(activeAccountId));
     if (!activeAccount || _accountCanSend(activeAccount)) return activeAccountId;
-    if (uiModule) uiModule.showToast('Selected email account is receive-only; using your SMTP account.');
+    if (uiModule) uiModule.showToast('La cuenta de correo seleccionada es de solo recepción; using your SMTP account.');
     return null;
   }
 
@@ -609,7 +609,7 @@ import * as Modals from './modalManager.js';
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (e) {
-      if (uiModule) uiModule.showError('Export failed: ' + e.message);
+      if (uiModule) uiModule.showError('Error al exportar: ' + e.message);
       else alert('Export failed: ' + e.message);
     }
   }
@@ -710,7 +710,7 @@ import * as Modals from './modalManager.js';
       for (const p of pages) {
         const a = document.createElement('button');
         a.textContent = String(p);
-        a.title = `Jump to page ${p}`;
+        a.title = `Ir a la página ${p}`;
         a.className = _smallBtnClass;
         a.style.cssText = _smallBtnStyle;
         a.addEventListener('click', () => pageAnchors[p]?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
@@ -728,7 +728,7 @@ import * as Modals from './modalManager.js';
       jumpBar.appendChild(topBtn);
       const botBtn = document.createElement('button');
       botBtn.textContent = '↓ Bottom';
-      botBtn.title = 'Jump to the last page (signature fields are usually here)';
+      botBtn.title = 'Ir a la última página (los campos de firma suelen estar aquí)';
       botBtn.className = _smallBtnClass;
       botBtn.style.cssText = _smallBtnStyle;
       botBtn.addEventListener('click', () => body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' }));
@@ -762,7 +762,7 @@ import * as Modals from './modalManager.js';
             thumb.style.cssText = 'max-height:32px;max-width:140px;object-fit:contain;border:1px solid var(--border);border-radius:3px;background:#fff;display:none;';
             const clearBtn = document.createElement('button');
             clearBtn.textContent = '×';
-            clearBtn.title = 'Remove signature from this field';
+            clearBtn.title = 'Quitar la firma de este campo';
             clearBtn.className = 'confirm-btn confirm-btn-secondary';
             clearBtn.style.cssText = 'padding:0 8px;font-size:0.85rem;line-height:1;display:none;';
             const apply = (sig) => {
@@ -777,9 +777,9 @@ import * as Modals from './modalManager.js';
               thumb.removeAttribute('src');
               thumb.style.display = 'none';
               clearBtn.style.display = 'none';
-              btn.textContent = 'Sign here';
+              btn.textContent = 'Firma aquí';
             };
-            btn.textContent = 'Sign here';
+            btn.textContent = 'Firma aquí';
             btn.addEventListener('click', async () => {
               const sig = await signatureModule.pick();
               if (sig) apply(sig);
@@ -805,7 +805,7 @@ import * as Modals from './modalManager.js';
             ti.dataset.fieldType = f.type;
             const today = document.createElement('button');
             today.textContent = 'Today';
-            today.title = "Set to today's date";
+            today.title = "Poner la fecha de hoy";
             today.className = 'confirm-btn confirm-btn-secondary';
             today.style.cssText = 'padding:3px 8px;font-size:0.72rem;';
             today.addEventListener('click', () => {
@@ -1224,7 +1224,7 @@ import * as Modals from './modalManager.js';
               el.style.background = 'color-mix(in srgb, var(--accent, var(--red)) 10%, transparent)';
               const span = document.createElement('span');
               span.style.cssText = 'color:var(--accent, var(--red));font-size:11px;';
-              span.textContent = 'Sign here';
+              span.textContent = 'Firma aquí';
               el.appendChild(span);
             }
           };
@@ -1283,7 +1283,7 @@ import * as Modals from './modalManager.js';
           const today = document.createElement('button');
           today.type = 'button';
           today.textContent = 'Today';
-          today.title = "Set to today's date";
+          today.title = "Poner la fecha de hoy";
           today.style.cssText = `position:absolute;left:calc(${lPct}% + ${wPct}%);top:${tPct}%;height:${hPct}%;margin-left:4px;padding:0 6px;border:1px solid color-mix(in srgb, var(--accent, var(--red)) 55%, transparent);background:rgba(255,255,255,0.95);color:var(--accent, var(--red));border-radius:3px;cursor:pointer;font-size:10px;line-height:1;white-space:nowrap;`;
           today.addEventListener('click', () => {
             const d = new Date();
@@ -1378,7 +1378,7 @@ import * as Modals from './modalManager.js';
     } else if (kind === 'signature') {
       input = document.createElement('div');
       input.style.cssText = `width:100%;height:100%;box-sizing:border-box;border:1px dashed color-mix(in srgb, var(--accent, var(--red)) 65%, transparent);background:color-mix(in srgb, var(--accent, var(--red)) 10%, transparent);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;font-size:10px;color:var(--accent, var(--red));`;
-      input.textContent = (ann.value && ann.value.startsWith('signature:')) ? '' : 'Sign here';
+      input.textContent = (ann.value && ann.value.startsWith('signature:')) ? '' : 'Firma aquí';
       input.dataset.signatureId = (ann.value && ann.value.startsWith('signature:')) ? ann.value.slice(10) : '';
     } else {
       // Multi-line text input. Browser resize disabled — we use the custom
@@ -1410,18 +1410,18 @@ import * as Modals from './modalManager.js';
     const del = document.createElement('button');
     del.type = 'button';
     del.textContent = '✖';
-    del.title = 'Delete annotation';
+    del.title = 'Eliminar anotación';
     del.style.cssText = `position:absolute;top:${OFF}px;right:${OFF}px;width:${HS}px;height:${HS}px;padding:0 0 0 1px;border:1px solid var(--accent, var(--red));background:#fff;color:var(--accent, var(--red));border-radius:50%;cursor:pointer;font-size:11px;line-height:1;display:${HIDE};font-weight:bold;touch-action:none;`;
 
     // ☰ drag handle — same size as the × button.
     const grip = document.createElement('div');
-    grip.title = 'Drag to move';
+    grip.title = 'Arrastra para mover';
     grip.textContent = '☰';
     grip.style.cssText = `position:absolute;top:${OFF}px;left:${OFF}px;width:${HS}px;height:${HS}px;border:1px solid color-mix(in srgb, var(--accent, var(--red)) 65%, transparent);background:#fff;color:var(--accent, var(--red));border-radius:3px;cursor:move;font-size:11px;line-height:${HS - 2}px;text-align:center;display:${HIDE};touch-action:none;`;
 
     // ↘ resize handle — same size as the × button.
     const resize = document.createElement('div');
-    resize.title = 'Drag to resize';
+    resize.title = 'Arrastra para redimensionar';
     resize.style.cssText = `position:absolute;bottom:${OFF}px;right:${OFF}px;width:${HS}px;height:${HS}px;border:1px solid color-mix(in srgb, var(--accent, var(--red)) 65%, transparent);background:#fff;color:var(--accent, var(--red));border-radius:3px;cursor:nwse-resize;display:${HIDE};touch-action:none;`;
     resize.innerHTML = '<svg width="14" height="14" viewBox="0 0 10 10" style="display:block;margin:auto;height:100%;"><path d="M2 8 L8 2 M5 8 L8 5" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round"/></svg>';
 
@@ -1430,7 +1430,7 @@ import * as Modals from './modalManager.js';
       menuBtn = document.createElement('button');
       menuBtn.type = 'button';
       menuBtn.textContent = '…';
-      menuBtn.title = 'Text annotation options';
+      menuBtn.title = 'Opciones de anotación de texto';
       menuBtn.style.cssText = `position:absolute;bottom:${OFF}px;left:${OFF}px;width:${HS}px;height:${HS}px;padding:0;border:1px solid color-mix(in srgb, var(--accent, var(--red)) 65%, transparent);background:#fff;color:var(--accent, var(--red));border-radius:50%;cursor:pointer;font-size:15px;line-height:0.8;display:${HIDE};font-weight:bold;touch-action:none;`;
     }
 
@@ -1467,7 +1467,7 @@ import * as Modals from './modalManager.js';
           input.style.background = 'color-mix(in srgb, var(--accent, var(--red)) 10%, transparent)';
           input.style.border = '1px dashed color-mix(in srgb, var(--accent, var(--red)) 65%, transparent)';
           const span = document.createElement('span');
-          span.textContent = 'Sign here';
+          span.textContent = 'Firma aquí';
           input.appendChild(span);
           return;
         }
@@ -2038,11 +2038,11 @@ import * as Modals from './modalManager.js';
       const _replyable = !!(_ad && _ad.sourceEmailUid && _ad.sourceEmailFolder);
       if (_replyable && _copyBtn.dataset.mode !== 'reply') {
         _copyBtn.dataset.mode = 'reply';
-        _copyBtn.title = 'Reply to the sender with this filled file attached';
+        _copyBtn.title = 'Responder al remitente con este archivo rellenado adjunto';
         _copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>Attach';
       } else if (!_replyable && _copyBtn.dataset.mode !== 'copy') {
         _copyBtn.dataset.mode = 'copy';
-        _copyBtn.title = 'Copy document';
+        _copyBtn.title = 'Copiar documento';
         _copyBtn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy';
       }
     }
@@ -2181,7 +2181,7 @@ import * as Modals from './modalManager.js';
     } else if (canRun) {
       show = true;
       actionBtn.innerHTML = _outputActive ? _codeIco : _playIco;
-      actionBtn.title = _outputActive ? 'Hide output' : 'Run';
+      actionBtn.title = _outputActive ? 'Ocultar salida' : 'Ejecutar';
       if (_outputActive) actionBtn.classList.add('active');
     }
 
@@ -2441,7 +2441,7 @@ import * as Modals from './modalManager.js';
     header.classList.toggle('doc-email-header-collapsed', !!collapsed);
     if (btn) {
       btn.setAttribute('aria-expanded', String(!collapsed));
-      btn.title = collapsed ? 'Show email fields' : 'Hide email fields';
+      btn.title = collapsed ? 'Mostrar campos de correo' : 'Ocultar campos de correo';
     }
     const doc = activeDocId && docs.get(activeDocId);
     if (doc && manual) doc._emailHeaderCollapsed = !!collapsed;
@@ -2559,12 +2559,12 @@ import * as Modals from './modalManager.js';
                 if (data.doc_id) {
                   await loadDocument(data.doc_id);
                 } else if (uiModule) {
-                  uiModule.showError(data.error || 'Failed to open PDF');
+                  uiModule.showError(data.error || 'No se pudo abrir el PDF');
                   window.open(`${API_BASE}/api/email/attachment/${encodeURIComponent(fields.sourceUid)}/${att.index}?folder=${folderQs}`, '_blank');
                 }
               } catch (e) {
                 console.error('Open PDF attachment failed:', e);
-                if (uiModule) uiModule.showError('Failed to open PDF');
+                if (uiModule) uiModule.showError('No se pudo abrir el PDF');
               }
             }));
             attDiv.appendChild(chip);
@@ -2593,7 +2593,7 @@ import * as Modals from './modalManager.js';
                 setTimeout(() => URL.revokeObjectURL(url), 1000);
               } catch (e) {
                 console.error('Download attachment failed:', e);
-                if (uiModule) uiModule.showError('Download failed: ' + e.message);
+                if (uiModule) uiModule.showError('Error de descarga: ' + e.message);
               }
             }));
             attDiv.appendChild(chip);
@@ -2668,10 +2668,10 @@ import * as Modals from './modalManager.js';
             size: data.size,
           });
         } else {
-          if (uiModule) uiModule.showError(`Failed to upload ${file.name}: ${data.error || ''}`);
+          if (uiModule) uiModule.showError(`No se pudo subir ${file.name}: ${data.error || ''}`);
         }
       } catch (err) {
-        if (uiModule) uiModule.showError(`Failed to upload ${file.name}`);
+        if (uiModule) uiModule.showError(`No se pudo subir ${file.name}`);
       }
     }
     _renderComposeAttachments();
@@ -2943,11 +2943,11 @@ import * as Modals from './modalManager.js';
     const doc = docs.get(activeDocId);
     const attachments = (doc?._composeAtts || []).map(a => a.token);
     if (!to || !body) {
-      if (uiModule) uiModule.showError('To and body are required');
+      if (uiModule) uiModule.showError('Los campos Para y cuerpo son obligatorios');
       return;
     }
     if (inReplyTo && !_emailReplyOwnText(body)) {
-      if (uiModule) uiModule.showError('Reply body is empty');
+      if (uiModule) uiModule.showError('El cuerpo de la respuesta está vacío');
       return;
     }
     // Warn if body mentions attachments but none are actually attached
@@ -2985,7 +2985,7 @@ import * as Modals from './modalManager.js';
       if (canceled) {
         _restoreDetachedEmailDoc(detachedEmailDoc);
         detachedEmailDoc = null;
-        if (uiModule) uiModule.showToast('Send canceled');
+        if (uiModule) uiModule.showToast('Envío cancelado');
         return;
       }
 
@@ -3011,7 +3011,7 @@ import * as Modals from './modalManager.js';
       if (!res.ok && data && !data.error) data.error = `Send failed (${res.status})`;
       if (data.success) {
         if (uiModule) {
-          uiModule.showToast('Message sent', {
+          uiModule.showToast('Mensaje enviado', {
             duration: 7000,
             leadingIcon: 'check',
             action: 'View Message',
@@ -3072,12 +3072,12 @@ import * as Modals from './modalManager.js';
       } else {
         _restoreDetachedEmailDoc(detachedEmailDoc);
         detachedEmailDoc = null;
-        if (uiModule) uiModule.showError(data.error || 'Failed to send');
+        if (uiModule) uiModule.showError(data.error || 'No se pudo enviar');
       }
     } catch (e) {
       _restoreDetachedEmailDoc(detachedEmailDoc);
       detachedEmailDoc = null;
-      if (uiModule) uiModule.showError(e?.message ? `Failed to send email: ${e.message}` : 'Failed to send email');
+      if (uiModule) uiModule.showError(e?.message ? `No se pudo enviar el correo: ${e.message}` : 'No se pudo enviar el correo');
     } finally {
       if (sendSpinner) sendSpinner.destroy();
       if (btn) {
@@ -3122,13 +3122,13 @@ import * as Modals from './modalManager.js';
       });
       const data = await res.json();
       if (data.success) {
-        if (uiModule) uiModule.showToast('Draft saved to mailbox');
+        if (uiModule) uiModule.showToast('Borrador guardado en el buzón');
       } else {
-        if (uiModule) uiModule.showError(data.error || 'Failed to save draft');
+        if (uiModule) uiModule.showError(data.error || 'No se pudo guardar el borrador');
       }
     } catch (e) {
       const timedOut = e && e.name === 'AbortError';
-      if (uiModule) uiModule.showError(timedOut ? 'Saving draft timed out' : 'Failed to save draft');
+      if (uiModule) uiModule.showError(timedOut ? 'Se agotó el tiempo al guardar el borrador' : 'No se pudo guardar el borrador');
     } finally {
       clearTimeout(timeout);
       if (btn) { btn.disabled = false; btn.textContent = 'Draft'; }
@@ -3280,10 +3280,10 @@ import * as Modals from './modalManager.js';
         await _streamEmailBodyText(textarea, newBody);
         if (uiModule) uiModule.showToast(`AI draft inserted (${data.model_used || 'AI'})`);
       } else {
-        if (uiModule) uiModule.showError(data.error || 'Failed to generate reply');
+        if (uiModule) uiModule.showError(data.error || 'No se pudo generar la respuesta');
       }
     } catch (e) {
-      if (uiModule) uiModule.showError('Failed to generate AI reply');
+      if (uiModule) uiModule.showError('No se pudo generar la respuesta de IA');
     } finally {
       if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg>AI Reply'; }
     }
@@ -3306,11 +3306,11 @@ import * as Modals from './modalManager.js';
     const attachments = (doc?._composeAtts || []).map(a => a.token);
 
     if (!to || !body) {
-      if (uiModule) uiModule.showError('To and body are required');
+      if (uiModule) uiModule.showError('Los campos Para y cuerpo son obligatorios');
       return;
     }
     if (inReplyTo && !_emailReplyOwnText(body)) {
-      if (uiModule) uiModule.showError('Reply body is empty');
+      if (uiModule) uiModule.showError('El cuerpo de la respuesta está vacío');
       return;
     }
     if (attachments.length === 0 && _bodyMentionsAttachment(body)) {
@@ -3400,7 +3400,7 @@ import * as Modals from './modalManager.js';
 
     overlay.querySelector('#sched-confirm').addEventListener('click', async () => {
       const localDt = dtInput.value;
-      if (!localDt) { if (uiModule) uiModule.showError('Please pick a time'); return; }
+      if (!localDt) { if (uiModule) uiModule.showError('Elige una hora'); return; }
       // Convert local datetime to UTC ISO
       const utcIso = new Date(localDt).toISOString();
       try {
@@ -3419,15 +3419,15 @@ import * as Modals from './modalManager.js';
         });
         const data = await res.json();
         if (data.success) {
-          if (uiModule) uiModule.showToast(`Scheduled for ${new Date(localDt).toLocaleString()}`);
+          if (uiModule) uiModule.showToast(`Programado para ${new Date(localDt).toLocaleString()}`);
           cleanup();
           // Close the document
           _closeWithoutDeleting(true);
         } else {
-          if (uiModule) uiModule.showError(data.error || 'Failed to schedule');
+          if (uiModule) uiModule.showError(data.error || 'No se pudo programar');
         }
       } catch (e) {
-        if (uiModule) uiModule.showError('Failed to schedule');
+        if (uiModule) uiModule.showError('No se pudo programar');
       }
     });
   }
@@ -3595,7 +3595,7 @@ import * as Modals from './modalManager.js';
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ session_id: '' }),
       }).then(() => {
-        if (toast && uiModule) uiModule.showToast('Document unlinked from session');
+        if (toast && uiModule) uiModule.showToast('Documento desvinculado de la sesión');
       }).catch(() => {});
     } else {
       fetch(`${API_BASE}/api/document/${docId}`, { method: 'DELETE' }).catch(() => {});
@@ -3760,7 +3760,7 @@ import * as Modals from './modalManager.js';
     // hides the pane outright (so fullscreen has an escape that isn't just
     // "exit fullscreen").
     divider.innerHTML = '<button type="button" class="doc-divider-collapse" title="Collapse panel" data-mode="collapse"><span>›</span></button>' +
-      '<button type="button" class="doc-divider-hide" title="Hide panel" aria-label="Hide panel"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
+      '<button type="button" class="doc-divider-hide" title="Hide panel" aria-label="Ocultar panel"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>';
     const _divHide = divider.querySelector('.doc-divider-hide');
     if (_divHide) {
       _divHide.addEventListener('mousedown', (e) => e.stopPropagation());
@@ -3878,11 +3878,11 @@ import * as Modals from './modalManager.js';
       </div>
       <div class="doc-md-toolbar" id="doc-md-toolbar" style="display:none">
         <div class="md-toolbar-items" id="md-toolbar-items">
-          <span class="md-view-toggle" id="doc-md-view-toggle" style="display:none" role="group" aria-label="Edit or preview">
+          <span class="md-view-toggle" id="doc-md-view-toggle" style="display:none" role="group" aria-label="Editar o vista previa">
             <button type="button" class="md-view-opt" data-mdview="edit" title="Edit source"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
             <button type="button" class="md-view-opt" data-mdview="preview" title="Preview"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
           </span>
-          <span class="md-view-toggle" id="doc-render-view-toggle" style="display:none" role="group" aria-label="Code or run">
+          <span class="md-view-toggle" id="doc-render-view-toggle" style="display:none" role="group" aria-label="Código o ejecutar">
             <button type="button" class="md-view-opt" data-renderview="code" title="Edit code"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></button>
             <button type="button" class="md-view-opt" data-renderview="run" title="Run / Preview"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg></button>
           </span>
@@ -3925,7 +3925,7 @@ import * as Modals from './modalManager.js';
       <div id="doc-editor-wrap" class="doc-editor-wrap">
         <div id="doc-line-numbers" class="doc-line-numbers">1</div>
         <pre id="doc-editor-highlight" class="doc-editor-highlight"><code id="doc-editor-code"></code></pre>
-        <textarea id="doc-editor-textarea" class="doc-editor-textarea" placeholder="Document content..." spellcheck="false"></textarea>
+        <textarea id="doc-editor-textarea" class="doc-editor-textarea" placeholder="Contenido del documento..." spellcheck="false"></textarea>
       </div>
       <!-- WYSIWYG email body. In email mode this replaces the source editor:
            B/I/S act on the live text (execCommand), and on send its HTML becomes
@@ -3957,7 +3957,7 @@ import * as Modals from './modalManager.js';
       <div id="doc-actions-footer" class="doc-email-actions">
         <span class="email-send-split" id="doc-copy-export-split">
           <button type="button" id="doc-footer-copy-btn" class="email-send-btn email-send-main" title="Copy document"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
-          <button type="button" id="doc-footer-export-btn" class="email-send-btn email-send-caret" title="Export as…" aria-label="Export options"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
+          <button type="button" id="doc-footer-export-btn" class="email-send-btn email-send-caret" title="Export as…" aria-label="Opciones de exportación"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 15 12 9 18 15"/></svg></button>
         </span>
       </div>
       <div id="doc-version-panel" class="doc-version-panel hidden">
@@ -4079,7 +4079,7 @@ import * as Modals from './modalManager.js';
         if (isFull) {
           if (_divCollapse.dataset.mode !== 'unfullscreen') {
             _divCollapse.dataset.mode = 'unfullscreen';
-            _divCollapse.title = 'Exit fullscreen';
+            _divCollapse.title = 'Salir de pantalla completa';
           }
           return;
         }
@@ -4089,7 +4089,7 @@ import * as Modals from './modalManager.js';
         const cur = _divCollapse.dataset.mode;
         if (ev.clientX > midX + HYSTERESIS && cur !== 'collapse') {
           _divCollapse.dataset.mode = 'collapse';
-          _divCollapse.title = 'Collapse panel';
+          _divCollapse.title = 'Contraer panel';
         } else if (ev.clientX < midX - HYSTERESIS && cur !== 'fullscreen') {
           _divCollapse.dataset.mode = 'fullscreen';
           _divCollapse.title = 'Fullscreen';
@@ -4621,18 +4621,18 @@ import * as Modals from './modalManager.js';
         if (!res.ok) throw new Error('Failed');
         const versions = await res.json();
         if (versions.length < 2) {
-          if (uiModule) uiModule.showToast('No previous version to compare');
+          if (uiModule) uiModule.showToast('No hay versión anterior con la que comparar');
           return;
         }
         // versions are sorted desc — [0] is latest, [1] is previous
         const prevContent = versions[1].content || '';
         if (prevContent === current) {
-          if (uiModule) uiModule.showToast('No changes from previous version');
+          if (uiModule) uiModule.showToast('Sin cambios respecto a la versión anterior');
           return;
         }
         enterDiffMode(prevContent, current);
       } catch {
-        if (uiModule) uiModule.showError('Failed to load version history');
+        if (uiModule) uiModule.showError('No se pudo cargar el historial de versiones');
       }
     });
 
@@ -4939,7 +4939,7 @@ import * as Modals from './modalManager.js';
         '<div class="modal-content styled-confirm-box styled-prompt-box">' +
           '<div class="modal-header"><h4>Insert link</h4></div>' +
           '<div class="modal-body">' +
-            '<input type="text" id="doc-link-text" class="styled-prompt-input" placeholder="Link text (optional)" maxlength="500" />' +
+            '<input type="text" id="doc-link-text" class="styled-prompt-input" placeholder="Texto del enlace (opcional)" maxlength="500" />' +
             '<input type="url" id="doc-link-url" class="styled-prompt-input" placeholder="https://example.com" maxlength="2048" style="margin-top:8px;" />' +
           '</div>' +
           '<div class="modal-footer">' +
@@ -5862,7 +5862,7 @@ import * as Modals from './modalManager.js';
       if (textarea) textarea.focus();
     } catch (e) {
       console.error('Failed to create document:', e);
-      if (uiModule) uiModule.showError('Failed to create document');
+      if (uiModule) uiModule.showError('No se pudo crear el documento');
     } finally {
       _creatingDoc = false;
     }
@@ -5945,7 +5945,7 @@ import * as Modals from './modalManager.js';
     }
     try {
       const res = await fetch(`${API_BASE}/api/document/${docId}`);
-      if (!res.ok) throw new Error(res.status === 404 ? 'Not found' : `HTTP ${res.status}`);
+      if (!res.ok) throw new Error(res.status === 404 ? 'No encontrado' : `HTTP ${res.status}`);
       const doc = await res.json();
       addDocToTabs(doc, doc.session_id);
       _ensureDocPaneMounted();
@@ -6007,7 +6007,7 @@ import * as Modals from './modalManager.js';
       if (match.endpoint_id) fd.append('endpoint_id', match.endpoint_id);
     }
     const res = await fetch(`${API_BASE}/api/session`, { method: 'POST', body: fd });
-    if (!res.ok) throw new Error('Session create failed');
+    if (!res.ok) throw new Error('No se pudo crear la sesión');
     const payload = await res.json();
     const sessionId = payload.id;
     _lastSessionId = sessionId;
@@ -6690,7 +6690,7 @@ import * as Modals from './modalManager.js';
       badge = document.createElement('span');
       badge.id = 'doc-selection-badge';
       badge.className = 'doc-selection-badge';
-      badge.title = 'Selected regions — type in chat to edit';
+      badge.title = 'Regiones seleccionadas — escribe en el chat para editar';
       // Sits directly under the formatting toolbar so it reads as part
       // of the toolbar row, not buried in the page header. Falls back
       // to the editor header if the toolbar isn't on screen.
@@ -7319,7 +7319,7 @@ import * as Modals from './modalManager.js';
 
     if (_diffChunks.length === 0) {
       _diffModeActive = false;
-      if (uiModule) uiModule.showToast('No changes');
+      if (uiModule) uiModule.showToast('Sin cambios');
       return;
     }
 
@@ -7462,13 +7462,13 @@ import * as Modals from './modalManager.js';
 
         const acceptBtn = document.createElement('button');
         acceptBtn.className = 'diff-chunk-btn diff-chunk-btn-accept';
-        acceptBtn.title = 'Accept change';
+        acceptBtn.title = 'Aceptar cambio';
         acceptBtn.innerHTML = '✓';
         acceptBtn.addEventListener('click', (e) => { e.stopPropagation(); _resolveChunk(chunk.id, true); });
 
         const rejectBtn = document.createElement('button');
         rejectBtn.className = 'diff-chunk-btn diff-chunk-btn-reject';
-        rejectBtn.title = 'Reject change';
+        rejectBtn.title = 'Rechazar cambio';
         rejectBtn.innerHTML = '✗';
         rejectBtn.addEventListener('click', (e) => { e.stopPropagation(); _resolveChunk(chunk.id, false); });
 
@@ -7856,7 +7856,7 @@ import * as Modals from './modalManager.js';
         await navigator.clipboard.writeText(textarea.value);
       } catch (e) { /* ignore */ }
     }
-    if (uiModule) uiModule.showToast('Copied to clipboard');
+    if (uiModule) uiModule.showToast('Copiado al portapapeles');
   }
 
   /* ---- Per-tab context menu ---- */
@@ -8014,7 +8014,7 @@ import * as Modals from './modalManager.js';
   async function _sendSignedReply(docId) {
     const doc = docs.get(docId);
     if (!doc || !doc.sourceEmailUid) return;
-    if (uiModule) uiModule.showToast('Preparing signed reply…');
+    if (uiModule) uiModule.showToast('Preparando respuesta firmada…');
     let result;
     try {
       const res = await fetch(`${API_BASE}/api/document/${encodeURIComponent(docId)}/prepare-signed-reply`, {
@@ -8081,7 +8081,7 @@ import * as Modals from './modalManager.js';
       });
       const created = await cRes.json();
       draftId = created && (created.id || created.doc_id);
-      if (!draftId) throw new Error('No draft id returned');
+      if (!draftId) throw new Error('No se devolvió ningún id de borrador');
     } catch (e) {
       console.error('Failed to create draft doc:', e);
       if (uiModule) uiModule.showError("Couldn't create reply draft");
@@ -8106,7 +8106,7 @@ import * as Modals from './modalManager.js';
 
     await loadDocument(draftId);
     _renderComposeAttachments();
-    if (uiModule) uiModule.showToast(`Reply draft ready — "${att.filename}" attached`);
+    if (uiModule) uiModule.showToast(`Borrador de respuesta listo — «${att.filename}» adjunto`);
   }
 
   /** Save manual edits */
@@ -8130,10 +8130,10 @@ import * as Modals from './modalManager.js';
         docs.get(activeDocId).content = textarea.value;
       }
       _syncDocIndicator();
-      if (!silent && uiModule) uiModule.showToast('Document saved');
+      if (!silent && uiModule) uiModule.showToast('Documento guardado');
     } catch (e) {
       console.error('Failed to save document:', e);
-      if (!silent && uiModule) uiModule.showError('Failed to save document');
+      if (!silent && uiModule) uiModule.showError('No se pudo guardar el documento');
     }
   }
 
@@ -8146,7 +8146,7 @@ import * as Modals from './modalManager.js';
       const s = document.createElement('script');
       s.src = '/static/lib/docx.umd.min.js';
       s.onload = resolve;
-      s.onerror = () => reject(new Error('Failed to load DOCX library'));
+      s.onerror = () => reject(new Error('No se pudo cargar la librería DOCX'));
       document.head.appendChild(s);
     });
     return _docxReady;
@@ -8160,7 +8160,7 @@ import * as Modals from './modalManager.js';
       const s = document.createElement('script');
       s.src = '/static/lib/html2pdf.bundle.min.js';
       s.onload = resolve;
-      s.onerror = () => reject(new Error('Failed to load PDF library'));
+      s.onerror = () => reject(new Error('No se pudo cargar la librería PDF'));
       document.head.appendChild(s);
     });
     return _html2pdfReady;
@@ -8261,7 +8261,7 @@ import * as Modals from './modalManager.js';
             credentials: 'same-origin',
             body: JSON.stringify(body),
           });
-          if (!r.ok) throw new Error('Import failed');
+          if (!r.ok) throw new Error('La importación falló');
           const j = await r.json();
           docId = j.id || j.doc_id;
         }
@@ -8281,7 +8281,7 @@ import * as Modals from './modalManager.js';
           }
         }
       } catch (err) {
-        if (uiModule && uiModule.showError) uiModule.showError('Import failed: ' + (err.message || err));
+        if (uiModule && uiModule.showError) uiModule.showError('La importación falló: ' + (err.message || err));
       } finally {
         fi.value = '';
         fi.remove();
@@ -8332,13 +8332,13 @@ import * as Modals from './modalManager.js';
     // Import lives at the top of the same dropdown — it's a sibling action
     // ("bring something IN" vs "send something OUT"), and the footer was
     // getting too cramped for dedicated icons.
-    options.push({ label: 'Import from library', fn: () => openLibrary() });
-    options.push({ label: 'Import from device', fn: () => _importFromDevice(), _divider: true });
+    options.push({ label: 'Importar de la biblioteca', fn: () => openLibrary() });
+    options.push({ label: 'Importar del dispositivo', fn: () => _importFromDevice(), _divider: true });
     if (isForm) options.push({ label: 'Filled PDF (.pdf)', fn: _downloadFilledPdf });
     options.push(
       { label: 'Export Markdown', fn: exportDocument },
-      { label: 'Print as PDF', fn: exportAsPdf },
-      { label: 'Export as Word', fn: exportAsDocx },
+      { label: 'Imprimir como PDF', fn: exportAsPdf },
+      { label: 'Exportar como Word', fn: exportAsDocx },
     );
 
     options.forEach(opt => {
@@ -8401,7 +8401,7 @@ import * as Modals from './modalManager.js';
     a.download = _getExportBaseName() + '.html';
     a.click();
     URL.revokeObjectURL(a.href);
-    if (uiModule) uiModule.showToast('Exported as HTML');
+    if (uiModule) uiModule.showToast('Exportado como HTML');
   }
 
   async function exportAsPdf() {
@@ -8411,7 +8411,7 @@ import * as Modals from './modalManager.js';
     try {
       await ensureHtml2Pdf();
     } catch (e) {
-      if (uiModule) uiModule.showError('Failed to load PDF library');
+      if (uiModule) uiModule.showError('No se pudo cargar la librería PDF');
       return;
     }
     const lang = document.getElementById('doc-language-select')?.value || '';
@@ -8445,7 +8445,7 @@ import * as Modals from './modalManager.js';
     try {
       await ensureDocx();
     } catch (e) {
-      if (uiModule) uiModule.showError('Failed to load DOCX library');
+      if (uiModule) uiModule.showError('No se pudo cargar la librería DOCX');
       return;
     }
     const text = textarea.value || '';
@@ -8483,7 +8483,7 @@ import * as Modals from './modalManager.js';
     a.download = baseName + '.docx';
     a.click();
     URL.revokeObjectURL(a.href);
-    if (uiModule) uiModule.showToast('Exported as DOCX');
+    if (uiModule) uiModule.showToast('Exportado como DOCX');
   }
 
   /** Delete the active document */
@@ -8497,7 +8497,7 @@ import * as Modals from './modalManager.js';
     if (!ok) return;
     try {
       const res = await fetch(`${API_BASE}/api/document/${activeDocId}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Delete failed');
+      if (!res.ok) throw new Error('No se pudo eliminar');
       // Remove tab
       const tab = document.querySelector(`.doc-tab[data-doc-id="${activeDocId}"]`);
       if (tab) tab.remove();
@@ -8510,10 +8510,10 @@ import * as Modals from './modalManager.js';
         activeDocId = null;
         closePanel();
       }
-      if (uiModule) uiModule.showToast('Document deleted');
+      if (uiModule) uiModule.showToast('Documento eliminado');
     } catch (e) {
       console.error('Failed to delete document:', e);
-      if (uiModule) uiModule.showError('Failed to delete document');
+      if (uiModule) uiModule.showError('No se pudo eliminar el documento');
     }
   }
 
@@ -9570,10 +9570,10 @@ import * as Modals from './modalManager.js';
         d.version = doc.version_count || 1;
       }
       await loadVersionHistory();
-      if (uiModule) uiModule.showToast(`Restored to v${num}`);
+      if (uiModule) uiModule.showToast(`Restaurado a la v${num}`);
     } catch (e) {
       console.error('Failed to restore version:', e);
-      if (uiModule) uiModule.showError('Failed to restore version');
+      if (uiModule) uiModule.showError('No se pudo restaurar la versión');
     }
   }
 
