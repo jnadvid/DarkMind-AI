@@ -2463,18 +2463,18 @@ async function _cmdTourCompare(args, ctx) {
   // bounding-rect was putting the tooltip in the top-left corner.
   const phase1 = [
     { sel: '#compare-model-overlay .modal-body',
-      text: 'Pick what type of test you want to run. <b>Chat</b>, <b>Agent</b>, <b>Search</b> or <b>Deep Research</b>.',
+      text: 'Elige qué tipo de prueba quieres ejecutar. <b>Chat</b>, <b>Agente</b>, <b>Búsqueda</b> o <b>Investigación Profunda</b>.',
       placement: 'center-above',
       before: () => {
         const modalBody = document.querySelector('#compare-model-overlay .modal-body');
         if (modalBody) modalBody.scrollTop = 0;
       } },
     { sel: '#compare-model-overlay .compare-blind-toggle',
-      text: '<b>Blind Mode</b> hides model names so you don’t know which model gives what output.' },
+      text: 'El <b>Modo a ciegas</b> oculta los nombres de los modelos para que no sepas qué modelo da cada respuesta.' },
     { sel: '#compare-model-overlay .compare-parallel-toggle',
-      text: '<b>Parallel</b> runs side by side, toggle to <b>Sequential</b> as well.' },
+      text: '<b>Paralelo</b> ejecuta en paralelo; también puedes cambiar a <b>Secuencial</b>.' },
     { sel: '#compare-model-overlay .compare-dice-toggle',
-      text: '<b>Shuffle</b> picks the models in your entire list of endpoints. Combine with <b>Blind Mode</b> and you get the cleanest evaluation.' },
+      text: '<b>Barajar</b> elige los modelos de toda tu lista de endpoints. Combínalo con el <b>Modo a ciegas</b> para la evaluación más limpia.' },
   ];
 
   for (let i = 0; i < phase1.length; i++) {
@@ -2539,11 +2539,11 @@ async function _cmdTourCompare(args, ctx) {
   // tour it here; the user will discover it naturally when needed.
   const phase2 = [
     { sel: '#compare-add-btn',
-      text: 'Add more <b>Models</b> here, keep stacking, who’s stopping ya? (you can also remove btw).' },
+      text: 'Añade más <b>Modelos</b> aquí, sigue apilando, ¿quién te detiene? (también puedes quitarlos, por cierto).' },
     { sel: '#compare-shuffle-btn',
-      text: 'After adding, <b>Shuffle</b> to randomize the order again.' },
+      text: 'Tras añadirlos, <b>Baraja</b> para aleatorizar el orden de nuevo.' },
     { sel: '#cmp-eval-btn',
-      text: 'When you’re ready to test, feel free to use curated <b>evaluation prompts</b>.',
+      text: 'Cuando quieras probar, usa los <b>prompts de evaluación</b> ya preparados.',
       advanceOnClick: true },
   ];
 
@@ -2735,27 +2735,27 @@ async function _cmdTourCookbook(args, ctx) {
   // without having to navigate manually. Keep copy tight — no walls of text.
   const steps = [
     { sel: '#cookbook-modal .modal-content',
-      text: '<b>Welcome to Cookbook!</b> Download / Cook / Serve models here!',
+      text: '<b>¡Bienvenido a Cookbook!</b> Descarga, prepara y sirve modelos aquí.',
       placement: 'center-above' },
     { sel: '#cookbook-modal .cookbook-tab[data-backend="Settings"]',
-      text: 'Hosting on another machine? Configure it under <b>Settings</b>.' },
+      text: '¿Lo alojas en otra máquina? Configúralo en <b>Ajustes</b>.' },
     { sel: '#cookbook-dl-repo',
-      text: 'Paste a HuggingFace URL or <code>org/model-name</code> to download. Quantizations like <code>org/model:Q4_K_M</code> work too.',
+      text: 'Pega una URL de HuggingFace o <code>org/nombre-modelo</code> para descargar. Las cuantizaciones como <code>org/model:Q4_K_M</code> también funcionan.',
       before: () => _clickTab('Search') },
     { sel: '#cookbook-modal .admin-card:has(> #hwfit-list)',
-      text: '<b>Scan / Download</b> — reads your hardware and lists every model that\'ll run on it.',
+      text: '<b>Escanear / Descargar</b> — analiza tu hardware y lista todos los modelos que puede ejecutar.',
       before: () => _clickTab('Search') },
     { sel: '#hwfit-hw-manual-btn',
-      text: 'Your detected hardware appears here. You can also manually edit it to see what would fit on other setups.',
+      text: 'Aquí aparece el hardware detectado. También puedes editarlo manualmente para ver qué cabría en otras configuraciones.',
       before: () => _clickTab('Search') },
     { sel: '#cookbook-hf-latest-toggle',
-      text: 'Check <b>latest trending models</b> here.',
+      text: 'Consulta aquí los <b>modelos de tendencia más recientes</b>.',
       before: () => _clickTab('Search') },
     { sel: '#cookbook-modal .cookbook-tab[data-backend="Serve"]',
-      text: '<b>Serve</b> — fire up downloaded models with vLLM, Ollama, llama.cpp, and diffusion models too.',
+      text: '<b>Servir</b> — arranca modelos descargados con vLLM, Ollama, llama.cpp y también modelos de difusión.',
       before: () => _clickTab('Serve') },
     { sel: '#cookbook-modal .cookbook-tab[data-backend="Dependencies"]',
-      text: '<b>Dependencies</b> — install missing Python packages or check GPU drivers.',
+      text: '<b>Dependencias</b> — instala los paquetes de Python que falten o comprueba los controladores de GPU.',
       before: () => _clickTab('Dependencies') },
   ];
 
@@ -2765,7 +2765,7 @@ async function _cmdTourCookbook(args, ctx) {
   if (runTab) {
     steps.push({
       sel: '#cookbook-modal .cookbook-tab[data-backend="Running"]',
-      text: '<b>Running</b> — live status, tail logs, downloads, kill.',
+      text: '<b>En ejecución</b> — estado en vivo, ver registros, descargas y finalizar.',
       before: () => _clickTab('Running'),
     });
   }
@@ -2991,27 +2991,27 @@ async function _cmdTourTheme(args, ctx) {
   // work as a fallback (read past without touching anything).
   const steps = [
     { sel: '#theme-popup',
-      text: '<b>Welcome to Theme.</b> DarkMind is yours to customize!',
+      text: '<b>Bienvenido a Tema.</b> ¡DarkMind es tuyo para personalizarlo!',
       placement: 'center-above',
       before: () => _clickTab('theme-tab-browse') },
     { sel: '#themeGrid',
-      text: 'Try a <b>default theme</b> — or build your own with <b>Customize</b>.',
+      text: 'Prueba un <b>tema predefinido</b> — o crea el tuyo con <b>Personalizar</b>.',
       extraSel: '#theme-tabs .admin-tab[data-tab="theme-tab-customize"]',
       interactive: true },
     { sel: '#theme-harmony-card',
-      text: 'Build a quick theme with <b>color harmony</b> — pick one accent color, hit Generate, and a matching palette falls out.',
+      text: 'Crea un tema rápido con <b>armonía de color</b> — elige un color de acento, pulsa Generar y saldrá una paleta a juego.',
       before: () => _clickTab('theme-tab-customize'),
       interactive: true },
     { sel: '#themeCustom',
-      text: 'Want finer control? <b>Edit each color individually</b> here — the page updates live.',
+      text: '¿Quieres más control? <b>Edita cada color individualmente</b> aquí — la página se actualiza en vivo.',
       before: () => _clickTab('theme-tab-customize'),
       interactive: true },
     { sel: '#theme-bg-pattern-select',
-      text: 'Add a <b>background animation</b> — rain, petals, constellations, sparkles, embers…',
+      text: 'Añade una <b>animación de fondo</b> — lluvia, pétalos, constelaciones, destellos, brasas…',
       before: () => _clickTab('theme-tab-customize'),
       interactive: true },
     { sel: '#theme-opacity-wrap',
-      text: '<b>Peek</b> fades this window so you can see the page behind it while you tweak.',
+      text: '<b>Vistazo</b> atenúa esta ventana para que veas la página de detrás mientras ajustas.',
       before: () => _clickTab('theme-tab-customize'),
       interactive: true },
   ];
@@ -3214,37 +3214,37 @@ async function _cmdTourSettings(args, ctx) {
 
   const steps = [
     { sel: '#settings-modal .modal-content',
-      text: '<b>Welcome to Settings.</b> HOW EXCITING.',
+      text: '<b>Bienvenido a Ajustes.</b> QUÉ EMOCIÓN.',
       placement: 'center-above' },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="services"]',
-      text: '<b>Add Models</b> — add a local endpoint first, like Ollama, vLLM, or llama.cpp. Cloud providers are optional.',
+      text: '<b>Añadir modelos</b> — añade primero un endpoint local, como Ollama, vLLM o llama.cpp. Los proveedores en la nube son opcionales.',
       before: () => _clickNav('services') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="ai"]',
-      text: '<b>AI Defaults</b> — three roles share the work. Let\'s walk through them.',
+      text: '<b>Valores de IA</b> — tres roles se reparten el trabajo. Vamos a verlos.',
       before: () => _clickNav('ai') },
     { sel: '#settings-modal .admin-card:has(#set-defaultModelSelect)',
-      text: '<b>Default Chat Model</b> — your main model. The one DarkMind reaches for whenever you start a new chat.',
+      text: '<b>Modelo de chat predeterminado</b> — tu modelo principal. El que DarkMind usa cada vez que inicias un chat nuevo.',
       before: () => _clickNav('ai') },
     { sel: '#settings-modal .admin-card:has(#set-utilityModelSelect)',
-      text: '<b>Utility Model</b> — your hard-working sidekick. Runs background tasks (compaction, cleanup, auto-naming, summarization) so your chat model doesn\'t burn cycles on chores. <b>Recommend a small local model</b> here — it\'s free and always on.',
+      text: '<b>Modelo de utilidad</b> — tu ayudante incansable. Ejecuta tareas en segundo plano (compactación, limpieza, autonombrado, resúmenes) para que tu modelo de chat no gaste recursos en tareas rutinarias. <b>Recomendamos un modelo local pequeño</b> aquí — es gratis y siempre está disponible.',
       before: () => _clickNav('ai') },
     { sel: '#settings-modal .admin-card:has(#set-vlModelSelect)',
-      text: '<b>Vision</b> — powers any image-recognition feature: drop a photo in chat, ask what\'s in it, OCR, etc.',
+      text: '<b>Visión</b> — impulsa cualquier función de reconocimiento de imágenes: suelta una foto en el chat, pregunta qué hay en ella, OCR, etc.',
       before: () => _clickNav('ai') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="integrations"]',
-      text: '<b>Integrations</b> — wire up email, calendar, contacts here (per-account).',
+      text: '<b>Integraciones</b> — conecta aquí el correo, el calendario y los contactos (por cuenta).',
       before: () => _clickNav('integrations') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="search"]',
-      text: '<b>Search</b> — plug in your own search provider, or use the bundled <b>SearXNG</b> out of the box.',
+      text: '<b>Búsqueda</b> — conecta tu propio proveedor de búsqueda o usa el <b>SearXNG</b> incluido de serie.',
       before: () => _clickNav('search') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="appearance"]',
-      text: '<b>Appearance</b> — too many tools you don\'t need? Adjust them here! Toggle sidebar buttons, tool icons, and section visibility.',
+      text: '<b>Apariencia</b> — ¿demasiadas herramientas que no necesitas? ¡Ajústalas aquí! Activa o desactiva los botones de la barra lateral, los iconos de herramientas y la visibilidad de las secciones.',
       before: () => _clickNav('appearance') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="email"]',
-      text: '<b>Email</b> — sync schedule, drafts, snooze defaults — everything email-flow related.',
+      text: '<b>Correo</b> — frecuencia de sincronización, borradores, valores de posposición — todo lo relacionado con el flujo del correo.',
       before: () => _clickNav('email') },
     { sel: '#settings-modal .settings-nav-item[data-settings-tab="reminders"]',
-      text: '<b>Reminders</b> — quiet hours and how DarkMind nudges you about calendar + urgent email.',
+      text: '<b>Recordatorios</b> — horas de silencio y cómo DarkMind te avisa del calendario y del correo urgente.',
       before: () => _clickNav('reminders') },
   ];
 
@@ -3446,20 +3446,20 @@ async function _cmdTourGallery(args, ctx) {
 
   const steps = [
     { sel: '#gallery-modal .modal-content',
-      text: '<b>Welcome to Gallery.</b> Photos and albums live here.',
+      text: '<b>Bienvenido a la Galería.</b> Aquí viven las fotos y los álbumes.',
       placement: 'center-above',
       before: () => _clickTab('images') },
     { sel: '#gallery-modal .gallery-tab[data-tab="images"]',
-      text: '<b>Photos</b> — every image you\'ve uploaded, in one grid.',
+      text: '<b>Fotos</b> — todas las imágenes que has subido, en una sola cuadrícula.',
       before: () => _clickTab('images') },
     { sel: '#gallery-upload-tile',
-      text: 'Drop or click this tile to <b>upload</b> photos and videos.',
+      text: 'Suelta o haz clic en esta casilla para <b>subir</b> fotos y vídeos.',
       before: () => _clickTab('images') },
     { sel: '#gallery-modal .gallery-tab[data-tab="albums"]',
-      text: '<b>Albums</b> — group images into collections.',
+      text: '<b>Álbumes</b> — agrupa imágenes en colecciones.',
       before: () => _clickTab('albums') },
     { sel: '#gallery-modal .gallery-tab[data-tab="editor"]',
-      text: '<b>Editor</b> — honestly still WIP, so explore as you want.',
+      text: '<b>Editor</b> — sinceramente, aún está en desarrollo, así que explóralo a tu gusto.',
       before: () => _clickTab('editor') },
   ];
 
@@ -3654,18 +3654,18 @@ async function _cmdTourNotes(args, ctx) {
 
   const steps = [
     { sel: '#notes-pane',
-      text: '<b>Notes</b> is your basic todo list, and also where reminders are managed.',
+      text: '<b>Notas</b> es tu lista de tareas básica y también donde se gestionan los recordatorios.',
       placement: 'center-above' },
     { sel: '#notes-pane .notes-pane-body',
-      text: 'Your notes show up here. You can also <b>ask DarkMind in chat</b> to take a note for you.' },
+      text: 'Tus notas aparecen aquí. También puedes <b>pedirle a DarkMind en el chat</b> que tome una nota por ti.' },
     { sel: '#notes-search',
-      text: '<b>Search</b> across every note — title, body, tags, the works.' },
+      text: '<b>Busca</b> en todas las notas — título, cuerpo, etiquetas, todo.' },
     { sel: '#notes-view-toggle',
-      text: 'Switch between <b>grid</b> and <b>list</b> views — pick whichever fits your brain.' },
+      text: 'Cambia entre las vistas de <b>cuadrícula</b> y <b>lista</b> — elige la que mejor te encaje.' },
     { sel: '#notes-archive-toggle',
-      text: '<b>Archive</b> stashes old notes you don\'t want cluttering the active view but still want to keep.' },
+      text: '<b>Archivar</b> guarda las notas antiguas que no quieres que saturen la vista activa pero que aún deseas conservar.' },
     { sel: '#notes-select-btn',
-      text: '<b>Select</b> drops you into multi-select mode for bulk archive or delete.' },
+      text: '<b>Seleccionar</b> activa el modo de selección múltiple para archivar o eliminar en bloque.' },
   ];
 
   for (let i = 0; i < steps.length; i++) {
@@ -3855,17 +3855,17 @@ async function _cmdTourBrain(args, ctx) {
   const _tab = (name) => document.querySelector(`.memory-tab[data-memory-tab="${name}"]`)?.click();
   const steps = [
     { sel: '#memory-modal .memory-modal-content',
-      text: '<b>Brain</b> is where your memories are. You can edit them, or add new ones under <b>Add</b>. Wow.',
+      text: '<b>Cerebro</b> es donde están tus recuerdos. Puedes editarlos o añadir nuevos en <b>Añadir</b>. Vaya.',
       before: () => _tab('browse'),
       placement: 'center-above' },
     { sel: '#memory-tidy-btn',
-      text: '<b>Tidy</b> runs your model to clear out irrelevant memories and duplicates. It also triggers automatically from Tasks.',
+      text: '<b>Ordenar</b> ejecuta tu modelo para eliminar recuerdos irrelevantes y duplicados. También se dispara automáticamente desde Tareas.',
       before: () => _tab('browse') },
     { sel: '.memory-tab-panel[data-memory-panel="skills"]',
-      text: '<b>Skills</b> are basically your AI’s memory for improving its abilities.',
+      text: 'Las <b>Habilidades</b> son, básicamente, la memoria de tu IA para mejorar sus capacidades.',
       before: () => _tab('skills') },
     { sel: '.memory-tab-panel[data-memory-panel="settings"]',
-      text: '<b>Settings</b> lets you turn off auto extraction and set how strong skills need to be before they are tagged.',
+      text: '<b>Ajustes</b> te permite desactivar la extracción automática y definir cómo de sólidas deben ser las habilidades antes de etiquetarlas.',
       before: () => _tab('settings') },
   ];
 
@@ -4091,11 +4091,11 @@ async function _runTaskTour(steps, doneText, opts) {
 async function _cmdTourTask1(args, ctx) {
   const result = await _runTaskTour([
     { sel: '#tasks-modal .modal-content',
-      text: '<b>Welcome to Tasks.</b> Manage all your AI background work here.' },
+      text: '<b>Bienvenido a Tareas.</b> Gestiona aquí todo el trabajo en segundo plano de tu IA.' },
     { sel: '#tasks-pause-all-btn',
-      text: 'Tasks are <b>paused by default</b> — resume whichever ones make sense for you. (Or pause anything that\'s running.)' },
+      text: 'Las tareas están <b>pausadas por defecto</b> — reanuda las que tengan sentido para ti. (O pausa cualquiera que esté en ejecución.)' },
     { sel: '#tasks-modal .modal-body',
-      text: 'When enabled, Tasks use the <b>utility model configured in Settings</b> for cleanup and organization jobs.' },
+      text: 'Cuando están activadas, las Tareas usan el <b>modelo de utilidad configurado en Ajustes</b> para los trabajos de limpieza y organización.' },
   ], 'Use Tasks when you want DarkMind to handle background housekeeping.', {
     continueLabel: 'continue →',
     continueText: '<b>Part 1 done.</b> Want to keep going into <b>adding & managing tasks</b>?',
@@ -4107,20 +4107,20 @@ async function _cmdTourTask1(args, ctx) {
 async function _cmdTourTask2(args, ctx) {
   return _runTaskTour([
     { sel: '#tasks-modal .tasks-tab[data-tab="new"]',
-      text: '<b>Add</b> creates scheduled prompts, research jobs, actions, event triggers, or webhooks.',
+      text: '<b>Añadir</b> crea instrucciones programadas, trabajos de investigación, acciones, disparadores por eventos o webhooks.',
       before: () => document.querySelector('#tasks-modal .tasks-tab[data-tab="new"]')?.click() },
     { sel: '#task-ai-input',
-      text: 'You can just describe the task in plain chat language. Example: “weekday mornings summarize unread email”.' },
+      text: 'Puedes describir la tarea con lenguaje natural. Ejemplo: “cada mañana de lunes a viernes resume el correo sin leer”.' },
     { sel: '#tasks-modal .memory-item[data-idx="0"]',
-      text: 'Or pick a template and fill out the form manually.' },
+      text: 'O elige una plantilla y rellena el formulario manualmente.' },
     { sel: '#task-form-save, #tasks-modal .tasks-tab[data-tab="tasks"]',
-      text: 'Tasks can be edited, paused, resumed, run now, or deleted from their cards.',
+      text: 'Las tareas se pueden editar, pausar, reanudar, ejecutar ahora o eliminar desde sus tarjetas.',
       before: () => document.querySelector('#tasks-modal .tasks-tab[data-tab="tasks"]')?.click() },
     // Tuck the modal out of the way so the chatbox is unmistakable, then
     // re-show it when the user moves past this step so the tour lands
     // back where it started.
     { sel: '#message',
-      text: 'You can also <b>just ask in chat</b> — say "every weekday at 9am check for urgent emails" and DarkMind will create the task for you.',
+      text: 'También puedes <b>pedirlo en el chat</b> — di "cada día laborable a las 9:00 revisa si hay correos urgentes" y DarkMind creará la tarea por ti.',
       before: () => document.getElementById('tasks-modal')?.classList.add('hidden'),
       after:  () => document.getElementById('tasks-modal')?.classList.remove('hidden') },
   ], 'That\'s Tasks. Have it run the background bits so you can stay in chat.');
@@ -4296,15 +4296,15 @@ async function _cmdTourResearch(args, ctx) {
 
   const steps = [
     { sel: '#research-pane',
-      text: '<b>Welcome to Deep Research!</b> An LLM-in-the-loop agent that plans the search, queries the web, extracts findings, and writes you a full report.',
+      text: '<b>¡Bienvenido a Investigación Profunda!</b> Un agente con un LLM en el bucle que planifica la búsqueda, consulta la web, extrae hallazgos y te redacta un informe completo.',
       placement: 'center-above' },
     { sel: '#research-query',
-      text: 'Type what you want to researched here. Be specific — <i>"compare X vs Y for Z"</i> beats <i>"tell me about X"</i>.' },
+      text: 'Escribe aquí lo que quieres investigar. Sé específico — <i>"compara X frente a Y para Z"</i> es mejor que <i>"háblame de X"</i>.' },
     { sel: '#research-settings-body',
-      text: '<b>Rounds</b> is how long the model will keep searching for. You can set to <b>Auto</b>, or go deeper/quicker depending on preference.',
+      text: '<b>Rondas</b> indica cuánto tiempo seguirá buscando el modelo. Puedes ponerlo en <b>Auto</b> o ir más a fondo/más rápido según prefieras.',
       before: _ensureSettingsOpen },
     { sel: '#research-pane',
-      text: 'When a report finishes you can <b>discuss the results with the LLM</b> in chat, or open the full <b>visual HTML report</b> — sources, images, the works.',
+      text: 'Cuando termina un informe puedes <b>comentar los resultados con el LLM</b> en el chat, o abrir el <b>informe visual en HTML</b> completo — fuentes, imágenes, todo.',
       placement: 'center-above' },
   ];
 
@@ -4519,7 +4519,7 @@ async function _cmdTourLibrary(args, ctx) {
   // ── Phase 1: Library overview ──
   const libSteps = [
     { sel: '#doclib-modal .doclib-modal-content',
-      text: '<b>Welcome to Library!</b> Your hub for <b>Chats</b>, <b>Documents</b>, <b>Research</b>, and <b>Archive</b> — search, sort and tidy!',
+      text: '<b>¡Bienvenido a la Biblioteca!</b> Tu centro para <b>Chats</b>, <b>Documentos</b>, <b>Investigación</b> y <b>Archivo</b> — busca, ordena y organiza.',
       placement: 'center-above',
       before: () => {
         // Force the modal box to fill its intended frame so the halo wraps the
@@ -4531,10 +4531,10 @@ async function _cmdTourLibrary(args, ctx) {
         }
       } },
     { sel: '#doclib-create-btn',
-      text: '<b>Create</b> a fresh blank document — click it to try it out! (Or hit <b>Import</b> next to it to bring in a file from disk.)',
+      text: '<b>Crea</b> un documento en blanco — ¡haz clic para probarlo! (O pulsa <b>Importar</b> al lado para traer un archivo del disco.)',
       interactive: true },
     { sel: '#doclib-grid .doclib-card',
-      text: 'Each card is a saved document. It’s linked to the chat you created it in — so either <b>clone</b> it for a new chat, or <b>open</b> it in its original.',
+      text: 'Cada tarjeta es un documento guardado. Está vinculada al chat en el que la creaste — así que puedes <b>clonarla</b> para un chat nuevo o <b>abrirla</b> en su original.',
       optional: true },
   ];
 
@@ -4585,17 +4585,17 @@ async function _cmdTourLibrary(args, ctx) {
 
   const editorSteps = [
     { sel: '#doc-editor-pane',
-      text: '<b>This is your document editor.</b> You can write here, but so can your model.',
+      text: '<b>Este es tu editor de documentos.</b> Puedes escribir aquí, y tu modelo también.',
       placement: 'center-above' },
     { sel: '#message',
-      text: 'Just tell your model what to write or edit.',
+      text: 'Solo dile a tu modelo qué escribir o editar.',
       placement: 'center-above' },
     { sel: '#doc-tab-bar',
-      text: 'Multiple docs as <b>tabs</b>. Drag to reorder, click <b>+</b> for a new one, click the dots for rename / clone / export / delete.' },
+      text: 'Varios documentos como <b>pestañas</b>. Arrastra para reordenar, pulsa <b>+</b> para uno nuevo, pulsa los puntos para renombrar / clonar / exportar / eliminar.' },
     { sel: '#doc-language-select',
-      text: 'Switch the <b>document type</b> — markdown shows a preview, email shows To/Subject/Send, PDF lets you fill blanks with AI.' },
+      text: 'Cambia el <b>tipo de documento</b> — markdown muestra una vista previa, el correo muestra Para/Asunto/Enviar, y el PDF te deja rellenar huecos con IA.' },
     { sel: '#doc-editor-textarea',
-      text: 'Ask the LLM to <i>draft</i>, <i>rewrite</i>, <i>summarize</i>, <i>feedback</i> — edits stream live.' },
+      text: 'Pide al LLM que <i>redacte</i>, <i>reescriba</i>, <i>resuma</i> o dé <i>comentarios</i> — las ediciones se transmiten en vivo.' },
   ];
 
   for (let i = 0; i < editorSteps.length; i++) {
