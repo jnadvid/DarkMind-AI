@@ -66,6 +66,20 @@ function _download(blob, filename) {
 }
 function _empty() { uiModule.showToast?.('No hay contenido que exportar'); }
 
+// Elimina emojis e iconos para obtener documentos serios. Mantiene la
+// puntuación normal (guiones, comillas, etc.); solo quita pictogramas,
+// símbolos/dingbats, banderas y selectores de variación.
+function stripEmojis(s) {
+  return String(s)
+    .replace(/[\u{1F000}-\u{1FAFF}]/gu, '')   // emoticonos y pictogramas
+    .replace(/[\u{2600}-\u{27BF}]/gu, '')     // símbolos varios y dingbats (✓ ✗ ★ ☎ …)
+    .replace(/[\u{2B00}-\u{2BFF}]/gu, '')     // estrellas/flechas decorativas
+    .replace(/[\u{1F1E6}-\u{1F1FF}]/gu, '')   // banderas
+    .replace(/[\u{FE00}-\u{FE0F}\u{200D}\u{20E3}]/gu, '') // selectores de variación / ZWJ / keycap
+    .replace(/[ \t]{2,}/g, ' ')               // colapsa espacios dobles que deja el filtrado
+    .replace(/[ \t]+$/gm, '');                // espacios finales
+}
+
 // ===========================================================================
 //  Parser de Markdown -> bloques
 // ===========================================================================
@@ -258,24 +272,28 @@ function blocksToHtml(blocks) {
 }
 
 const _PDF_CSS = `
-.dm-export{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#111;}
-.dm-export h1{font-size:22px;margin:16px 0 8px;font-weight:700;}
-.dm-export h2{font-size:18px;margin:15px 0 7px;font-weight:700;}
-.dm-export h3{font-size:15px;margin:13px 0 6px;font-weight:700;}
-.dm-export h4,.dm-export h5,.dm-export h6{font-size:13px;margin:11px 0 5px;font-weight:700;}
-.dm-export p{margin:6px 0;}
-.dm-export ul,.dm-export ol{margin:6px 0 6px 24px;padding:0;}
-.dm-export li{margin:3px 0;}
-.dm-export hr{border:none;border-top:1px solid #ddd;margin:14px 0;}
-.dm-export code{font-family:Consolas,Menlo,monospace;background:#f3f3f3;padding:1px 4px;border-radius:3px;font-size:12px;}
-.dm-export pre{background:#f6f8fa;border:1px solid #e3e3e3;border-radius:6px;padding:10px;white-space:pre-wrap;word-break:break-word;}
+.dm-export{font-family:Georgia,'Times New Roman',serif;font-size:12.5px;line-height:1.5;color:#1a1a1a;}
+.dm-export .dm-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #222;padding-bottom:6px;margin-bottom:18px;}
+.dm-export .dm-title{font-family:Arial,Helvetica,sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#222;}
+.dm-export .dm-date{font-family:Arial,Helvetica,sans-serif;font-size:9.5px;color:#666;}
+.dm-export h1{font-family:Arial,Helvetica,sans-serif;font-size:19px;margin:18px 0 9px;font-weight:700;color:#111;border-bottom:1px solid #ccc;padding-bottom:3px;}
+.dm-export h2{font-family:Arial,Helvetica,sans-serif;font-size:16px;margin:16px 0 8px;font-weight:700;color:#111;}
+.dm-export h3{font-family:Arial,Helvetica,sans-serif;font-size:13.5px;margin:14px 0 6px;font-weight:700;color:#222;}
+.dm-export h4,.dm-export h5,.dm-export h6{font-family:Arial,Helvetica,sans-serif;font-size:12px;margin:12px 0 5px;font-weight:700;color:#333;}
+.dm-export p{margin:7px 0;text-align:justify;}
+.dm-export ul,.dm-export ol{margin:7px 0 7px 26px;padding:0;}
+.dm-export li{margin:4px 0;text-align:justify;}
+.dm-export hr{border:none;border-top:1px solid #d8d8d8;margin:16px 0;}
+.dm-export code{font-family:Consolas,'Courier New',monospace;background:#f0f0f0;padding:1px 4px;border-radius:2px;font-size:11.5px;}
+.dm-export pre{background:#f6f6f6;border:1px solid #e0e0e0;border-radius:3px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;font-size:11.5px;line-height:1.45;}
 .dm-export pre code{background:none;padding:0;}
-.dm-export blockquote{margin:8px 0;padding:4px 12px;border-left:3px solid #ccc;color:#555;}
-.dm-export table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px;}
-.dm-export th,.dm-export td{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top;}
-.dm-export th{background:#f2f2f2;}
-.dm-export a{color:#0a58ca;text-decoration:none;}
-.dm-export img{max-width:100%;}
+.dm-export blockquote{margin:9px 0;padding:4px 14px;border-left:3px solid #bbb;color:#444;font-style:italic;}
+.dm-export table{border-collapse:collapse;width:100%;margin:12px 0;font-size:11.5px;font-family:Arial,Helvetica,sans-serif;}
+.dm-export th,.dm-export td{border:1px solid #bbb;padding:6px 9px;text-align:left;vertical-align:top;}
+.dm-export th{background:#ececec;font-weight:700;}
+.dm-export a{color:#1a1a1a;text-decoration:underline;}
+.dm-export h1,.dm-export h2,.dm-export h3,.dm-export h4{page-break-after:avoid;}
+.dm-export pre,.dm-export table,.dm-export blockquote{page-break-inside:avoid;}
 `;
 
 // ===========================================================================
@@ -292,7 +310,7 @@ export function exportMarkdown(msgElement) {
 //  Exportar a PDF
 // ===========================================================================
 export async function exportPdf(msgElement) {
-  const raw = _getRaw(msgElement);
+  const raw = stripEmojis(_getRaw(msgElement));
   if (!raw.trim()) return _empty();
   try {
     await ensureHtml2Pdf();
@@ -300,21 +318,41 @@ export async function exportPdf(msgElement) {
     uiModule.showError?.('No se pudo cargar la librería PDF');
     return;
   }
-  const html = blocksToHtml(parseBlocks(raw));
+  const bodyHtml = blocksToHtml(parseBlocks(raw));
+  const fecha = new Date().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
+  // El contenedor se renderiza dentro del documento (no fuera de pantalla, que
+  // dejaba el PDF en blanco), colocado detrás de la app con z-index negativo.
   const container = document.createElement('div');
   container.className = 'dm-export';
-  container.style.cssText = 'position:fixed;left:-99999px;top:0;width:760px;padding:24px;background:#fff;';
-  container.innerHTML = `<style>${_PDF_CSS}</style>${html}`;
+  container.style.cssText = 'position:absolute;left:0;top:0;z-index:-1;width:794px;padding:28px 32px;background:#ffffff;';
+  container.innerHTML =
+    `<style>${_PDF_CSS}</style>` +
+    `<div class="dm-head"><span class="dm-title">DarkMind-AI · Documento exportado</span><span class="dm-date">${_escHtml(fecha)}</span></div>` +
+    bodyHtml;
   document.body.appendChild(container);
   try {
-    await window.html2pdf().set({
-      margin: [12, 12, 16, 12],
+    const worker = window.html2pdf().set({
+      margin: [18, 16, 20, 16],
       filename: _baseName() + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 820 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['css', 'legacy'] },
-    }).from(container).save();
+    }).from(container).toPdf();
+
+    const pdf = await worker.get('pdf');
+    // Pie de página con numeración, estilo documento serio.
+    const total = pdf.internal.getNumberOfPages();
+    const w = pdf.internal.pageSize.getWidth();
+    const h = pdf.internal.pageSize.getHeight();
+    for (let i = 1; i <= total; i++) {
+      pdf.setPage(i);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(8);
+      pdf.setTextColor(130);
+      pdf.text(`Página ${i} de ${total}`, w / 2, h - 8, { align: 'center' });
+    }
+    await worker.save();
     uiModule.showToast?.('Exportado como PDF');
   } catch (e) {
     uiModule.showError?.('No se pudo generar el PDF');
@@ -360,7 +398,8 @@ function _docxTable(b, docx) {
 }
 
 function blocksToDocx(blocks, docx) {
-  const { Paragraph, TextRun, HeadingLevel, BorderStyle } = docx;
+  const { Paragraph, TextRun, HeadingLevel, BorderStyle, AlignmentType } = docx;
+  const JUSTIFY = AlignmentType ? AlignmentType.JUSTIFIED : undefined;
   const HL = [null, HeadingLevel.HEADING_1, HeadingLevel.HEADING_2, HeadingLevel.HEADING_3, HeadingLevel.HEADING_4, HeadingLevel.HEADING_5, HeadingLevel.HEADING_6];
   const out = [];
   for (const b of blocks) {
@@ -400,7 +439,7 @@ function blocksToDocx(blocks, docx) {
         for (const r of b.rows) out.push(new Paragraph({ children: _docxRuns(r.join('  |  '), TextRun) }));
       }
     } else if (b.type === 'para') {
-      out.push(new Paragraph({ children: _docxRuns(b.text.replace(/\n/g, ' '), TextRun) }));
+      out.push(new Paragraph({ children: _docxRuns(b.text.replace(/\n/g, ' '), TextRun), alignment: JUSTIFY }));
     }
     // 'blank' se omite (Word ya separa los párrafos)
   }
@@ -408,7 +447,7 @@ function blocksToDocx(blocks, docx) {
 }
 
 export async function exportDocx(msgElement) {
-  const raw = _getRaw(msgElement);
+  const raw = stripEmojis(_getRaw(msgElement));
   if (!raw.trim()) return _empty();
   try {
     await ensureDocx();
@@ -417,9 +456,32 @@ export async function exportDocx(msgElement) {
     return;
   }
   try {
-    const { Document, Packer } = window.docx;
-    const children = blocksToDocx(parseBlocks(raw), window.docx);
-    const doc = new Document({ sections: [{ children }] });
+    const docx = window.docx;
+    const { Document, Packer, Paragraph, TextRun, BorderStyle, AlignmentType } = docx;
+    const fecha = new Date().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' });
+    // Cabecera seria: título, fecha y una regla.
+    const header = [
+      new Paragraph({
+        children: [new TextRun({ text: 'DARKMIND-AI · DOCUMENTO EXPORTADO', bold: true, font: 'Arial', size: 20, color: '222222' })],
+      }),
+      new Paragraph({
+        children: [new TextRun({ text: fecha, font: 'Arial', size: 16, color: '777777' })],
+        border: { bottom: { color: '222222', space: 4, size: 12, style: BorderStyle.SINGLE } },
+        spacing: { after: 240 },
+      }),
+    ];
+    const children = header.concat(blocksToDocx(parseBlocks(raw), docx));
+    const doc = new Document({
+      styles: {
+        default: {
+          document: {
+            run: { font: 'Georgia', size: 22 },           // 11 pt
+            paragraph: { spacing: { line: 288, after: 120 } }, // ~1,2 de interlineado
+          },
+        },
+      },
+      sections: [{ children }],
+    });
     const blob = await Packer.toBlob(doc);
     _download(blob, _baseName() + '.docx');
     uiModule.showToast?.('Exportado como DOCX');

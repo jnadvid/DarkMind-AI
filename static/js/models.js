@@ -568,13 +568,13 @@ export async function refreshModels(force = false) {
     } else {
       // Configured installs should feel ready, not stuck in onboarding.
       const welcomeSub = document.getElementById('welcome-sub');
-      if (welcomeSub) welcomeSub.textContent = 'Lista para navegar.';
+      if (welcomeSub) welcomeSub.textContent = '«No se descubren nuevos océanos sin atreverse a perder de vista la costa.» — André Gide';
       const welcomeTip = document.getElementById('welcome-tip');
       if (welcomeTip) {
         const tips = window.innerWidth <= 768
           ? [
               'Consejo: Mantén pulsada una sesión para renombrar, eliminar y opciones de memoria.',
-              'Consejo: Toca el icono del ojo para el modo Nadie: sin historial guardado.',
+              'Consejo: Toca el icono del ojo para el modo incógnito: sin historial guardado.',
               'Consejo: Cambia al modo Agente cuando quieras usar herramientas.',
               'Consejo: Adjunta imágenes o archivos con el botón + junto al campo de texto.',
             ]
