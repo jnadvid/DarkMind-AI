@@ -9,12 +9,60 @@ import settingsModule from './settings.js';
 import spinnerModule from './spinner.js';
 import { bindMenuDismiss } from './escMenuStack.js';
 import { matchModelKey } from './model/matchKey.js';
+import { exportMessage } from './messageExport.js';
 
 const SEARCH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>';
 const REPORT_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>';
 const CHAT_ABOUT_ICON = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
 const COPY_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
 const CHECK_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+const DOWNLOAD_ICON = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+
+// Submenú de exportación (Markdown / PDF / Word) para una respuesta del asistente.
+// Reutiliza el estilo de `.msg-overflow-menu` para mantener la coherencia visual.
+function _openExportMenu(triggerBtn, msgElement) {
+  const existing = document.querySelector('.msg-export-menu');
+  if (existing) {
+    const wasSame = existing._trigger === triggerBtn;
+    if (typeof existing._dismiss === 'function') existing._dismiss(); else existing.remove();
+    if (wasSame) return;
+  }
+  const menu = document.createElement('div');
+  menu.className = 'msg-overflow-menu msg-export-menu';
+  const opts = [
+    { label: 'Markdown (.md)', fmt: 'md' },
+    { label: 'PDF (.pdf)', fmt: 'pdf' },
+    { label: 'Word (.docx)', fmt: 'docx' },
+  ];
+  let closeMenu = () => menu.remove();
+  opts.forEach((o) => {
+    const item = document.createElement('button');
+    item.className = 'msg-overflow-item';
+    item.type = 'button';
+    item.innerHTML = `<span class="overflow-icon">${DOWNLOAD_ICON}</span> ${o.label}`;
+    item.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      closeMenu();
+      exportMessage(msgElement, o.fmt);
+    });
+    menu.appendChild(item);
+  });
+  menu._trigger = triggerBtn;
+  document.body.appendChild(menu);
+  // Ancla relativa al botón pulsado; si viene del menú «···» ya desmontado
+  // (rect en cero), cae al borde inferior del propio mensaje.
+  let r = triggerBtn && triggerBtn.getBoundingClientRect();
+  if (!r || (r.width === 0 && r.height === 0)) {
+    const mr0 = msgElement && msgElement.getBoundingClientRect();
+    r = mr0 ? { top: mr0.bottom, bottom: mr0.bottom, left: mr0.left } : { top: 120, bottom: 120, left: 120 };
+  }
+  menu.style.top = (r.top - menu.offsetHeight - 4) + 'px';
+  menu.style.left = r.left + 'px';
+  if (parseFloat(menu.style.top) < 8) menu.style.top = (r.bottom + 4) + 'px';
+  const mr = menu.getBoundingClientRect();
+  if (mr.right > window.innerWidth - 8) menu.style.left = (window.innerWidth - mr.width - 8) + 'px';
+  closeMenu = bindMenuDismiss(menu, () => menu.remove(), (ev) => !menu.contains(ev.target) && ev.target !== triggerBtn);
+}
 
 /** Sanitize a URL for use in href — only allow http(s) and protocol-relative. */
 function _safeHref(url) {
@@ -1332,6 +1380,10 @@ export function createMsgFooter(msgElement) {
     { id: 'fork', icon: '\u2ADD', title: 'Bifurcar conversación', cls: 'msg-action-btn', handler(e) {
       e.stopPropagation();
       if (window.chatModule?.forkFrom) window.chatModule.forkFrom(msgElement);
+    }},
+    { id: 'export', icon: DOWNLOAD_ICON, title: 'Exportar (MD / PDF / DOCX)', cls: 'msg-action-btn', html: true, handler(e) {
+      e.stopPropagation();
+      _openExportMenu(e.currentTarget, msgElement);
     }},
     { id: 'delete', icon: '\u2715', title: 'Eliminar mensaje', cls: 'msg-action-btn msg-delete-btn', handler(e) {
       e.stopPropagation();
