@@ -265,7 +265,7 @@ function _initModelPickerDropdown() {
     listEl.classList.toggle('is-empty', !hasAnyModel);
     menu.classList.toggle('no-models', !hasAnyModel);
     if (search) {
-      search.placeholder = hasAnyModel ? 'Search models…' : 'No models connected';
+      search.placeholder = hasAnyModel ? 'Buscar modelos…' : 'Sin modelos conectados';
     }
     if (searchRow) {
       searchRow.classList.toggle('searching', !!q);
@@ -315,7 +315,7 @@ function _initModelPickerDropdown() {
       if (m.stale) {
         const badge = document.createElement('span');
         badge.className = 'model-switch-stale-badge';
-        badge.textContent = 'offline';
+        badge.textContent = 'sin conexión';
         badge.style.cssText = 'font-size:10px;opacity:0.7;padding:1px 6px;border:1px solid var(--border);border-radius:8px;margin-left:6px;';
         row.appendChild(badge);
       }
@@ -333,8 +333,8 @@ function _initModelPickerDropdown() {
       favDot.textContent = '●';
       const _setFavState = (on) => {
         favDot.classList.toggle('active', on);
-        favDot.title = on ? 'Remove from favorites' : 'Add to favorites';
-        favDot.setAttribute('aria-label', on ? 'Remove from favorites' : 'Add to favorites');
+        favDot.title = on ? 'Quitar de favoritos' : 'Añadir a favoritos';
+        favDot.setAttribute('aria-label', on ? 'Quitar de favoritos' : 'Añadir a favoritos');
         favDot.setAttribute('aria-pressed', on ? 'true' : 'false');
       };
       _setFavState(favs.includes(m.mid));
@@ -349,7 +349,7 @@ function _initModelPickerDropdown() {
         const idx = favs.indexOf(m.mid);
         if (nowFav && idx < 0) favs.push(m.mid);
         else if (!nowFav && idx >= 0) favs.splice(idx, 1);
-        if (uiModule && uiModule.showToast) uiModule.showToast(nowFav ? 'Favorited' : 'Unfavorited');
+        if (uiModule && uiModule.showToast) uiModule.showToast(nowFav ? 'Añadido a favoritos' : 'Quitado de favoritos');
         // In browse mode the Favorites section membership changed — rebuild
         // (cheap: Recent + Favorites). In search mode the row stays put, so
         // the in-place favorite update above is enough.

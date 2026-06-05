@@ -656,28 +656,28 @@ function _rerenderCachedModels() {
       // Row 2d: Auto profiles — computed from detected hardware (see profiles.py).
       // Buttons are injected after the panel mounts (needs an async fetch).
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-llamacpp hwfit-serve-profiles" style="align-items:center;gap:8px;">`;
-      panelHtml += `<span style="opacity:0.7;font-size:11px;">Auto profiles:</span>`;
-      panelHtml += `<span class="hwfit-profile-btns" style="display:flex;gap:6px;flex-wrap:wrap;"><span style="opacity:0.5;font-size:11px;">computing…</span></span>`;
+      panelHtml += `<span style="opacity:0.7;font-size:11px;">Perfiles automáticos:</span>`;
+      panelHtml += `<span class="hwfit-profile-btns" style="display:flex;gap:6px;flex-wrap:wrap;"><span style="opacity:0.5;font-size:11px;">calculando…</span></span>`;
       panelHtml += `</div>`;
       // Live VRAM / RAM-spillover monitor for the serve target's GPU. Polls
       // /api/cookbook/gpus while the panel is open so you can SEE whether the
       // config fits VRAM (fast) or spills to system RAM (slow). Populated after mount.
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-llamacpp hwfit-vram-monitor" style="align-items:center;gap:8px;font-size:11px;">`;
-      panelHtml += `<span style="opacity:0.7;">GPU memory:</span>`;
-      panelHtml += `<span class="hwfit-vram-readout" style="opacity:0.5;">checking…</span>`;
+      panelHtml += `<span style="opacity:0.7;">Memoria GPU:</span>`;
+      panelHtml += `<span class="hwfit-vram-readout" style="opacity:0.5;">comprobando…</span>`;
       panelHtml += `</div>`;
       // Row 3a: Checkboxes (llama.cpp-only)
       panelHtml += `<div class="hwfit-serve-checks hwfit-backend-llamacpp">`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="unified_mem"${sv('unified_mem',false)?' checked':''} /> Unified Memory${_h('For AMD APUs / Strix Halo: exports GGML_CUDA_ENABLE_UNIFIED_MEMORY=1 so llama.cpp can address the full BIOS VRAM carveout instead of the default ~28 GB cap. No-op on discrete GPUs.')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="llama_no_mmap"${sv('llama_no_mmap',false)?' checked':''} /> No mmap${_h('Adds --no-mmap for native llama-server. Useful for some high-context/local-storage setups, but not a universal default.')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="llama_no_warmup"${sv('llama_no_warmup',false)?' checked':''} /> Skip warmup${_h('Adds --no-warmup. Can reduce startup memory spikes for tight launches, but llama.cpp defaults to warming up.')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb hwfit-spec-group"><input type="checkbox" class="hwfit-sf" data-field="llama_speculative_mtp"${sv('llama_speculative_mtp',false)?' checked':''} /> MTP Spec${_h('llama.cpp native MTP speculative decoding: --spec-type draft-mtp. Requires a GGUF with MTP heads and a recent llama-server build.')} <span class="hwfit-numstep"><button type="button" class="hwfit-numstep-btn" data-step="-1" tabindex="-1" aria-label="Decrease">‹</button><input type="number" class="hwfit-sf hwfit-spec-tokens" data-field="llama_spec_tokens" value="${esc(sv('llama_spec_tokens', '3'))}" min="1" max="10" title="--spec-draft-n-max" /><button type="button" class="hwfit-numstep-btn" data-step="1" tabindex="-1" aria-label="Increase">›</button></span></label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="unified_mem"${sv('unified_mem',false)?' checked':''} /> Memoria unificada${_h('Para APUs AMD / Strix Halo: exporta GGML_CUDA_ENABLE_UNIFIED_MEMORY=1 para que llama.cpp pueda acceder al total de VRAM reservada por BIOS en lugar del límite por defecto de ~28 GB. Sin efecto en GPUs discretas.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="llama_no_mmap"${sv('llama_no_mmap',false)?' checked':''} /> Sin mmap${_h('Añade --no-mmap al llama-server nativo. Útil para algunas configuraciones de contexto largo/almacenamiento local, pero no es un valor predeterminado universal.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="llama_no_warmup"${sv('llama_no_warmup',false)?' checked':''} /> Omitir calentamiento${_h('Añade --no-warmup. Puede reducir los picos de memoria al arrancar en lanzamientos ajustados, aunque llama.cpp calienta por defecto.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb hwfit-spec-group"><input type="checkbox" class="hwfit-sf" data-field="llama_speculative_mtp"${sv('llama_speculative_mtp',false)?' checked':''} /> MTP Spec${_h('Decodificación especulativa MTP nativa de llama.cpp: --spec-type draft-mtp. Requiere un GGUF con cabezas MTP y una compilación reciente de llama-server.')} <span class="hwfit-numstep"><button type="button" class="hwfit-numstep-btn" data-step="-1" tabindex="-1" aria-label="Decrease">‹</button><input type="number" class="hwfit-sf hwfit-spec-tokens" data-field="llama_spec_tokens" value="${esc(sv('llama_spec_tokens', '3'))}" min="1" max="10" title="--spec-draft-n-max" /><button type="button" class="hwfit-numstep-btn" data-step="1" tabindex="-1" aria-label="Increase">›</button></span></label>`;
       panelHtml += `</div>`;
       // Row 3b: Checkboxes (diffusers)
       panelHtml += `<div class="hwfit-serve-checks hwfit-backend-diffusers">`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_offload"${sv('diff_offload',false)?' checked':''} /> CPU Offload${_h('Offload parts of model to CPU RAM to save VRAM. Slower but fits larger models')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_attention_slicing"${sv('diff_attention_slicing',false)?' checked':''} /> Attention Slicing${_h('Slice attention computation to reduce peak VRAM. Slower')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_vae_slicing"${sv('diff_vae_slicing',false)?' checked':''} /> VAE Slicing${_h('Process VAE in slices. Reduces VRAM for high-res images')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_offload"${sv('diff_offload',false)?' checked':''} /> Descarga a CPU${_h('Descarga partes del modelo a la RAM de la CPU para ahorrar VRAM. Más lento, pero permite modelos más grandes.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_attention_slicing"${sv('diff_attention_slicing',false)?' checked':''} /> Fragmentación de atención${_h('Divide el cálculo de atención para reducir el pico de VRAM. Más lento.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="diff_vae_slicing"${sv('diff_vae_slicing',false)?' checked':''} /> Fragmentación VAE${_h('Procesa el VAE en fragmentos. Reduce la VRAM para imágenes de alta resolución.')}</label>`;
       panelHtml += `</div><div class="hwfit-serve-row hwfit-backend-diffusers">`;
       panelHtml += `<label>Harmonize GPU${_h('Separate GPU for img2img/harmonize. Leave empty to use same GPU')}<input type="text" class="hwfit-sf" data-field="diff_harmonize_gpu" value="${esc(sv('diff_harmonize_gpu', ''))}" placeholder="auto" style="width:50px;" /></label>`;
       panelHtml += `</div>`;

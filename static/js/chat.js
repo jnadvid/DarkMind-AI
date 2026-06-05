@@ -853,7 +853,7 @@ import createResearchSynapse from './researchSynapse.js';
       holder.style.position = 'relative';
       
       // Create spinner
-      spinner = spinnerModule.create('Initializing', 'right', 'wave');
+      spinner = spinnerModule.create('Inicializando', 'right', 'wave');
       currentSpinner = spinner;
       const bodyDiv = holder.querySelector('.body');
       bodyDiv.appendChild(spinner.createElement());
@@ -3326,7 +3326,7 @@ import createResearchSynapse from './researchSynapse.js';
       _applyModelColor(holder.querySelector('.role'), meta && meta.model);
 
       var bodyDiv = holder.querySelector('.body');
-      var spinner = spinnerModule.create('Response streaming in background', 'right');
+      var spinner = spinnerModule.create('Respuesta en streaming en segundo plano', 'right');
       bodyDiv.appendChild(spinner.createElement());
       spinner.start();
 
@@ -4129,7 +4129,7 @@ import createResearchSynapse from './researchSynapse.js';
       box.appendChild(holder);
 
       const bodyDiv = holder.querySelector('.body');
-      const spinner = spinnerModule.create('Reconnecting to research...', 'right');
+      const spinner = spinnerModule.create('Reconectando a la investigación...', 'right');
       bodyDiv.appendChild(spinner.createElement());
       spinner.start();
 

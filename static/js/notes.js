@@ -2834,19 +2834,19 @@ function _buildForm(note = null) {
       <input type="text" class="note-form-label" value="${_esc(note?.label || '')}" placeholder="#etiqueta1 #etiqueta2" title="Etiqueta(s) — separadas por espacio" />
       <div class="note-form-actions-group">
         ${isEdit ? `
-        <button type="button" class="note-form-text-btn note-form-archive-btn note-form-collapsible" title="Archive">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 002 2h12a2 2 0 002-2V8"/><path d="M10 12h4"/></svg><span class="nft-label">Archive</span>
+        <button type="button" class="note-form-text-btn note-form-archive-btn note-form-collapsible" title="Archivar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M4 8v11a2 2 0 002 2h12a2 2 0 002-2V8"/><path d="M10 12h4"/></svg><span class="nft-label">Archivar</span>
         </button>
-        <button type="button" class="note-form-text-btn note-form-delete-btn note-form-collapsible danger" title="Delete">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="nft-label">Delete</span>
+        <button type="button" class="note-form-text-btn note-form-delete-btn note-form-collapsible danger" title="Eliminar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg><span class="nft-label">Eliminar</span>
         </button>
         ` : ''}
         <span class="note-form-actions-spacer"></span>
-        <button class="note-form-cancel note-form-text-btn note-form-collapsible" title="Cancel">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg><span class="nft-label">Cancel</span>
+        <button class="note-form-cancel note-form-text-btn note-form-collapsible" title="Cancelar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg><span class="nft-label">Cancelar</span>
         </button>
-        <button class="note-form-save note-form-text-btn" title="${isEdit ? 'Update' : 'Save'}">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="nft-label">${isEdit ? 'Update' : 'Save'}</span>
+        <button class="note-form-save note-form-text-btn" title="${isEdit ? 'Actualizar' : 'Guardar'}">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span class="nft-label">${isEdit ? 'Actualizar' : 'Guardar'}</span>
         </button>
       </div>
     </div>
@@ -3054,10 +3054,10 @@ function _buildForm(note = null) {
     if (!v) { tagsEl.innerHTML = ''; return; }
     const label = _formatReminderTag(v);
     const repLabel = rep !== 'none' ? ` · ${_formatRepeatLabel(rep, new Date(v))}` : '';
-    tagsEl.innerHTML = `<button class="note-reminder-tag" type="button" title="Edit reminder">
+    tagsEl.innerHTML = `<button class="note-reminder-tag" type="button" title="Editar recordatorio">
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <span>${_esc(label)}${_esc(repLabel)}</span>
-      <span class="note-reminder-tag-x" title="Remove">×</span>
+      <span class="note-reminder-tag-x" title="Eliminar">×</span>
     </button>`;
     tagsEl.querySelector('.note-reminder-tag').addEventListener('click', (e) => {
       if (e.target.classList.contains('note-reminder-tag-x')) {
@@ -3078,10 +3078,10 @@ function _buildForm(note = null) {
     document.body.appendChild(menu);
 
     const presetItems = [
-      { label: 'Later today', sub: _laterTodayDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_laterTodayDate())) },
-      { label: 'Tomorrow', sub: _tomorrowDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_tomorrowDate())) },
-      { label: 'Next week', sub: _nextWeekDate().toLocaleDateString([], { weekday: 'short' }) + ' ' + _nextWeekDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_nextWeekDate())) },
-      { label: 'Select date and time', sub: '', action: () => _pickCustomDate() },
+      { label: 'Más tarde hoy', sub: _laterTodayDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_laterTodayDate())) },
+      { label: 'Mañana', sub: _tomorrowDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_tomorrowDate())) },
+      { label: 'La semana que viene', sub: _nextWeekDate().toLocaleDateString([], { weekday: 'short' }) + ' ' + _nextWeekDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), action: () => _setReminder(_toLocalDatetimeStr(_nextWeekDate())) },
+      { label: 'Seleccionar fecha y hora', sub: '', action: () => _pickCustomDate() },
     ];
 
     // Sub-page state for the repeat picker. null = top page.
@@ -3140,7 +3140,7 @@ function _buildForm(note = null) {
       let html = '';
 
       if (subMode === null) {
-        html += '<div class="note-reminder-menu-title">Remind me later</div>';
+        html += '<div class="note-reminder-menu-title">Recordarme más tarde</div>';
         for (let i = 0; i < presetItems.length; i++) {
           const it = presetItems[i];
           html += `<button class="note-reminder-menu-item" data-action="preset" data-i="${i}"><span>${it.label}</span><span class="note-reminder-menu-sub">${it.sub}</span></button>`;
@@ -3148,32 +3148,32 @@ function _buildForm(note = null) {
         if (isEdit && dueInput.value) {
           const norm = getNorm();
           html += '<div class="note-reminder-menu-divider"></div>';
-          html += '<div class="note-reminder-menu-title">Repeat</div>';
+          html += '<div class="note-reminder-menu-title">Repetir</div>';
           // None
-          html += `<button class="note-reminder-menu-item${norm === 'none' ? ' active' : ''}" data-action="set" data-val="none"><span>Doesn't repeat</span>${norm === 'none' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
+          html += `<button class="note-reminder-menu-item${norm === 'none' ? ' active' : ''}" data-action="set" data-val="none"><span>No se repite</span>${norm === 'none' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
           // Daily
-          html += `<button class="note-reminder-menu-item${norm === 'daily' ? ' active' : ''}" data-action="set" data-val="daily"><span>Daily</span>${norm === 'daily' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
+          html += `<button class="note-reminder-menu-item${norm === 'daily' ? ' active' : ''}" data-action="set" data-val="daily"><span>Diariamente</span>${norm === 'daily' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
           // Weekly →
           {
             const isW = norm.startsWith('weekly:');
             const wd = isW ? parseInt(norm.split(':')[1], 10) : null;
             const sub = isW && !isNaN(wd) ? `<span class="note-reminder-menu-sub">${_DAYS[wd]}</span>` : '';
-            html += `<button class="note-reminder-menu-item${isW ? ' active' : ''}" data-action="sub" data-sub="weekly"><span>Weekly</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
+            html += `<button class="note-reminder-menu-item${isW ? ' active' : ''}" data-action="sub" data-sub="weekly"><span>Semanalmente</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
           }
           // Monthly →
           {
             const isM = norm.startsWith('monthly:');
             const sub = isM ? `<span class="note-reminder-menu-sub">${_monthlyShortDescriptor(norm)}</span>` : '';
-            html += `<button class="note-reminder-menu-item${isM ? ' active' : ''}" data-action="sub" data-sub="monthly"><span>Monthly</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
+            html += `<button class="note-reminder-menu-item${isM ? ' active' : ''}" data-action="sub" data-sub="monthly"><span>Mensualmente</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
           }
           // Yearly
-          html += `<button class="note-reminder-menu-item${norm === 'yearly' ? ' active' : ''}" data-action="set" data-val="yearly"><span>Yearly</span>${norm === 'yearly' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
+          html += `<button class="note-reminder-menu-item${norm === 'yearly' ? ' active' : ''}" data-action="set" data-val="yearly"><span>Anualmente</span>${norm === 'yearly' ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
         }
       } else if (subMode === 'weekly') {
         const norm = getNorm();
         const curWd = norm.startsWith('weekly:') ? parseInt(norm.split(':')[1], 10) : -1;
-        html += `<button class="note-reminder-menu-back" data-action="back"><span class="note-reminder-menu-arrow-back">‹</span> Repeat</button>`;
-        html += '<div class="note-reminder-menu-title">Weekly on…</div>';
+        html += `<button class="note-reminder-menu-back" data-action="back"><span class="note-reminder-menu-arrow-back">‹</span> Repetir</button>`;
+        html += '<div class="note-reminder-menu-title">Semanalmente el…</div>';
         html += '<div class="note-reminder-weekday-row">';
         for (let i = 0; i < 7; i++) {
           html += `<button class="note-reminder-day-chip${curWd === i ? ' active' : ''}" data-action="weekly-pick" data-wd="${i}" title="${_DAYS[i]}">${DAY_SHORT[i]}</button>`;
@@ -3183,28 +3183,28 @@ function _buildForm(note = null) {
         const norm = getNorm();
         const dueDate = new Date(dueInput.value);
         const dayN = dueDate.getDate();
-        html += `<button class="note-reminder-menu-back" data-action="back"><span class="note-reminder-menu-arrow-back">‹</span> Repeat</button>`;
-        html += '<div class="note-reminder-menu-title">Monthly on…</div>';
+        html += `<button class="note-reminder-menu-back" data-action="back"><span class="note-reminder-menu-arrow-back">‹</span> Repetir</button>`;
+        html += '<div class="note-reminder-menu-title">Mensualmente el…</div>';
         // Day N — uses the chosen date's day. Always offered.
         const dayVal = `monthly:day:${dayN}`;
-        html += `<button class="note-reminder-menu-item${norm === dayVal ? ' active' : ''}" data-action="set" data-val="${dayVal}"><span>Day ${dayN} every month</span>${norm === dayVal ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
+        html += `<button class="note-reminder-menu-item${norm === dayVal ? ' active' : ''}" data-action="set" data-val="${dayVal}"><span>Día ${dayN} cada mes</span>${norm === dayVal ? '<span class="note-reminder-menu-check">✓</span>' : ''}</button>`;
         // Nth weekday →
         {
           const isNth = norm.startsWith('monthly:nth:');
           const sub = isNth ? `<span class="note-reminder-menu-sub">${_monthlyShortDescriptor(norm)}</span>` : '';
-          html += `<button class="note-reminder-menu-item${isNth ? ' active' : ''}" data-action="sub" data-sub="monthly_nth"><span>Nth weekday</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
+          html += `<button class="note-reminder-menu-item${isNth ? ' active' : ''}" data-action="sub" data-sub="monthly_nth"><span>N.º día de la semana</span>${sub}<span class="note-reminder-menu-arrow">›</span></button>`;
         }
       } else if (subMode === 'monthly_nth') {
         // Pick ordinal (1..4) and weekday (0..6); commit when both chosen.
-        html += `<button class="note-reminder-menu-back" data-action="back-monthly"><span class="note-reminder-menu-arrow-back">‹</span> Monthly</button>`;
-        html += '<div class="note-reminder-menu-title">Nth weekday of month</div>';
-        html += '<div class="note-reminder-menu-sublabel">Which one</div>';
+        html += `<button class="note-reminder-menu-back" data-action="back-monthly"><span class="note-reminder-menu-arrow-back">‹</span> Mensualmente</button>`;
+        html += '<div class="note-reminder-menu-title">N.º día de la semana del mes</div>';
+        html += '<div class="note-reminder-menu-sublabel">¿Cuál?</div>';
         html += '<div class="note-reminder-weekday-row">';
         for (let i = 1; i <= 4; i++) {
           html += `<button class="note-reminder-day-chip wide${nthDraft.n === i ? ' active' : ''}" data-action="nth-n" data-n="${i}">${_ORDINALS[i - 1]}</button>`;
         }
         html += '</div>';
-        html += '<div class="note-reminder-menu-sublabel">Weekday</div>';
+        html += '<div class="note-reminder-menu-sublabel">Día de la semana</div>';
         html += '<div class="note-reminder-weekday-row">';
         for (let i = 0; i < 7; i++) {
           html += `<button class="note-reminder-day-chip${nthDraft.w === i ? ' active' : ''}" data-action="nth-w" data-wd="${i}" title="${_DAYS[i]}">${DAY_SHORT[i]}</button>`;
@@ -3212,7 +3212,7 @@ function _buildForm(note = null) {
         html += '</div>';
         html += '<div class="note-reminder-menu-divider"></div>';
         const ready = nthDraft.n > 0 && nthDraft.w >= 0;
-        const lbl = ready ? `Save: ${_ORDINALS[nthDraft.n - 1]} ${_DAYS[nthDraft.w]}` : 'Pick week and weekday';
+        const lbl = ready ? `Guardar: ${_ORDINALS[nthDraft.n - 1]} ${_DAYS[nthDraft.w]}` : 'Elige semana y día';
         html += `<button class="note-reminder-menu-item note-reminder-menu-confirm${ready ? '' : ' disabled'}" data-action="nth-save" ${ready ? '' : 'disabled'}><span>${lbl}</span></button>`;
       }
 
@@ -3316,13 +3316,13 @@ function _buildForm(note = null) {
     menu.className = 'note-reminder-menu';
     const initial = dueInput.value || _toLocalDatetimeStr(_tomorrowDate());
     menu.innerHTML = `
-      <div class="note-reminder-menu-title">Pick date and time</div>
+      <div class="note-reminder-menu-title">Elegir fecha y hora</div>
       <div class="note-reminder-menu-picker">
         <input type="datetime-local" class="note-reminder-date-input" value="${initial}" />
       </div>
       <div class="note-reminder-menu-divider"></div>
       <button class="note-reminder-menu-item note-reminder-menu-confirm">
-        <span>Save</span>
+        <span>Guardar</span>
       </button>
     `;
     document.body.appendChild(menu);
@@ -3514,7 +3514,7 @@ function _buildForm(note = null) {
       // can't be re-rendered later without the URL.
       const canvas = form.querySelector('.note-form-canvas');
       const url = await _uploadCanvasAsPng(canvas);
-      if (!url) { uiModule.showError('Failed to save drawing'); return; }
+      if (!url) { uiModule.showError('Error al guardar el dibujo'); return; }
       payload.image_url = url;
     } else if (currentType === 'goal') {
       // Legacy: existing goal-type notes still edit through this branch.
@@ -3572,7 +3572,7 @@ function _buildForm(note = null) {
         _renderNotes();
       }
     }).catch(err => {
-      uiModule.showError('Save failed: ' + err.message);
+      uiModule.showError('Error al guardar: ' + err.message);
       _fetchNotes().then(() => _renderNotes());
     });
     } finally {

@@ -19,7 +19,7 @@ _UI = (_REPO / "static" / "js" / "ui.js").read_text(encoding="utf-8")
 def test_static_modals_expose_dialog_role_and_name():
     # Each static tool window must announce itself as a named dialog. These are
     # dockable/tiling windows, so they are role="dialog" WITHOUT aria-modal.
-    for name in ("Brain", "Theme", "Prompt", "Rename session", "Cookbook", "Settings"):
+    for name in ("Cerebro", "Tema", "Instrucción", "Renombrar sesión", "Recetario", "Ajustes"):
         assert f'role="dialog" aria-label="{name}"' in _INDEX, f"missing dialog role/name for {name!r}"
 
 
@@ -37,7 +37,7 @@ def test_styled_confirm_and_prompt_are_modal_dialogs():
     # role="dialog" + aria-modal="true" and are labelled by their title.
     assert 'class="modal-content styled-confirm-box" role="dialog" aria-modal="true"' in _UI
     assert 'aria-labelledby="styled-confirm-title"' in _UI
-    assert '<h4 id="styled-confirm-title">Confirm</h4>' in _UI
+    assert '<h4 id="styled-confirm-title">Confirmar</h4>' in _UI
 
     assert 'styled-prompt-box" role="dialog" aria-modal="true"' in _UI
     assert 'aria-labelledby="styled-prompt-title"' in _UI

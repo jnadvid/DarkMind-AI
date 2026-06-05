@@ -22,7 +22,7 @@ let _totalTagged = 0;
 // Update the "X/Y tagged" badge in the AI-tagging settings header.
 function _updateTagCount() {
   const el = document.getElementById('gallery-tag-count');
-  if (el) el.textContent = _total ? `${_totalTagged}/${_total} tagged` : '';
+  if (el) el.textContent = _total ? `${_totalTagged}/${_total} etiquetadas` : '';
 }
 let _search = '';
 // Stack of active tag filters. Multiple tags AND together — the user
@@ -212,14 +212,14 @@ async function _bulkUpload(filesOrItems, fallbackAlbumId) {
       } catch (e) { errors++; }
       done++;
       if (progress) progress.style.width = `${(done / total) * 100}%`;
-      if (status) status.textContent = `${done}/${total}${dupes ? ` (${dupes} duplicates)` : ''}`;
+      if (status) status.textContent = `${done}/${total}${dupes ? ` (${dupes} duplicados)` : ''}`;
     }
   }
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, total) }, worker));
 
-  const msg = `${done - dupes - errors} imported` +
-    (dupes ? `, ${dupes} duplicates skipped` : '') +
-    (errors ? `, ${errors} errors` : '');
+  const msg = `${done - dupes - errors} importadas` +
+    (dupes ? `, ${dupes} duplicados omitidos` : '') +
+    (errors ? `, ${errors} errores` : '');
   if (status) status.textContent = msg;
   uiModule.showToast(msg);
   setTimeout(() => { bar.style.display = 'none'; }, 3000);

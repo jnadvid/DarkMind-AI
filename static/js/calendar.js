@@ -2367,60 +2367,60 @@ async function _showCalSettings() {
   overlay.innerHTML = `
     <div class="modal-content" style="width:420px;max-width:92vw;">
       <div class="modal-header">
-        <h4>Calendar Settings</h4>
+        <h4>Ajustes del calendario</h4>
         <button class="close-btn" id="cal-settings-close">\u2716</button>
       </div>
       <div class="modal-body" style="padding:16px;display:flex;flex-direction:column;gap:16px;">
         <div>
-          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Your calendars</div>
+          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Tus calendarios</div>
           <div id="cal-settings-list" style="display:flex;flex-direction:column;gap:4px;">
             ${cals.map(c => `
               <div class="cal-settings-row" data-id="${_e(c.href)}" style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;background:color-mix(in srgb, var(--fg) 4%, transparent);">
                 <input type="color" value="${c.color || '#5b8abf'}" class="cal-s-color" style="width:24px;height:24px;border:none;background:none;cursor:pointer;padding:0;border-radius:50%;overflow:hidden;" />
                 <input type="text" value="${_e(c.name)}" class="cal-s-name" style="flex:1;background:none;border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--fg);font-size:12px;" />
-                <button class="cal-s-del" title="Delete calendar" style="background:none;border:none;color:var(--accent, var(--red));opacity:0.75;cursor:pointer;padding:2px;display:flex;position:relative;top:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
+                <button class="cal-s-del" title="Eliminar calendario" style="background:none;border:none;color:var(--accent, var(--red));opacity:0.75;cursor:pointer;padding:2px;display:flex;position:relative;top:4px;"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg></button>
               </div>
             `).join('')}
           </div>
           <button class="memory-toolbar-btn" id="cal-settings-add" style="margin-top:8px;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--accent, var(--red))" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            New calendar
+            Nuevo calendario
           </button>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:12px;">
-          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Import calendar</div>
+          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Importar calendario</div>
           <div style="display:flex;gap:8px;align-items:center;">
             <label class="memory-toolbar-btn" style="cursor:pointer;">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:relative;top:5px;margin-right:3px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              <span style="position:relative;top:4px;">Import .ics</span>
+              <span style="position:relative;top:4px;">Importar .ics</span>
               <input type="file" accept=".ics,.ical" id="cal-import-file" style="display:none;" />
             </label>
             <span id="cal-import-status" style="font-size:11px;opacity:0.6;"></span>
           </div>
-          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Upload a .ics file to import events. Google Calendar, Apple Calendar, and Outlook all export .ics files.</div>
+          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Sube un archivo .ics para importar eventos. Google Calendar, Apple Calendar y Outlook exportan archivos .ics.</div>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:12px;">
-          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Export calendar</div>
+          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Exportar calendario</div>
           <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
             ${cals.map(c => `
-              <button class="memory-toolbar-btn cal-s-export-chip" data-id="${_e(c.href)}" title="Download ${_e(c.name)}.ics" style="cursor:pointer;">
+              <button class="memory-toolbar-btn cal-s-export-chip" data-id="${_e(c.href)}" title="Descargar ${_e(c.name)}.ics" style="cursor:pointer;">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:relative;top:2px;margin-right:3px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 <span style="position:relative;top:1px;">${_e(c.name)}</span>
               </button>
             `).join('')}
           </div>
-          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Download a calendar as .ics for backup or to import into another app.</div>
+          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Descarga un calendario como .ics para hacer una copia de seguridad o importarlo en otra aplicación.</div>
         </div>
         <div style="border-top:1px solid var(--border);padding-top:12px;">
-          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Sync</div>
+          <div style="font-size:11px;opacity:0.5;margin-bottom:6px;">Sincronizar</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <button class="memory-toolbar-btn" id="cal-settings-sync-now" style="cursor:pointer;">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:relative;top:2px;margin-right:3px;"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              <span style="position:relative;top:1px;">Sync now</span>
+              <span style="position:relative;top:1px;">Sincronizar ahora</span>
             </button>
             <span id="cal-settings-sync-status" style="font-size:11px;opacity:0.6;"></span>
           </div>
-          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Pulls events from your CalDAV server. To connect or change CalDAV credentials, open <a href="#" id="cal-settings-open-caldav" style="color:var(--accent, var(--red));text-decoration:none;font-weight:600;">Settings → Integrations</a>.</div>
+          <div style="font-size:10px;opacity:0.4;margin-top:4px;">Obtiene eventos de tu servidor CalDAV. Para conectar o cambiar las credenciales CalDAV, abre <a href="#" id="cal-settings-open-caldav" style="color:var(--accent, var(--red));text-decoration:none;font-weight:600;">Ajustes → Integraciones</a>.</div>
         </div>
       </div>
     </div>
@@ -2438,9 +2438,9 @@ async function _showCalSettings() {
     btn.disabled = true;
     const color = COLORS[_calendars.length % COLORS.length];
     try {
-      const r = await fetch(`${API_BASE}/api/calendar/calendars?name=${encodeURIComponent('New calendar')}&color=${encodeURIComponent(color)}`, { method: 'POST', credentials: 'same-origin' });
+      const r = await fetch(`${API_BASE}/api/calendar/calendars?name=${encodeURIComponent('Nuevo calendario')}&color=${encodeURIComponent(color)}`, { method: 'POST', credentials: 'same-origin' });
       const d = await r.json().catch(() => ({}));
-      if (!r.ok || !d.ok) throw new Error(d.error || 'Failed to create calendar');
+      if (!r.ok || !d.ok) throw new Error(d.error || 'Error al crear el calendario');
       _calendars.push({ name: d.name, href: d.id, color: d.color });
       _allEvents = {}; _fetchedRanges = []; localStorage.removeItem(LS_KEY);
       _render();
@@ -2455,7 +2455,7 @@ async function _showCalSettings() {
       }, 30);
     } catch (err) {
       btn.disabled = false;
-      if (window.showError) window.showError(err.message || 'Failed to create calendar');
+      if (window.showError) window.showError(err.message || 'Error al crear el calendario');
       else console.error(err);
     }
   });
@@ -2472,7 +2472,7 @@ async function _showCalSettings() {
       clearTimeout(saveTimer);
       saveTimer = setTimeout(async () => {
         await fetch(`${API_BASE}/api/calendar/calendars/${id}?name=${encodeURIComponent(nameInput.value)}&color=${encodeURIComponent(colorInput.value)}`, { method: 'PUT' });
-        if (uiModule?.showToast) uiModule.showToast(`Saved “${nameInput.value || 'calendar'}”`);
+        if (uiModule?.showToast) uiModule.showToast(`Guardado “${nameInput.value || 'calendario'}”`);
         // Update local calendar list
         const c = _calendars.find(c => c.href === id);
         if (c) { c.name = nameInput.value; c.color = colorInput.value; }
@@ -2495,7 +2495,7 @@ async function _showCalSettings() {
 
     delBtn.addEventListener('click', async () => {
       const name = nameInput.value;
-      if (!await window.styledConfirm(`Delete calendar "${name}" and all its events?`, { confirmText: 'Delete', danger: true })) return;
+      if (!await window.styledConfirm(`¿Eliminar el calendario "${name}" y todos sus eventos?`, { confirmText: 'Eliminar', danger: true })) return;
       await fetch(`${API_BASE}/api/calendar/calendars/${id}`, { method: 'DELETE' });
       row.remove();
       _allEvents = {}; _fetchedRanges = []; localStorage.removeItem(LS_KEY);
@@ -2509,7 +2509,7 @@ async function _showCalSettings() {
     const file = e.target.files[0];
     if (!file) return;
     const status = overlay.querySelector('#cal-import-status');
-    status.textContent = 'Importing...';
+    status.textContent = 'Importando...';
     try {
       const fd = new FormData();
       fd.append('file', file);
@@ -2520,18 +2520,18 @@ async function _showCalSettings() {
       let data = null, raw = '';
       try { data = await res.clone().json(); } catch (_) { raw = await res.text().catch(() => ''); }
       if (res.ok && data && data.ok) {
-        status.textContent = `${data.imported} events imported to "${data.calendar}"` + (data.skipped ? ` (${data.skipped} skipped)` : '');
+        status.textContent = `${data.imported} eventos importados a "${data.calendar}"` + (data.skipped ? ` (${data.skipped} omitidos)` : '');
         _allEvents = {}; _fetchedRanges = []; localStorage.removeItem(LS_KEY);
         await _fetchCalendars();
         _render();
       } else {
         // FastAPI HTTPException → {detail}; some routes use {error}.
         const reason = (data && (data.detail || data.error)) || raw.slice(0, 200) || `HTTP ${res.status}`;
-        status.textContent = `Import failed: ${reason}`;
+        status.textContent = `Error al importar: ${reason}`;
         console.error('Calendar import failed', res.status, data || raw);
       }
     } catch (err) {
-      status.textContent = `Import failed: ${err.message || err}`;
+      status.textContent = `Error al importar: ${err.message || err}`;
       console.error('Calendar import threw', err);
     }
     e.target.value = '';
@@ -2550,7 +2550,7 @@ async function _showCalSettings() {
     const btn = e.currentTarget;
     const status = overlay.querySelector('#cal-settings-sync-status');
     btn.disabled = true;
-    status.textContent = 'Syncing…';
+    status.textContent = 'Sincronizando…';
     const data = await _syncCaldav(true) || {};
     if (data.errors && data.errors.length) {
       status.textContent = `Sync failed: ${data.errors[0]}`;

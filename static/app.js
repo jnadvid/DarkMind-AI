@@ -1279,7 +1279,7 @@ function initializeEventListeners() {
           uiModule.showToast(data.reason || 'Nada que ordenar');
         }
       } catch (e) {
-        uiModule.showError('Auto-sort: ' + e.message);
+        uiModule.showError('Error al ordenar automáticamente: ' + e.message);
       } finally {
         wp.destroy();
         if (wpEl.parentNode) wpEl.parentNode.removeChild(wpEl);

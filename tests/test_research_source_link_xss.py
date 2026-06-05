@@ -13,8 +13,8 @@ def test_document_library_research_preview_whitelists_source_hrefs():
     assert "parsed.protocol === 'http:' || parsed.protocol === 'https:'" in src
     assert "const url = _safeResearchHref(src.url);" in src
     assert 'href="${_esc(url)}"' not in src
-    assert "Failed to load: ${_esc(e.message)}" in src
-    assert "Failed to load: ${e.message}" not in src
+    assert "Error al cargar: ${_esc(e.message)}" in src
+    assert "Error al cargar: ${e.message}" not in src
 
 
 def test_research_panel_whitelists_source_hrefs():
