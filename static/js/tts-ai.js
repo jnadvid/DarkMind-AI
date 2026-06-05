@@ -105,13 +105,13 @@ class AITTSManager {
 
     async synthesize(text, onProgress = null) {
         if (!this.available) {
-            throw new Error('AI TTS service not available');
+            throw new Error('Servicio de TTS de IA no disponible');
         }
 
         const plainText = this.extractPlainText(text);
 
         if (!plainText) {
-            throw new Error('No text to synthesize');
+            throw new Error('No hay texto para sintetizar');
         }
 
         // Browser TTS doesn't use synthesize — handled directly in play()
@@ -285,7 +285,7 @@ class AITTSManager {
         button.innerHTML = ICON_LOADING;
         button.classList.add('loading');
         button.style.color = '#ccc';
-        button.title = 'Loading...';
+        button.title = 'Cargando...';
 
         try {
             if (!this._processing) return;
@@ -297,7 +297,7 @@ class AITTSManager {
             button.innerHTML = ICON_STOP;
             button.classList.remove('loading');
             button.classList.add('playing');
-            button.title = 'Stop';
+            button.title = 'Detener';
 
             if (this.useBrowserTTS) {
                 const plainText = this.extractPlainText(text);
@@ -476,7 +476,7 @@ export function addAITTSButton(messageElement, text) {
     const playButton = document.createElement('button');
     playButton.className = 'ai-tts-button';
     playButton.type = 'button';
-    playButton.title = 'Read aloud';
+    playButton.title = 'Leer en voz alta';
     playButton.innerHTML = ICON_PLAY;
     playButton.style.cssText = 'background:none;border:none;color:#6b7280;cursor:pointer;padding:2px 6px;border-radius:4px;transition:color .15s;line-height:1;display:inline-flex;align-items:center;';
 
@@ -489,7 +489,7 @@ export function addAITTSButton(messageElement, text) {
         playButton.innerHTML = ICON_PLAY;
         playButton.classList.remove('playing', 'loading');
         playButton.style.color = '#6b7280';
-        playButton.title = 'Read aloud';
+        playButton.title = 'Leer en voz alta';
     }
 
     playButton.addEventListener('click', async (e) => {

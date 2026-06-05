@@ -1,14 +1,14 @@
-# DarkMind Codex Integration
+# Integración de DarkMind-AI con Codex
 
-This directory contains the Codex plugin/skill bundle for DarkMind.
+Este directorio contiene el paquete de complemento/habilidades de Codex para DarkMind-AI.
 
-## User Flow
+## Flujo de usuario
 
-1. Open DarkMind Settings > Integrations.
-2. Add a Codex Agent.
-3. Copy the full setup commands shown after the generated token.
-4. Toggle the tools Codex is allowed to use.
-5. Configure the terminal Codex session:
+1. Abre Configuración de DarkMind-AI > Integraciones.
+2. Añade un Agente Codex.
+3. Copia los comandos de configuración completos que aparecen tras el token generado.
+4. Activa las herramientas que Codex tiene permitido usar.
+5. Configura la sesión de terminal de Codex:
 
 ```bash
 export DARKMIND_URL=http://your-darkmind-host:7000
@@ -42,10 +42,10 @@ PY
 codex plugin add darkmind@personal
 ```
 
-6. Verify:
+6. Verifica:
 
 ```bash
 python3 ~/plugins/darkmind/scripts/darkmind_api.py capabilities
 ```
 
-Codex must use `/api/codex/*` endpoints. SSH, Docker, direct Python imports, database queries, and MCP internals bypass DarkMind Settings and must not be used for user data access.
+Codex debe usar los endpoints `/api/codex/*`. SSH, Docker, importaciones directas de Python, consultas de base de datos e internos de MCP omiten la Configuración de DarkMind-AI y no deben usarse para acceder a datos de usuario.

@@ -133,7 +133,7 @@ function _recipientChipHtml(full, label, extraClass = '') {
   const addr = _emailAddressFromRecipientText(fullText);
   const labelText = String(label || addr || fullText || '').trim();
   const cls = `recipient-chip${extraClass ? ` ${extraClass}` : ''}`;
-  return `<span class="${cls}" data-full="${_esc(fullText || labelText)}" data-email="${_esc(addr)}" title="Click for details"><span class="recipient-chip-label">${_esc(labelText)}</span><button type="button" class="recipient-chip-copy" title="Copy email" aria-label="Copy email" hidden>${_COPY_EMAIL_ICON}</button></span>`;
+  return `<span class="${cls}" data-full="${_esc(fullText || labelText)}" data-email="${_esc(addr)}" title="Haz clic para ver detalles"><span class="recipient-chip-label">${_esc(labelText)}</span><button type="button" class="recipient-chip-copy" title="Copiar correo" aria-label="Copiar correo" hidden>${_COPY_EMAIL_ICON}</button></span>`;
 }
 
 function _wireRecipientChips(root) {
@@ -151,14 +151,14 @@ function _wireRecipientChips(root) {
         const copied = await _copyTextToClipboard(email);
         if (!copied) throw new Error('copy failed');
         copyBtn.classList.add('copied');
-        copyBtn.title = 'Copied';
-        showToast?.('Email copied');
+        copyBtn.title = 'Copiado';
+        showToast?.('Correo copiado');
         setTimeout(() => {
           copyBtn.classList.remove('copied');
-          copyBtn.title = 'Copy email';
+          copyBtn.title = 'Copiar correo';
         }, 900);
       } catch (_) {
-        showToast?.('Copy failed');
+        showToast?.('Error al copiar');
       }
       return;
     }
@@ -302,11 +302,11 @@ function _renderAccountsLoading() {
     wp.element.classList.add('email-accounts-loading-whirlpool');
     const label = document.createElement('span');
     label.className = 'email-accounts-loading-label';
-    label.textContent = 'Accounts';
+    label.textContent = 'Cuentas';
     strip.appendChild(wp.element);
     strip.appendChild(label);
   } catch (_) {
-    strip.textContent = 'Accounts...';
+    strip.textContent = 'Cuentas...';
   }
 }
 

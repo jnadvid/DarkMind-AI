@@ -311,7 +311,7 @@ function createThinkingSection(thinkingContent, index = 0, thinkingTime = null) 
     <div class="thinking-section">
       <div class="thinking-header" data-thinking-id="${id}">
         <div class="thinking-header-left">
-          <span>View thinking process</span>
+          <span>Ver proceso de razonamiento</span>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           ${timeHtml}
@@ -411,7 +411,7 @@ export function createCollapsible(contentMarkdown, label = 'details') {
   return `
     <div class="thinking-section">
       <div class="thinking-header" data-thinking-id="${id}">
-        <div class="thinking-header-left"><span data-label="${safeLabel}">View ${safeLabel}</span></div>
+        <div class="thinking-header-left"><span data-label="${safeLabel}">Ver ${safeLabel}</span></div>
         <div style="display:flex;align-items:center;gap:6px;"><span class="thinking-toggle" id="${id}-toggle"></span></div>
       </div>
       <div class="thinking-content" id="${id}"><div class="thinking-content-inner">${mdToHtml(contentMarkdown)}</div></div>

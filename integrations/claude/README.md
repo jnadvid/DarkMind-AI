@@ -1,14 +1,14 @@
-# DarkMind Claude Code Integration
+# Integración de DarkMind-AI con Claude Code
 
-This directory contains the Claude Code skill bundle for DarkMind.
+Este directorio contiene el paquete de habilidades de Claude Code para DarkMind-AI.
 
-## User Flow
+## Flujo de usuario
 
-1. Open DarkMind Settings > Integrations.
-2. Add a Claude Agent.
-3. Copy the full setup commands shown after the generated token.
-4. Toggle the tools Claude is allowed to use.
-5. Configure the terminal Claude Code session:
+1. Abre Configuración de DarkMind-AI > Integraciones.
+2. Añade un Agente Claude.
+3. Copia los comandos de configuración completos que aparecen tras el token generado.
+4. Activa las herramientas que Claude tiene permitido usar.
+5. Configura la sesión de terminal de Claude Code:
 
 ```bash
 export DARKMIND_URL=http://your-darkmind-host:7000
@@ -18,19 +18,13 @@ curl -fsSL -H "Authorization: Bearer $DARKMIND_API_TOKEN" "$DARKMIND_URL/api/cla
 python3 -m zipfile -e /tmp/darkmind-claude-skill.zip ~/.claude/
 ```
 
-Claude Code auto-loads anything under `~/.claude/skills/`, so the `darkmind` skill is
-available in any session that has `DARKMIND_URL` and `DARKMIND_API_TOKEN` in its
-environment.
+Claude Code carga automáticamente todo lo que hay en `~/.claude/skills/`, por lo que la habilidad `darkmind` está disponible en cualquier sesión que tenga `DARKMIND_URL` y `DARKMIND_API_TOKEN` en su entorno.
 
-## What's in the bundle
+## Contenido del paquete
 
-- `skills/darkmind/SKILL.md` — the skill definition Claude Code reads.
-- `skills/darkmind/scripts/darkmind_api.py` — small helper that calls the scoped
-  `/api/codex/*` endpoints (these are the canonical scope-gated agent API; the
-  `codex` path is historic and shared by all agent integrations).
+- `skills/darkmind/SKILL.md` — la definición de habilidad que lee Claude Code.
+- `skills/darkmind/scripts/darkmind_api.py` — pequeño ayudante que llama a los endpoints `/api/codex/*` con ámbito (estos son el API canónico con ámbito de agente; la ruta `codex` es histórica y la comparten todas las integraciones de agente).
 
-## Scope enforcement
+## Aplicación del ámbito
 
-The token is scope-gated. Every tool surface is checked server-side in DarkMind,
-so even if Claude tries to call a forbidden endpoint, it gets `403` until the
-user enables the matching toggle in Settings > Integrations > Claude Agent.
+El token está restringido por ámbito. Toda la superficie de herramientas se comprueba en el servidor en DarkMind-AI, por lo que aunque Claude intente llamar a un endpoint prohibido, obtendrá `403` hasta que el usuario habilite el interruptor correspondiente en Configuración > Integraciones > Agente Claude.

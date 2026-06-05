@@ -177,7 +177,7 @@ function _processElement(el) {
       const span = document.createElement('span');
       span.className = 'censored-item';
       span.dataset.type = match.label;
-      span.title = 'Click to reveal ' + match.label;
+      span.title = 'Haz clic para revelar ' + match.label;
       span.textContent = match.text;
       frag.appendChild(span);
       lastIdx = match.end;
@@ -261,7 +261,7 @@ function _contextCensor(el) {
             const span = document.createElement('span');
             span.className = 'censored-item';
             span.dataset.type = 'credential';
-            span.title = 'Click to reveal credential';
+            span.title = 'Haz clic para revelar credencial';
             span.textContent = child.textContent;
             child.parentNode.replaceChild(span, child);
             break;

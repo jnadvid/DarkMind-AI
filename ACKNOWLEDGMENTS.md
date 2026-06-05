@@ -1,97 +1,74 @@
-# Acknowledgments
+# Agradecimientos
 
-DarkMind stands on the shoulders of a lot of open-source work. This file
-credits the projects whose code, assets, or designs are included in or
-adapted by this repository, and notes their licenses.
+DarkMind-AI se apoya en los hombros de mucho trabajo de código abierto. Este archivo da crédito a los proyectos cuyo código, activos o diseños están incluidos en este repositorio o han sido adaptados por él, y anota sus licencias.
 
-If you believe something here is mis-attributed or missing, please open an
-issue — it will be corrected promptly.
+Si crees que algo aquí está mal atribuido o falta, abre un *issue* — se corregirá rápidamente.
 
 ---
 
-## Adapted / borrowed code
+## Código adaptado / prestado
 
-Portions of this project were adapted from other open-source repositories.
-Their original authors retain copyright over the adapted portions, under the
-licenses noted below.
+Partes de este proyecto se adaptaron de otros repositorios de código abierto. Sus autores originales conservan los derechos de autor sobre las partes adaptadas, bajo las licencias indicadas a continuación.
 
-The sources below are under permissive licenses (MIT / Apache-2.0), which permit
-this use as long as their original copyright and license notices are preserved.
-The full license texts are kept in [`licenses/`](licenses/).
+Las fuentes que se indican a continuación están bajo licencias permisivas (MIT / Apache-2.0), que permiten este uso siempre que se conserven los avisos originales de copyright y licencia. Los textos completos de las licencias se mantienen en [`licenses/`](licenses/).
 
-- **[opencode](https://github.com/anomalyco/opencode)** — open-source AI coding
-  agent (originally [opencode-ai/opencode](https://github.com/opencode-ai/opencode),
-  archived Sep 2025; now maintained at `anomalyco/opencode`). Copyright © the
-  opencode authors. **MIT License.** Adapted for agent-loop / tool-execution
-  patterns and UI concepts.
-- **[llmfit](https://github.com/AlexsJones/llmfit)** by **Alex Jones** — the
-  engine behind the Cookbook's model download / serve / "What Fits?" feature.
-  Copyright © Alex Jones. **MIT License.** Adapted in `services/hwfit/`
-  (hardware detection, quant-aware fit scoring, model catalog),
-  `routes/cookbook_*.py`, `routes/hwfit_routes.py`, `static/js/cookbook*.js`,
-  and `scripts/darkmind-cookbook`.
-- **[Tongyi DeepResearch](https://github.com/Alibaba-NLP/DeepResearch)** by
-  **Alibaba-NLP / Tongyi Lab** — the multi-step deep-research agent pipeline.
-  Copyright © Alibaba-NLP / Tongyi Lab. **Apache-2.0.** Adapted for DarkMind's
-  Deep Research feature (`services/research/`, `src/research_handler.py`,
-  `routes/research_routes.py`, `services/search/`). Full text in
-  [`licenses/DeepResearch-Apache-2.0.txt`](licenses/DeepResearch-Apache-2.0.txt).
+- **[opencode](https://github.com/anomalyco/opencode)** — agente de codificación IA de código abierto (originalmente [opencode-ai/opencode](https://github.com/opencode-ai/opencode), archivado en septiembre de 2025; ahora mantenido en `anomalyco/opencode`). Copyright © los autores de opencode. **Licencia MIT.** Adaptado para los patrones de bucle de agente / ejecución de herramientas y conceptos de interfaz.
+- **[llmfit](https://github.com/AlexsJones/llmfit)** de **Alex Jones** — el motor detrás de la función de descarga / servicio / «¿Qué encaja?» del Cookbook. Copyright © Alex Jones. **Licencia MIT.** Adaptado en `services/hwfit/` (detección de hardware, puntuación de ajuste con conciencia de cuantización, catálogo de modelos), `routes/cookbook_*.py`, `routes/hwfit_routes.py`, `static/js/cookbook*.js` y `scripts/darkmind-cookbook`.
+- **[Tongyi DeepResearch](https://github.com/Alibaba-NLP/DeepResearch)** de **Alibaba-NLP / Tongyi Lab** — el pipeline de agente de investigación profunda de múltiples pasos. Copyright © Alibaba-NLP / Tongyi Lab. **Apache-2.0.** Adaptado para la función de Investigación Profunda de DarkMind-AI (`services/research/`, `src/research_handler.py`, `routes/research_routes.py`, `services/search/`). Texto completo en [`licenses/DeepResearch-Apache-2.0.txt`](licenses/DeepResearch-Apache-2.0.txt).
 
 ---
 
-## Bundled via Docker Compose
+## Servicios que pueden ejecutarse junto a DarkMind-AI
 
-These services are pulled as images by the project's `docker-compose.yml`
-and run alongside DarkMind on `docker compose up`. They are not modified —
-just composed.
+Estos servicios pueden ejecutarse junto a DarkMind-AI en tu entorno. No están modificados — solo se interoperan.
 
-| Service | Image | Purpose | License |
+| Servicio | Imagen / referencia | Propósito | Licencia |
 |---|---|---|---|
-| [SearXNG](https://github.com/searxng/searxng) | `searxng/searxng:2026.5.31-7159b8aed` (pinned tag; see compose) | Default metasearch backend | AGPL-3.0 |
-| [ChromaDB](https://github.com/chroma-core/chroma) | `chromadb/chroma:latest` | Vector store for memory / RAG | Apache-2.0 |
-| [ntfy](https://github.com/binwiederhier/ntfy) | `binwiederhier/ntfy` | Push notifications (self-hosted reminders) | Apache-2.0 / GPL-2.0 |
+| [SearXNG](https://github.com/searxng/searxng) | `searxng/searxng` | Backend de metabúsqueda por defecto | AGPL-3.0 |
+| [ChromaDB](https://github.com/chroma-core/chroma) | `chromadb/chroma` | Almacén vectorial para memoria / RAG | Apache-2.0 |
+| [ntfy](https://github.com/binwiederhier/ntfy) | `binwiederhier/ntfy` | Notificaciones push (recordatorios autoalojados) | Apache-2.0 / GPL-2.0 |
 
-## Bundled front-end libraries
+## Bibliotecas de frontend incluidas
 
-Vendored in `static/lib/` and served directly:
+Vendorizadas en `static/lib/` y servidas directamente:
 
-| Library | Purpose | License |
+| Biblioteca | Propósito | Licencia |
 |---|---|---|
-| [highlight.js](https://github.com/highlightjs/highlight.js) v11.9.0 | Code syntax highlighting | BSD-3-Clause |
-| [SheetJS / xlsx](https://github.com/SheetJS/sheetjs) (`xlsx.full.min.js`) | Spreadsheet (`.xlsx`) read/write | Apache-2.0 |
-| [docx](https://github.com/dolanmiu/docx) (`docx.umd.min.js`) | Generate `.docx` documents | MIT |
-| [mammoth.js](https://github.com/mwilliamson/mammoth.js) | Convert `.docx` → HTML | BSD-2-Clause |
-| [html2pdf.js](https://github.com/eKoopmans/html2pdf.js) | HTML → PDF export (bundles jsPDF + html2canvas) | MIT |
-| [jsPDF](https://github.com/parallax/jsPDF) (bundled in html2pdf) | PDF generation | MIT |
-| [html2canvas](https://github.com/niklasvh/html2canvas) (bundled in html2pdf) | DOM → canvas rasterization | MIT |
-| [node-qrcode](https://github.com/soldair/node-qrcode) (`qrcode.min.js`) | QR-code rendering (2FA setup) | MIT |
+| [highlight.js](https://github.com/highlightjs/highlight.js) v11.9.0 | Resaltado de sintaxis de código | BSD-3-Clause |
+| [SheetJS / xlsx](https://github.com/SheetJS/sheetjs) (`xlsx.full.min.js`) | Lectura/escritura de hojas de cálculo (`.xlsx`) | Apache-2.0 |
+| [docx](https://github.com/dolanmiu/docx) (`docx.umd.min.js`) | Generar documentos `.docx` | MIT |
+| [mammoth.js](https://github.com/mwilliamson/mammoth.js) | Convertir `.docx` → HTML | BSD-2-Clause |
+| [html2pdf.js](https://github.com/eKoopmans/html2pdf.js) | Exportación HTML → PDF (incluye jsPDF + html2canvas) | MIT |
+| [jsPDF](https://github.com/parallax/jsPDF) (incluido en html2pdf) | Generación de PDF | MIT |
+| [html2canvas](https://github.com/niklasvh/html2canvas) (incluido en html2pdf) | Rasterización DOM → canvas | MIT |
+| [node-qrcode](https://github.com/soldair/node-qrcode) (`qrcode.min.js`) | Renderizado de códigos QR (configuración 2FA) | MIT |
 
-## Front-end libraries loaded at runtime (CDN)
+## Bibliotecas de frontend cargadas en tiempo de ejecución (CDN)
 
-Referenced from `cdn.jsdelivr.net` / `cdnjs.cloudflare.com` at runtime — not vendored:
+Referenciadas desde `cdn.jsdelivr.net` / `cdnjs.cloudflare.com` en tiempo de ejecución — no vendorizadas:
 
-| Library | Purpose | License |
+| Biblioteca | Propósito | Licencia |
 |---|---|---|
-| [KaTeX](https://github.com/KaTeX/KaTeX) 0.16.22 | Math typesetting | MIT |
-| [Mermaid](https://github.com/mermaid-js/mermaid) 11 | Diagrams from text | MIT |
-| [Pyodide](https://github.com/pyodide/pyodide) 0.27.5 | In-browser Python runtime | MPL-2.0 |
-| [PDFObject](https://github.com/pipwerks/PDFObject) 2.1.1 | Inline PDF embedding | MIT |
+| [KaTeX](https://github.com/KaTeX/KaTeX) 0.16.22 | Composición matemática | MIT |
+| [Mermaid](https://github.com/mermaid-js/mermaid) 11 | Diagramas a partir de texto | MIT |
+| [Pyodide](https://github.com/pyodide/pyodide) 0.27.5 | Entorno de ejecución Python en el navegador | MPL-2.0 |
+| [PDFObject](https://github.com/pipwerks/PDFObject) 2.1.1 | Incrustación de PDF en línea | MIT |
 
-## Fonts
+## Fuentes
 
-Bundled in `static/fonts/`:
+Incluidas en `static/fonts/`:
 
-| Font | License | Author |
+| Fuente | Licencia | Autor |
 |---|---|---|
-| [Fira Code](https://github.com/tonsky/FiraCode) | SIL Open Font License 1.1 | Nikita Prokopov & contributors |
+| [Fira Code](https://github.com/tonsky/FiraCode) | SIL Open Font License 1.1 | Nikita Prokopov y colaboradores |
 | [Inter](https://github.com/rsms/inter) | SIL Open Font License 1.1 | Rasmus Andersson |
 | [GohuFont](https://font.gohu.org/) (`fonts/custom/GohuFont.ttf`) | WTFPL | Hugo Chargois |
 
-## Python dependencies
+## Dependencias Python
 
-Core (`requirements.txt`) and optional (`requirements-optional.txt`):
+Principales (`requirements.txt`) y opcionales (`requirements-optional.txt`):
 
-| Package | License |
+| Paquete | Licencia |
 |---|---|
 | FastAPI | MIT |
 | Uvicorn | BSD-3-Clause |
@@ -109,7 +86,7 @@ Core (`requirements.txt`) and optional (`requirements-optional.txt`):
 | youtube-transcript-api | MIT |
 | markdown | BSD-3-Clause |
 | icalendar | BSD-2-Clause |
-| caldav | GPL-3.0-or-later OR Apache-2.0 (dual; used under Apache-2.0) |
+| caldav | GPL-3.0-or-later O Apache-2.0 (doble; usado bajo Apache-2.0) |
 | cryptography | Apache-2.0 / BSD-3-Clause |
 | bcrypt | Apache-2.0 |
 | MCP (Model Context Protocol SDK) | MIT |
@@ -117,56 +94,42 @@ Core (`requirements.txt`) and optional (`requirements-optional.txt`):
 | qrcode\[pil] | BSD-3-Clause |
 | croniter | MIT |
 | pytest / pytest-asyncio | MIT / Apache-2.0 |
-| duckduckgo-search (optional) | MIT |
-| markitdown (optional — Office/EPUB text extraction) | MIT |
-| **PyMuPDF** *(optional — form-filling only)* | **AGPL-3.0** — see note below |
+| duckduckgo-search (opcional) | MIT |
+| markitdown (opcional — extracción de texto Office/EPUB) | MIT |
+| **PyMuPDF** *(opcional — solo relleno de formularios)* | **AGPL-3.0** — ver nota más abajo |
 
-## Companion services (interoperated with, not bundled)
+## Servicios compañeros (interoperados, no incluidos)
 
-DarkMind talks to these over the network/API. They are **not** distributed
-with this project; their licenses do not bind this codebase, but they deserve
-credit:
+DarkMind-AI se comunica con estos a través de la red/API. **No** se distribuyen con este proyecto; sus licencias no vinculan este código base, pero merecen reconocimiento:
 
-- [Ollama](https://github.com/ollama/ollama) — local model serving (MIT)
-- [Radicale](https://github.com/Kozea/Radicale) — CardDAV/CalDAV server (GPL-3.0)
-- [Dovecot](https://www.dovecot.org/) — IMAP server
-- [isync / mbsync](https://isync.sourceforge.io/) — IMAP mailbox sync (GPL-2.0)
-- [tmux](https://github.com/tmux/tmux) — terminal multiplexer; Cookbook shells out to it on Linux/macOS for background model downloads and serves (ISC)
-- [OpenSSH](https://www.openssh.com/) (`ssh`, `ssh-keygen`, `ssh-copy-id`) — Cookbook shells out to it to manage remote model servers and provision keys (BSD-style permissive)
-- Model/API providers: Anthropic, OpenAI, Google (Gemini), DuckDuckGo
+- [Ollama](https://github.com/ollama/ollama) — servicio de modelos locales (MIT)
+- [Radicale](https://github.com/Kozea/Radicale) — servidor CardDAV/CalDAV (GPL-3.0)
+- [Dovecot](https://www.dovecot.org/) — servidor IMAP
+- [isync / mbsync](https://isync.sourceforge.io/) — sincronización de buzón IMAP (GPL-2.0)
+- [tmux](https://github.com/tmux/tmux) — multiplexor de terminal; Cookbook lo usa en Linux/macOS para descargas y servicios de modelos en segundo plano (ISC)
+- [OpenSSH](https://www.openssh.com/) (`ssh`, `ssh-keygen`, `ssh-copy-id`) — Cookbook lo usa para gestionar servidores de modelos remotos y aprovisionar claves (permisiva estilo BSD)
+- Proveedores de modelos/API: Anthropic, OpenAI, Google (Gemini), DuckDuckGo
 
 ---
 
-### License-compatibility notes (for the repo's own LICENSE choice)
+### Notas de compatibilidad de licencias (para la elección de LICENSE del repositorio)
 
-The **core ships fully permissive** (MIT-compatible), so the two copyleft
-concerns from earlier are resolved:
+El **núcleo se distribuye completamente bajo licencias permisivas** (compatibles con MIT), por lo que los dos problemas de *copyleft* anteriores están resueltos:
 
-- **PDF text extraction** now uses **`pypdf`** (BSD-3-Clause) and **encoding
-  detection** uses **`charset-normalizer`** (MIT). chardet (LGPL-2.1) has been
-  removed entirely.
-- **PyMuPDF (AGPL-3.0)** is no longer a core dependency. It is **optional** and
-  used *only* by the PDF form-filling feature (`src/pdf_forms.py` and the form
-  endpoints in `routes/document_routes.py`), lazy-imported and listed in
-  `requirements-optional.txt`. The MIT core runs without it. If you choose to
-  install it, AGPL's network clause then applies to *that feature* for your
-  deployment (Artifex also sells a commercial PyMuPDF license that lifts this).
-- **`caldav`** (Python lib) is **dual-licensed GPL-3.0-or-later OR Apache-2.0**.
-  DarkMind uses it under **Apache-2.0**, which is permissive and MIT-compatible.
-- **`markitdown`** (Microsoft) is **MIT** and used only as an *optional* dependency for Office/EPUB text
-  extraction (`src/markitdown_runtime.py`), lazy-imported with graceful fallback — the MIT core runs without
-  it. The cloud `az-doc-intel` extra is deliberately **not** installed, keeping extraction fully local.
+- La **extracción de texto de PDF** ahora usa **`pypdf`** (BSD-3-Clause) y la **detección de codificación** usa **`charset-normalizer`** (MIT). chardet (LGPL-2.1) se ha eliminado completamente.
+- **PyMuPDF (AGPL-3.0)** ya no es una dependencia principal. Es **opcional** y se usa *únicamente* por la función de relleno de formularios PDF (`src/pdf_forms.py` y los endpoints de formularios en `routes/document_routes.py`), importada de forma diferida y listada en `requirements-optional.txt`. El núcleo MIT funciona sin ella. Si decides instalarlo, la cláusula de red de la AGPL se aplica entonces a *esa función* en tu despliegue (Artifex también vende una licencia comercial de PyMuPDF que elimina esto).
+- **`caldav`** (biblioteca Python) tiene **doble licencia GPL-3.0-or-later O Apache-2.0**. DarkMind-AI la usa bajo **Apache-2.0**, que es permisiva y compatible con MIT.
+- **`markitdown`** (Microsoft) es **MIT** y se usa solo como dependencia *opcional* para la extracción de texto de Office/EPUB (`src/markitdown_runtime.py`), importada de forma diferida con fallback elegante — el núcleo MIT funciona sin ella. El extra de `az-doc-intel` en la nube **no** se instala deliberadamente, manteniendo la extracción completamente local.
 
 ---
 
-## Thanks to
+## Gracias a
 
-Most of DarkMind's code was written *with* AI models, not just by a human.
-The project would not exist without them — credit where credit is due:
+La mayor parte del código de DarkMind-AI fue escrito *con* modelos de IA, no solo por un humano. El proyecto no existiría sin ellos — crédito donde se debe:
 
-- **gpt-oss-120b** — the legend that kicked this project off.
+- **gpt-oss-120b** — la leyenda que inició este proyecto.
 - **Qwen3-235B**
 - **DeepSeek V3.1 · DeepSeek V4 Pro · DeepSeek V4 Flash**
 - **Claude** (Anthropic)
 - **Codex** (OpenAI)
-- Friends, for helping me debug.
+- Amigos, por ayudarme a depurar.

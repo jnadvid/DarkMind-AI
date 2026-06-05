@@ -3,46 +3,46 @@ name: darkmind
 description: Use when the user asks Claude Code to read or write DarkMind data (todos, email, calendar, memory, documents) through the scoped Claude Agent API. Requires DARKMIND_URL and DARKMIND_API_TOKEN.
 ---
 
-# DarkMind
+# DarkMind-AI
 
-Use this skill when a user asks to interact with DarkMind from Claude Code.
+Usa esta habilidad cuando un usuario pida interactuar con DarkMind-AI desde Claude Code.
 
-## Configuration
+## Configuración
 
-Expect these environment variables:
+Espera estas variables de entorno:
 
-- `DARKMIND_URL`: Base URL for the user's DarkMind instance, for example `http://127.0.0.1:7000`.
-- `DARKMIND_API_TOKEN`: Scoped API token created in DarkMind Settings > Integrations > Add Integration > Claude Agent.
+- `DARKMIND_URL`: URL base de la instancia DarkMind-AI del usuario, por ejemplo `http://127.0.0.1:7000`.
+- `DARKMIND_API_TOKEN`: Token de API con ámbito creado en Configuración de DarkMind-AI > Integraciones > Añadir integración > Agente Claude.
 
-If either value is missing, do not guess credentials. Tell the user to create a Claude Agent token in DarkMind Settings and expose both values to the terminal session.
+Si falta alguno de los dos valores, no adivines las credenciales. Indica al usuario que cree un token de Agente Claude en la Configuración de DarkMind-AI y exponga ambos valores a la sesión de terminal.
 
-## When to use what
+## Cuándo usar qué
 
-- **Reminder ("remind me at 5pm to do X")** → TODO with `due_date`. The due_date IS the reminder — it fires a notification automatically via the user's configured channel (browser/email/ntfy). **Do NOT create a calendar event for a reminder.** Creating a calendar event named "Reminder" does NOT trigger a notification — it's just a time block on the calendar.
-- **Calendar event ("meeting at 3pm", "dentist Tuesday 10am")** → calendar event. Use for scheduled time blocks, meetings, appointments, recurring schedules. These show up on the calendar grid; reminders for them are configured separately in DarkMind settings.
-- **Note / freeform info ("note that the wifi password is ...")** → memory or todo without a due_date (depending on whether it's a fact about the user or an action item).
-- **Persistent fact / preference about the user** → memory.
+- **Recordatorio («recuérdame a las 5 pm hacer X»)** → TODO con `due_date`. La due_date ES el recordatorio — dispara una notificación automáticamente a través del canal configurado por el usuario (navegador/correo/ntfy). **NO crees un evento de calendario para un recordatorio.** Crear un evento de calendario llamado «Recordatorio» NO dispara una notificación — es solo un bloque de tiempo en el calendario.
+- **Evento de calendario («reunión a las 3 pm», «dentista el martes a las 10 h»)** → evento de calendario. Úsalo para bloques de tiempo programados, reuniones, citas, horarios recurrentes. Aparecen en la cuadrícula del calendario; los recordatorios para ellos se configuran por separado en la configuración de DarkMind-AI.
+- **Nota / información sin formato («anota que la contraseña del wifi es ...»)** → memoria o todo sin due_date (dependiendo de si es un dato sobre el usuario o un elemento de acción).
+- **Dato persistente / preferencia sobre el usuario** → memoria.
 
-If the user says "reminder" + a time, default to TODO with due_date. Only switch to calendar if the user explicitly says "calendar", "event", "meeting", "appointment", or describes a time *range*.
+Si el usuario dice «recordatorio» + una hora, usa por defecto TODO con due_date. Solo cambia a calendario si el usuario dice explícitamente «calendario», «evento», «reunión», «cita» o describe un *rango* de tiempo.
 
-## Safety
+## Seguridad
 
-- All DarkMind data access MUST go through the scoped HTTP API under `/api/codex/*` (the canonical scope-gated agent API, shared by all agent integrations).
-- Check `/api/codex/capabilities` before using a tool surface.
-- Treat `403` as an intentional Settings restriction. Do not work around it.
-- Do not use SSH, Docker, direct Python imports, SQLite queries, MCP internals, browser cookies, or local files to read/write DarkMind user data.
-- Do not call helpers like `do_manage_notes`, email MCP internals, or database sessions directly for user data, even if shell access exists.
-- Never send email directly unless the user explicitly asks to send and the token has a send-capable scope.
-- Keep actions scoped to the token owner.
+- Todo acceso a datos de DarkMind-AI DEBE pasar por la API HTTP con ámbito bajo `/api/codex/*` (la API canónica con ámbito de agente, compartida por todas las integraciones de agente).
+- Comprueba `/api/codex/capabilities` antes de usar una superficie de herramienta.
+- Trata `403` como una restricción intencional de Configuración. No la eludes.
+- No uses SSH, Docker, importaciones directas de Python, consultas SQLite, internos de MCP, *cookies* de navegador ni archivos locales para leer/escribir datos de usuario de DarkMind-AI.
+- No llames a ayudantes como `do_manage_notes`, internos de MCP de correo ni sesiones de base de datos directamente para datos de usuario, aunque exista acceso a la shell.
+- Nunca envíes correo electrónico directamente a menos que el usuario lo pida explícitamente y el token tenga un ámbito con capacidad de envío.
+- Mantén las acciones dentro del ámbito del propietario del token.
 
-## Todos
+## Tareas pendientes
 
-The scoped agent API supports todos/checklists:
+La API de agente con ámbito admite tareas pendientes/listas de verificación:
 
 - `GET /api/codex/todos`
 - `POST /api/codex/todos`
 
-Use the bundled helper script when available:
+Usa el script de ayuda incluido cuando esté disponible:
 
 ```bash
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py capabilities
@@ -50,61 +50,61 @@ python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py todos list
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py todos add "Follow up"
 ```
 
-Supported todo actions are `list`, `add`, `update`, `delete`, and `toggle_item`.
+Las acciones de todo admitidas son `list`, `add`, `update`, `delete` y `toggle_item`.
 
-**Reminders (todos with a due date)** — the backend parses natural language. Send `due_date` in the body via the generic POST so the time becomes a structured reminder, NOT a literal substring inside the title. The `todos add TITLE` shortcut only sets the title, so use the POST form for anything with a time:
+**Recordatorios (todos con fecha de vencimiento)** — el backend analiza lenguaje natural. Envía `due_date` en el cuerpo mediante el POST genérico para que la hora se convierta en un recordatorio estructurado, NO como subcadena literal dentro del título. El acceso directo `todos add TITULO` solo establece el título, así que usa el formulario POST para cualquier cosa con una hora:
 
 ```bash
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py POST /api/codex/todos '{"action":"add","title":"Call dentist","due_date":"tomorrow at 5pm"}'
 ```
 
-The backend accepts both ISO timestamps and natural language like `"tomorrow 5pm"`, `"next Monday 9am"`, `"in 2 hours"`. It anchors to the user's timezone.
+El backend acepta tanto marcas de tiempo ISO como lenguaje natural como `"tomorrow 5pm"`, `"next Monday 9am"`, `"in 2 hours"`. Se ancla a la zona horaria del usuario.
 
-## Email
+## Correo electrónico
 
-The scoped agent API supports email reads:
+La API de agente con ámbito admite lecturas de correo:
 
 - `GET /api/codex/emails?folder=INBOX&limit=10&offset=0&filter=all`
 - `GET /api/codex/emails/{uid}?folder=INBOX`
 
-Use the bundled helper script when available:
+Usa el script de ayuda incluido cuando esté disponible:
 
 ```bash
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py emails list 5
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py emails read UID
 ```
 
-If `/api/codex/capabilities` does not show `email.read: true`, do not inspect email. Ask the user to enable Email read in the Claude Agent settings.
+Si `/api/codex/capabilities` no muestra `email.read: true`, no inspecciones el correo. Pide al usuario que habilite la lectura de correo en la configuración del Agente Claude.
 
-## Memory
+## Memoria
 
-- `GET /api/codex/memory` — list memories for the token owner.
-- `POST /api/codex/memory` — body `{"text": "...", "category": "fact", "source": "user", "session_id": null}`. Requires `memory:write`.
-- `DELETE /api/codex/memory/{memory_id}` — remove a memory entry. Requires `memory:write`.
+- `GET /api/codex/memory` — lista las memorias del propietario del token.
+- `POST /api/codex/memory` — cuerpo `{"text": "...", "category": "fact", "source": "user", "session_id": null}`. Requiere `memory:write`.
+- `DELETE /api/codex/memory/{memory_id}` — elimina una entrada de memoria. Requiere `memory:write`.
 
 ```bash
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py GET /api/codex/memory
 python3 ~/.claude/skills/darkmind/scripts/darkmind_api.py POST /api/codex/memory '{"text":"User prefers SI units","category":"preference"}'
 ```
 
-## Calendar
+## Calendario
 
-- `GET /api/codex/calendar/events?start=ISO&end=ISO` — list events in window.
-- `POST /api/codex/calendar/events` — body matches `EventCreate` (`summary`, `dtstart`, `dtend`, `all_day`, `description`, `location`, `calendar_href`, `rrule`, `color`). Requires `calendar:write`.
-- `DELETE /api/codex/calendar/events/{uid}` — delete event by uid (the value returned in the POST response). Requires `calendar:write`.
+- `GET /api/codex/calendar/events?start=ISO&end=ISO` — lista eventos en la ventana.
+- `POST /api/codex/calendar/events` — el cuerpo coincide con `EventCreate` (`summary`, `dtstart`, `dtend`, `all_day`, `description`, `location`, `calendar_href`, `rrule`, `color`). Requiere `calendar:write`.
+- `DELETE /api/codex/calendar/events/{uid}` — elimina evento por uid (el valor devuelto en la respuesta del POST). Requiere `calendar:write`.
 
-## Documents
+## Documentos
 
-- `GET /api/codex/documents?search=...&limit=50` — paginated library.
-- `GET /api/codex/documents/{doc_id}` — fetch one document.
-- `POST /api/codex/documents` — body `{"session_id": "...", "title": "...", "content": "...", "language": "markdown"}`. Requires `documents:write`.
-- `DELETE /api/codex/documents/{doc_id}` — delete a document. Requires `documents:write`.
+- `GET /api/codex/documents?search=...&limit=50` — biblioteca paginada.
+- `GET /api/codex/documents/{doc_id}` — obtiene un documento.
+- `POST /api/codex/documents` — cuerpo `{"session_id": "...", "title": "...", "content": "...", "language": "markdown"}`. Requiere `documents:write`.
+- `DELETE /api/codex/documents/{doc_id}` — elimina un documento. Requiere `documents:write`.
 
-## Email draft + send
+## Borrador y envío de correo
 
-- `POST /api/codex/emails/draft` — body matches `SendEmailRequest` (`to`, `cc`, `bcc`, `subject`, `body`, `body_html`, `attachments`, `account_id`, `in_reply_to`, `references`). Requires `email:draft` (or `email:send`).
-- `POST /api/codex/emails/send` — same body. Requires `email:send`. Never send without explicit user instruction.
+- `POST /api/codex/emails/draft` — el cuerpo coincide con `SendEmailRequest` (`to`, `cc`, `bcc`, `subject`, `body`, `body_html`, `attachments`, `account_id`, `in_reply_to`, `references`). Requiere `email:draft` (o `email:send`).
+- `POST /api/codex/emails/send` — mismo cuerpo. Requiere `email:send`. Nunca envíes sin instrucción explícita del usuario.
 
-## Forbidden Bypass Pattern
+## Patrón de omisión prohibida
 
-If you are about to reach the DarkMind host/container, import app internals, query the database, or call MCP helper modules directly, stop. Those paths bypass DarkMind Settings and token scopes. Ask the user to enable the relevant Claude Agent tool toggle instead.
+Si estás a punto de acceder al host/contenedor de DarkMind-AI, importar internos de la aplicación, consultar la base de datos o llamar directamente a módulos de ayuda de MCP, detente. Esas rutas omiten la Configuración de DarkMind-AI y los ámbitos de los tokens. Pide al usuario que habilite el interruptor de herramienta del Agente Claude correspondiente.

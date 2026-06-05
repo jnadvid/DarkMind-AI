@@ -142,7 +142,7 @@ function insertTranscription(text, showToast) {
   input.dispatchEvent(new Event('input', { bubbles: true }));
   input.focus();
 
-  if (showToast) showToast('Transcribed');
+  if (showToast) showToast('Transcrito');
 }
 
 /**
@@ -151,13 +151,13 @@ function insertTranscription(text, showToast) {
 export function startRecording(onFileCreated, showToast, showError) {
   // Check for secure context (getUserMedia requires HTTPS or localhost)
   if (!window.isSecureContext) {
-    if (showError) showError('Microphone requires HTTPS. Use a reverse proxy with SSL or access via localhost.');
+    if (showError) showError('El micrófono requiere HTTPS. Utiliza un proxy inverso con SSL o accede desde localhost.');
     _resetRecordingUI();
     return;
   }
 
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    if (showError) showError('Microphone not supported in this browser.');
+    if (showError) showError('El micrófono no es compatible con este navegador.');
     _resetRecordingUI();
     return;
   }
@@ -185,23 +185,23 @@ export function startRecording(onFileCreated, showToast, showError) {
           if (transcript) {
             insertTranscription(transcript, showToast);
           } else {
-            if (showToast) showToast('No speech detected');
+            if (showToast) showToast('No se detectó voz');
             const audioFile = new File([audioBlob], `voice-message-${Date.now()}.webm`, { type: 'audio/webm' });
             if (onFileCreated) onFileCreated(audioFile);
           }
         } else if (provider === 'local' || provider.startsWith('endpoint:')) {
           // Show "Transcribing..." feedback
-          if (showToast) showToast('Transcribing...', 5000);
+          if (showToast) showToast('Transcribiendo...', 5000);
           try {
             const transcript = await transcribeOnServer(audioBlob);
             if (transcript) {
               insertTranscription(transcript, showToast);
             } else {
-              if (showToast) showToast('No speech detected');
+              if (showToast) showToast('No se detectó voz');
             }
           } catch (e) {
             console.error('STT transcription error:', e);
-            if (showError) showError('Transcription failed: ' + e.message);
+            if (showError) showError('Error en la transcripción: ' + e.message);
             // Fallback: attach as file
             const audioFile = new File([audioBlob], `voice-message-${Date.now()}.webm`, { type: 'audio/webm' });
             if (onFileCreated) onFileCreated(audioFile);
@@ -225,18 +225,18 @@ export function startRecording(onFileCreated, showToast, showError) {
       }
 
       if (showToast) {
-        showToast('Recording...');
+        showToast('Grabando...');
       }
     })
     .catch(error => {
       console.error('Microphone access error:', error);
       if (showError) {
         if (error.name === 'NotAllowedError') {
-          showError('Microphone access denied. Check browser permissions.');
+          showError('Acceso al micrófono denegado. Comprueba los permisos del navegador.');
         } else if (error.name === 'NotFoundError') {
-          showError('No microphone found.');
+          showError('No se encontró ningún micrófono.');
         } else {
-          showError('Microphone error: ' + error.message);
+          showError('Error del micrófono: ' + error.message);
         }
       }
       _resetRecordingUI();

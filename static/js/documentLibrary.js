@@ -148,7 +148,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         await navigator.clipboard.writeText(text);
       }
     } catch (err) {
-      if (uiModule && uiModule.showError) uiModule.showError('Failed to copy chat');
+      if (uiModule && uiModule.showError) uiModule.showError('Error al copiar el chat');
     }
   }
 
@@ -720,7 +720,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         a.download = (full.title || 'document') + ext;
         a.click();
         URL.revokeObjectURL(a.href);
-      } catch { if (uiModule) uiModule.showError('Failed to export document'); }
+      } catch { if (uiModule) uiModule.showError('Error al exportar el documento'); }
     });
     dropdown.appendChild(exportItem);
 
@@ -741,8 +741,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         // Drop it from the current view (it no longer belongs here) and refresh.
         libraryRemoveDocumentFromState(doc.id);
         libraryRenderGrid();
-        if (uiModule) uiModule.showToast(toArchived ? 'Archived' : 'Restored');
-      } catch { if (uiModule) uiModule.showError('Failed to ' + (toArchived ? 'archive' : 'restore')); }
+        if (uiModule) uiModule.showToast(toArchived ? 'Archivado' : 'Restaurado');
+      } catch { if (uiModule) uiModule.showError('Error al ' + (toArchived ? 'archivar' : 'restaurar')); }
     });
     dropdown.appendChild(archiveItem);
 
@@ -833,8 +833,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         if (!res.ok) throw new Error('failed');
         libraryRemoveDocumentFromState(doc.id);
         libraryRenderGrid();
-        if (uiModule) uiModule.showToast(toArchived ? 'Archived' : 'Restored');
-      } catch { if (uiModule) uiModule.showError('Failed to ' + (toArchived ? 'archive' : 'restore')); }
+        if (uiModule) uiModule.showToast(toArchived ? 'Archivado' : 'Restaurado');
+      } catch { if (uiModule) uiModule.showError('Error al ' + (toArchived ? 'archivar' : 'restaurar')); }
     });
 
     const leftGroup = document.createElement('div');
@@ -1060,7 +1060,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         }
       }
       if (!sessionId) {
-        if (uiModule) uiModule.showError('Could not create a session');
+        if (uiModule) uiModule.showError('No se pudo crear una sesión');
         return;
       }
     }
@@ -1106,10 +1106,10 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
 
       _switchToDoc(created.id);
       _syncDocIndicator();
-      if (uiModule) uiModule.showToast('Document cloned to session');
+      if (uiModule) uiModule.showToast('Documento clonado a la sesión');
     } catch (e) {
       console.error('Failed to import document:', e);
-      if (uiModule) uiModule.showError('Failed to import document');
+      if (uiModule) uiModule.showError('Error al importar el documento');
     }
   }
 
@@ -1121,7 +1121,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     const bulkBar = document.getElementById('doclib-bulk-bar');
     const selectBtn = document.getElementById('doclib-select-btn');
     if (bulkBar) bulkBar.classList.remove('hidden');
-    if (selectBtn) { selectBtn.classList.add('active'); selectBtn.textContent = 'Cancel'; }
+    if (selectBtn) { selectBtn.classList.add('active'); selectBtn.textContent = 'Cancelar'; }
     libraryUpdateBulkCount();
     libraryRenderGrid();
   }
@@ -1133,7 +1133,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     const selectBtn = document.getElementById('doclib-select-btn');
     const selectAll = document.getElementById('doclib-select-all');
     if (bulkBar) bulkBar.classList.add('hidden');
-    if (selectBtn) { selectBtn.classList.remove('active'); selectBtn.textContent = 'Select'; }
+    if (selectBtn) { selectBtn.classList.remove('active'); selectBtn.textContent = 'Seleccionar'; }
     if (selectAll) selectAll.checked = false;
     libraryRenderGrid();
   }
@@ -1181,9 +1181,9 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
 
   async function libraryDeleteSingle(docId, card) {
     if (uiModule && uiModule.styledConfirm) {
-      const ok = await uiModule.styledConfirm('Delete this document?', { confirmText: 'Delete', danger: true });
+      const ok = await uiModule.styledConfirm('¿Eliminar este documento?', { confirmText: 'Eliminar', danger: true });
       if (!ok) return;
-    } else if (!confirm('Delete this document?')) {
+    } else if (!confirm('¿Eliminar este documento?')) {
       return;
     }
     try {
@@ -1199,9 +1199,9 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         setTimeout(() => { if (card.parentElement) card.remove(); }, 400);
       }
       libraryRemoveDocumentFromState(docId);
-      if (uiModule) uiModule.showToast('Document deleted');
+      if (uiModule) uiModule.showToast('Documento eliminado');
     } catch (e) {
-      if (uiModule) uiModule.showError(`Failed to delete document: ${e.message || e}`);
+      if (uiModule) uiModule.showError(`Error al eliminar el documento: ${e.message || e}`);
     }
   }
 
@@ -1210,11 +1210,11 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     const count = _librarySelectedIds.size;
     if (uiModule && uiModule.styledConfirm) {
       const ok = await uiModule.styledConfirm(
-        `Delete ${count} document${count !== 1 ? 's' : ''}?`,
-        { confirmText: 'Delete', danger: true }
+        `¿Eliminar ${count} documento${count !== 1 ? 's' : ''}?`,
+        { confirmText: 'Eliminar', danger: true }
       );
       if (!ok) return;
-    } else if (!confirm(`Delete ${count} document${count !== 1 ? 's' : ''}?`)) {
+    } else if (!confirm(`¿Eliminar ${count} documento${count !== 1 ? 's' : ''}?`)) {
       return;
     }
 
@@ -1244,8 +1244,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     await libraryFetch(false);
     if (uiModule) {
       const msg = failed > 0
-        ? `Deleted ${deleted} · ${failed} failed`
-        : `Deleted ${deleted} document${deleted !== 1 ? 's' : ''}`;
+        ? `Eliminado${deleted !== 1 ? 's' : ''} ${deleted} · ${failed} fallido${failed !== 1 ? 's' : ''}`
+        : `Eliminado${deleted !== 1 ? 's' : ''} ${deleted} documento${deleted !== 1 ? 's' : ''}`;
       (failed > 0 ? uiModule.showError : uiModule.showToast)(msg);
     }
   }
@@ -1264,8 +1264,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     libraryExitSelectMode();
     await libraryFetch(false);
     if (uiModule) {
-      const verb = toArchived ? 'Archived' : 'Restored';
-      const msg = failed > 0 ? `${verb} ${done} · ${failed} failed` : `${verb} ${done} document${done !== 1 ? 's' : ''}`;
+      const verb = toArchived ? 'Archivado' : 'Restaurado';
+      const msg = failed > 0 ? `${verb}${done !== 1 ? 's' : ''} ${done} · ${failed} fallido${failed !== 1 ? 's' : ''}` : `${verb}${done !== 1 ? 's' : ''} ${done} documento${done !== 1 ? 's' : ''}`;
       (failed > 0 ? uiModule.showError : uiModule.showToast)(msg);
     }
   }
@@ -1288,8 +1288,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     libraryExitSelectMode();
     if (uiModule) {
       const msg = failed > 0
-        ? `Cloned ${done} · ${failed} failed`
-        : `Cloned ${done} document${done !== 1 ? 's' : ''}`;
+        ? `Clonado${done !== 1 ? 's' : ''} ${done} · ${failed} fallido${failed !== 1 ? 's' : ''}`
+        : `Clonado${done !== 1 ? 's' : ''} ${done} documento${done !== 1 ? 's' : ''}`;
       (failed > 0 ? uiModule.showError : uiModule.showToast)(msg);
     }
   }
@@ -1301,7 +1301,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     if (_librarySelectedIds.size > 5) {
       const ids = [..._librarySelectedIds];
       try {
-        if (uiModule) uiModule.showToast(`Zipping ${ids.length} documents…`);
+        if (uiModule) uiModule.showToast(`Comprimiendo ${ids.length} documento${ids.length !== 1 ? 's' : ''}…`);
         const res = await fetch(`${API_BASE}/api/documents/export-zip`, {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
@@ -1317,9 +1317,9 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         a.click();
         a.remove();
         setTimeout(() => URL.revokeObjectURL(url), 2000);
-        if (uiModule) uiModule.showToast(`Exported ${ids.length} documents (zip)`);
+        if (uiModule) uiModule.showToast(`Exportado${ids.length !== 1 ? 's' : ''} ${ids.length} documento${ids.length !== 1 ? 's' : ''} (zip)`);
       } catch (e) {
-        if (uiModule) uiModule.showError('Failed to create zip');
+        if (uiModule) uiModule.showError('Error al crear el archivo zip');
       }
       return;
     }
@@ -1353,7 +1353,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       a.click();
       URL.revokeObjectURL(url);
     }
-    if (uiModule) uiModule.showToast(`Exported ${_librarySelectedIds.size} document${_librarySelectedIds.size !== 1 ? 's' : ''}`);
+    if (uiModule) uiModule.showToast(`Exportado${_librarySelectedIds.size !== 1 ? 's' : ''} ${_librarySelectedIds.size} documento${_librarySelectedIds.size !== 1 ? 's' : ''}`);
   }
 
   /** Lazy-load SheetJS for spreadsheet parsing */
@@ -1561,8 +1561,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       }
     }
 
-    const msg = `Imported ${imported} file${imported !== 1 ? 's' : ''}` +
-      (failed ? `, ${failed} failed${_firstErr ? ' — ' + _firstErr : ''}` : '');
+    const msg = `Importado${imported !== 1 ? 's' : ''} ${imported} archivo${imported !== 1 ? 's' : ''}` +
+      (failed ? `, ${failed} fallido${failed !== 1 ? 's' : ''}${_firstErr ? ' — ' + _firstErr : ''}` : '');
     if (failed && uiModule) uiModule.showError(msg);
     else if (uiModule) uiModule.showToast(msg);
     await libraryFetch(false);
@@ -1598,68 +1598,68 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     modal.innerHTML = `
       <div class="modal-content doclib-modal-content" style="width:min(640px, 92vw);max-height:85vh;background:var(--bg);">
         <div class="modal-header">
-          <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Library</h4>
+          <h4><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Biblioteca</h4>
           <button class="close-btn" id="doclib-close">\u2716</button>
         </div>
         <div class="lib-tabs" id="doclib-lib-tabs" style="padding:0 10px;">
           <button class="lib-tab" data-doclib-tab="chats"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Chats</button>
-          <button class="lib-tab active" data-doclib-tab="documents"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Documents</button>
-          <button class="lib-tab" data-doclib-tab="research"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:3px;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Research</button>
-          <button class="lib-tab" data-doclib-tab="archive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archive</button>
+          <button class="lib-tab active" data-doclib-tab="documents"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>Documentos</button>
+          <button class="lib-tab" data-doclib-tab="research"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-1px;margin-right:3px;"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>Investigación</button>
+          <button class="lib-tab" data-doclib-tab="archive"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archivo</button>
         </div>
         <div class="modal-body" style="display:flex;flex-direction:column;gap:10px;overflow:hidden;">
           <div id="doclib-panel-chats" data-doclib-panel="chats" class="admin-card" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">
               <h2 style="margin:0;padding:0;line-height:1;">Chats <span id="doclib-chats-stats" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal"></span></h2>
             </div>
-            <p class="memory-desc doclib-desc">All active chat sessions. Click to open.</p>
+            <p class="memory-desc doclib-desc">Todas las sesiones de chat activas. Haz clic para abrir.</p>
             <div class="memory-toolbar">
               <div class="memory-category-filters">
                 <select class="memory-sort-select" id="doclib-chats-sort">
-                  <option value="recent">Recent</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="most-messages">Most messages</option>
+                  <option value="recent">Recientes</option>
+                  <option value="oldest">M\u00e1s antiguos</option>
+                  <option value="most-messages">M\u00e1s mensajes</option>
                   <option value="alpha">A\u2013Z</option>
                 </select>
-                <button class="memory-toolbar-btn" id="doclib-chats-select-btn">Select</button>
-                <button class="memory-toolbar-btn" id="doclib-chats-tidy-btn" title="AI tidy: delete junk sessions and organize into folders"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:2px;"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg> Tidy</button>
+                <button class="memory-toolbar-btn" id="doclib-chats-select-btn">Seleccionar</button>
+                <button class="memory-toolbar-btn" id="doclib-chats-tidy-btn" title="IA tidy: eliminar sesiones basura y organizar en carpetas"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:2px;"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg> Organizar</button>
               </div>
-              <input type="text" id="doclib-chats-search" placeholder="Search chats\u2026" class="memory-search-input" />
+              <input type="text" id="doclib-chats-search" placeholder="Buscar chats\u2026" class="memory-search-input" />
               <div id="doclib-chats-chips" class="doclib-lang-chips"></div>
             </div>
             <div id="doclib-chats-bulk" class="memory-bulk-bar hidden" style="margin-bottom:5px;">
-              <label class="memory-bulk-check-all" style="position:relative;top:0px;left:-1px;"><input type="checkbox" id="doclib-chats-select-all" style="position:relative;top:0px;"> All</label>
-              <span id="doclib-chats-selected-count">0 Selected</span>
-              <button class="memory-toolbar-btn" id="doclib-chats-bulk-archive" style="position:relative;top:-3px;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archive</button>
-              <button class="memory-toolbar-btn danger" id="doclib-chats-bulk-delete" style="position:relative;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Delete</button>
-              <button class="memory-toolbar-btn" id="doclib-chats-bulk-cancel" title="Cancel (Esc)" style="margin-left:4px;padding:3px 6px;position:relative;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+              <label class="memory-bulk-check-all" style="position:relative;top:0px;left:-1px;"><input type="checkbox" id="doclib-chats-select-all" style="position:relative;top:0px;"> Todos</label>
+              <span id="doclib-chats-selected-count">0 seleccionados</span>
+              <button class="memory-toolbar-btn" id="doclib-chats-bulk-archive" style="position:relative;top:-3px;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Archivar</button>
+              <button class="memory-toolbar-btn danger" id="doclib-chats-bulk-delete" style="position:relative;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Eliminar</button>
+              <button class="memory-toolbar-btn" id="doclib-chats-bulk-cancel" title="Cancelar (Esc)" style="margin-left:4px;padding:3px 6px;position:relative;left:2px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div id="doclib-chats-grid" class="doclib-grid"></div>
           </div>
           <div id="doclib-panel-archive" data-doclib-panel="archive" class="admin-card" style="display:none;flex:1;flex-direction:column;overflow:hidden;">
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">
-              <h2 style="margin:0;padding:0;line-height:1;position:relative;top:2px;">Archive <span id="doclib-arc-stats" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal"></span></h2>
+              <h2 style="margin:0;padding:0;line-height:1;position:relative;top:2px;">Archivo <span id="doclib-arc-stats" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal"></span></h2>
             </div>
-            <p class="memory-desc doclib-desc" style="position:relative;top:0.5px;">Archived sessions. Restore to make active again.</p>
+            <p class="memory-desc doclib-desc" style="position:relative;top:0.5px;">Sesiones archivadas. Restaura para volver a activarlas.</p>
             <div class="memory-toolbar">
               <div class="memory-category-filters">
                 <select class="memory-sort-select" id="doclib-arc-sort">
-                  <option value="recent">Recent</option>
-                  <option value="oldest">Oldest</option>
-                  <option value="most-messages">Most messages</option>
+                  <option value="recent">Recientes</option>
+                  <option value="oldest">M\u00e1s antiguos</option>
+                  <option value="most-messages">M\u00e1s mensajes</option>
                   <option value="alpha">A\u2013Z</option>
                 </select>
-                <button class="memory-toolbar-btn" id="doclib-arc-select-btn">Select</button>
+                <button class="memory-toolbar-btn" id="doclib-arc-select-btn">Seleccionar</button>
               </div>
-              <input type="text" id="doclib-arc-search" placeholder="Search archive\u2026" class="memory-search-input" />
+              <input type="text" id="doclib-arc-search" placeholder="Buscar en el archivo\u2026" class="memory-search-input" />
               <div id="doclib-arc-chips" class="doclib-lang-chips"></div>
             </div>
             <div id="doclib-arc-bulk" class="memory-bulk-bar hidden" style="margin-bottom:5px;">
-              <label class="memory-bulk-check-all" style="position:relative;top:0px;left:1px;"><input type="checkbox" id="doclib-arc-select-all"> All</label>
-              <span id="doclib-arc-selected-count">0 Selected</span>
-              <button class="memory-toolbar-btn" id="doclib-arc-bulk-restore" style="position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Restore</button>
-              <button class="memory-toolbar-btn danger" id="doclib-arc-bulk-delete"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Delete</button>
-              <button class="memory-toolbar-btn" id="doclib-arc-bulk-cancel" title="Cancel (Esc)" style="margin-left:4px;padding:3px 6px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+              <label class="memory-bulk-check-all" style="position:relative;top:0px;left:1px;"><input type="checkbox" id="doclib-arc-select-all"> Todos</label>
+              <span id="doclib-arc-selected-count">0 seleccionados</span>
+              <button class="memory-toolbar-btn" id="doclib-arc-bulk-restore" style="position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Restaurar</button>
+              <button class="memory-toolbar-btn danger" id="doclib-arc-bulk-delete"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Eliminar</button>
+              <button class="memory-toolbar-btn" id="doclib-arc-bulk-cancel" title="Cancelar (Esc)" style="margin-left:4px;padding:3px 6px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div id="doclib-arc-grid" class="doclib-grid"></div>
           </div>
@@ -2808,8 +2808,8 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
             _researchItems = _researchItems.filter(r => r.id !== item.id);
             _renderResearchGrid();
           }
-          if (uiModule) uiModule.showToast(toArchived ? 'Archived' : 'Restored');
-        } catch { if (uiModule) uiModule.showError('Failed to ' + (toArchived ? 'archive' : 'restore')); }
+          if (uiModule) uiModule.showToast(toArchived ? 'Archivado' : 'Restaurado');
+        } catch { if (uiModule) uiModule.showError('Error al ' + (toArchived ? 'archivar' : 'restaurar')); }
       });
     }
 
@@ -2928,7 +2928,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
                 await new Promise(r => setTimeout(r, 200));
                 _researchItems = _researchItems.filter(r => r.id !== rid);
                 _renderResearchGrid();
-                if (uiModule) uiModule.showToast(toArchived ? 'Archived' : 'Restored');
+                if (uiModule) uiModule.showToast(toArchived ? 'Archivado' : 'Restaurado');
               } },
             { label: 'Delete', danger: true, action: async () => {
                 if (!await window.styledConfirm('Delete this research?', { confirmText: 'Delete', danger: true })) return;
@@ -3102,7 +3102,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       _researchSelectMode = false;
       document.getElementById('doclib-research-bulk').classList.add('hidden');
       _renderResearchGrid();
-      if (uiModule) uiModule.showToast(toArchived ? 'Archived' : 'Restored');
+      if (uiModule) uiModule.showToast(toArchived ? 'Archivado' : 'Restaurado');
     });
 
     // Shared dropdown for chats/archive menus — defined at module scope below

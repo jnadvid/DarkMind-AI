@@ -105,7 +105,7 @@ function _ensurePopup(textarea) {
   el.id = POPUP_ID;
   el.className = 'slash-autocomplete-popup';
   el.setAttribute('role', 'listbox');
-  el.setAttribute('aria-label', 'Slash commands');
+  el.setAttribute('aria-label', 'Comandos de barra');
   document.body.appendChild(el);
   return el;
 }
@@ -130,7 +130,7 @@ function _position(popup, textarea) {
 
 function _render(popup, items, selectedIdx, query) {
   if (!items.length) {
-    popup.innerHTML = `<div class="slash-ac-empty">No commands match <code>${_esc(query)}</code></div>`;
+    popup.innerHTML = `<div class="slash-ac-empty">Ningún comando coincide con <code>${_esc(query)}</code></div>`;
     return;
   }
   // Group by category for the headers
@@ -139,7 +139,7 @@ function _render(popup, items, selectedIdx, query) {
   for (let i = 0; i < items.length; i++) {
     const it = items[i];
     if (it.category !== lastCat) {
-      html += `<div class="slash-ac-cat">${_esc(it.category || 'Other')}</div>`;
+      html += `<div class="slash-ac-cat">${_esc(it.category || 'Otros')}</div>`;
       lastCat = it.category;
     }
     const sel = i === selectedIdx ? ' slash-ac-row-sel' : '';

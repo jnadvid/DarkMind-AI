@@ -188,7 +188,7 @@ export function initKeyboardShortcuts(modules) {
       fetch(`${API_BASE}/api/session/${sid}/important`, { method: 'POST', body: fd });
       s.is_important = newVal;
       sessionModule.renderSessionList();
-      uiModule.showToast(newVal ? 'Session favorited' : 'Session unfavorited');
+      uiModule.showToast(newVal ? 'Sesión marcada como favorita' : 'Sesión quitada de favoritos');
       return;
     }
     if (_matchesCombo(e, kb.delete_session)) {
@@ -197,8 +197,8 @@ export function initKeyboardShortcuts(modules) {
       if (!sid) return;
       const s = sessionModule.getSessions().find(x => x.id === sid);
       if (!s) return;
-      if (s.is_important) { uiModule.showToast('Unstar before deleting'); return; }
-      uiModule.styledConfirm('Delete this session?', { confirmText: 'Delete', danger: true }).then(ok => {
+      if (s.is_important) { uiModule.showToast('Quita la estrella antes de eliminar'); return; }
+      uiModule.styledConfirm('¿Eliminar esta sesión?', { confirmText: 'Eliminar', danger: true }).then(ok => {
         if (!ok) return;
         const allSessions = sessionModule.getSessions();
         const idx = allSessions.findIndex(x => x.id === sid);

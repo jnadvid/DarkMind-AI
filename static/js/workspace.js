@@ -33,7 +33,7 @@ export function syncWorkspaceIndicator(path) {
   if (pill) {
     pill.style.display = path ? '' : 'none';
     pill.classList.toggle('active', !!path);
-    if (path) pill.title = `Workspace: ${path} — click to clear`;
+    if (path) pill.title = `Espacio de trabajo: ${path} — clic para limpiar`;
   }
   if (name) name.textContent = path ? _basename(path) : '';
   if (overflow) overflow.classList.toggle('active', !!path);
@@ -49,7 +49,7 @@ export function setWorkspace(path) {
 
 export function clearWorkspace() {
   setWorkspace('');
-  if (uiModule && uiModule.showToast) uiModule.showToast('Workspace cleared');
+  if (uiModule && uiModule.showToast) uiModule.showToast('Espacio de trabajo limpiado');
 }
 
 async function _load(path) {
@@ -76,8 +76,8 @@ function _render(data) {
     // Backend supplies the full child path (os.path.join → cross-platform).
     rows += `<div class="workspace-row" data-path="${encodeURIComponent(d.path)}">${_FOLDER_SVG}<span>${uiModule.esc(d.name)}</span></div>`;
   }
-  if (!data.dirs.length && !data.parent) rows = '<div class="workspace-empty">No subfolders</div>';
-  body.innerHTML = rows || '<div class="workspace-empty">No subfolders</div>';
+  if (!data.dirs.length && !data.parent) rows = '<div class="workspace-empty">Sin subcarpetas</div>';
+  body.innerHTML = rows || '<div class="workspace-empty">Sin subcarpetas</div>';
   body.querySelectorAll('.workspace-row').forEach((row) => {
     row.addEventListener('click', () => _navigate(decodeURIComponent(row.dataset.path)));
   });
@@ -87,7 +87,7 @@ async function _navigate(path) {
   try {
     _render(await _load(path));
   } catch (e) {
-    if (uiModule && uiModule.showError) uiModule.showError('Could not open folder');
+    if (uiModule && uiModule.showError) uiModule.showError('No se pudo abrir la carpeta');
   }
 }
 
@@ -140,7 +140,7 @@ export async function openWorkspaceBrowser() {
   try {
     _render(await _load(getWorkspace() || ''));
   } catch (e) {
-    if (uiModule && uiModule.showError) uiModule.showError('Could not browse folders');
+    if (uiModule && uiModule.showError) uiModule.showError('No se pudo explorar las carpetas');
   }
 }
 

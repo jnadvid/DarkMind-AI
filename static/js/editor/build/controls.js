@@ -18,51 +18,51 @@ export function controlsHTML({ color, brushSize, wandTolerance }) {
         <input type="color" class="ge-color-picker" value="${color}" />
       </div>
       <div class="ge-control-row">
-        <label>Size <span class="ge-size-label">${brushSize}px</span></label>
+        <label>Tamaño <span class="ge-size-label">${brushSize}px</span></label>
       <input type="range" class="ge-size-slider" min="0" max="1000" value="${brushSliderValue}" />
     </div>
     </div>
     <div class="ge-lasso-section" id="ge-lasso-section" style="display:none;">
       <div class="ge-control-row ge-eraser-row ge-sel-refine" id="ge-lasso-refine-feather" style="display:none;">
         <span class="ge-eraser-preview" id="ge-lasso-feather-preview" aria-hidden="true"></span>
-        <label>Feather <span id="ge-lasso-feather-label">0px</span></label>
-        <input type="range" id="ge-lasso-feather" min="0" max="200" value="0" title="Soften the selection edge — feathers the mask alpha." />
+        <label>Suavizar borde <span id="ge-lasso-feather-label">0px</span></label>
+        <input type="range" id="ge-lasso-feather" min="0" max="200" value="0" title="Suaviza el borde de la selección — aplica desenfoque al alfa de la máscara." />
       </div>
       <div class="ge-control-row ge-eraser-row ge-sel-refine" id="ge-lasso-refine-grow" style="display:none;">
         <span class="ge-eraser-preview" id="ge-lasso-grow-preview" aria-hidden="true"></span>
-        <label>Edge stroke <span id="ge-lasso-grow-label">0px</span></label>
-        <input type="range" id="ge-lasso-grow" min="-40" max="40" value="0" title="Expand (+) or contract (−) the selection before baking." />
+        <label>Trazo de borde <span id="ge-lasso-grow-label">0px</span></label>
+        <input type="range" id="ge-lasso-grow" min="-40" max="40" value="0" title="Expandir (+) o contraer (−) la selección antes de aplicar." />
       </div>
       <div class="ge-control-row ge-actions" style="margin-top:4px;flex-wrap:wrap;">
-        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-invert" title="Invert selection (Ctrl+Alt+I)">
+        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-invert" title="Invertir selección (Ctrl+Alt+I)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-          Invert
+          Invertir
         </button>
-        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-delete" title="Delete selected pixels from the layer">
+        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-delete" title="Eliminar píxeles seleccionados de la capa">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
-          Delete
+          Eliminar
         </button>
-        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-copy" title="Copy selection to new layer">
+        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-copy" title="Copiar selección a nueva capa">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Copy Layer
+          Copiar capa
         </button>
-        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-mask" title="Convert selection to inpaint mask">
+        <button class="ge-btn ge-btn-sm ge-btn-iconlabel" id="ge-lasso-mask" title="Convertir selección en máscara de inpaint">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.06 11.9l8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg>
-          To Mask
+          A máscara
         </button>
       </div>
-      <p style="font-size:9px;opacity:0.4;margin:4px 0 0;">Draw a freehand selection. Esc to cancel.</p>
+      <p style="font-size:9px;opacity:0.4;margin:4px 0 0;">Dibuja una selección a mano alzada. Esc para cancelar.</p>
     </div>
     <div class="ge-wand-section" id="ge-wand-section" style="display:none;">
       <div class="ge-control-row" style="display:flex;gap:4px;margin-bottom:4px;" title="How the next click combines with the current selection. Shift / Alt held during a click override this for one click.">
-        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn active" data-wand-mode="replace" title="Replace selection on each click">New</button>
-        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn" data-wand-mode="add" title="Add to selection (Shift)">+ Add</button>
-        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn" data-wand-mode="subtract" title="Subtract from selection (Alt)">− Subtract</button>
+        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn active" data-wand-mode="replace" title="Reemplazar selección en cada clic">Nueva</button>
+        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn" data-wand-mode="add" title="Añadir a la selección (Shift)">+ Añadir</button>
+        <button type="button" class="ge-btn ge-btn-sm ge-wand-mode-btn" data-wand-mode="subtract" title="Restar de la selección (Alt)">− Restar</button>
       </div>
       <div class="ge-control-row ge-eraser-row">
         <span class="ge-eraser-preview" id="ge-wand-tol-preview" aria-hidden="true"></span>
-        <label>Tolerance <span id="ge-wand-tol-label">${wandTolerance}</span></label>
-        <button type="button" class="ge-btn ge-btn-sm ge-wand-live-btn" id="ge-wand-live" title="Retune selection while dragging tolerance" aria-pressed="false">Live</button>
+        <label>Tolerancia <span id="ge-wand-tol-label">${wandTolerance}</span></label>
+        <button type="button" class="ge-btn ge-btn-sm ge-wand-live-btn" id="ge-wand-live" title="Reajustar la selección al arrastrar la tolerancia" aria-pressed="false">En vivo</button>
         <input type="range" id="ge-wand-tolerance" min="0" max="100" value="${wandTolerance}" />
       </div>
       <div class="ge-control-row ge-eraser-row ge-sel-refine" id="ge-wand-refine-feather" style="display:none;">

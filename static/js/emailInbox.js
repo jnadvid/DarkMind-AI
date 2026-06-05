@@ -15,7 +15,7 @@ const _acct = () => window.__darkmindActiveEmailAccount
   ? `&account_id=${encodeURIComponent(window.__darkmindActiveEmailAccount)}`
   : '';
 
-const _emailSetupHint = () => '<div style="margin-top:6px;opacity:0.72;font-size:11px;">Setup: <span style="color:var(--accent,var(--red));">Settings &rsaquo; Integrations</span></div>';
+const _emailSetupHint = () => '<div style="margin-top:6px;opacity:0.72;font-size:11px;">Configuración: <span style="color:var(--accent,var(--red));">Ajustes &rsaquo; Integraciones</span></div>';
 
 // SVG icons matching sessions.js dropdown style
 const _replyIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>';
@@ -323,7 +323,7 @@ export async function loadEmails(append = false) {
     console.error('Failed to load emails:', e);
     if (_listSpinner) { _listSpinner.destroy(); _listSpinner = null; }
     if (!append && list) {
-      const msg = e && e.message ? `Failed to load: ${e.message}` : 'Failed to load';
+      const msg = e && e.message ? `Error al cargar: ${e.message}` : 'Error al cargar';
       list.innerHTML = `<div class="email-loading">${msg.replace(/&/g, '&amp;').replace(/</g, '&lt;')}${_emailSetupHint()}</div>`;
     }
   } finally {
@@ -370,13 +370,13 @@ export function folderDisplayName(folder) {
   const raw = String(folder || '');
   const f = raw.toLowerCase();
   if (f === 'inbox') return 'INBOX';
-  if (f.includes('all mail')) return 'Archive / All Mail';
-  if (f.includes('archive')) return 'Archive';
+  if (f.includes('all mail')) return 'Archivo / Todos los correos';
+  if (f.includes('archive')) return 'Archivo';
   if (f.includes('spam')) return 'Spam';
-  if (f.includes('junk')) return 'Junk';
-  if (f.includes('trash') || f.includes('bin') || f.includes('deleted')) return 'Trash';
-  if (f.includes('sent')) return 'Sent';
-  if (f.includes('draft')) return 'Drafts';
+  if (f.includes('junk')) return 'No deseado';
+  if (f.includes('trash') || f.includes('bin') || f.includes('deleted')) return 'Papelera';
+  if (f.includes('sent')) return 'Enviados';
+  if (f.includes('draft')) return 'Borradores';
   return raw;
 }
 
@@ -424,7 +424,7 @@ function _renderList() {
   if (_emails.length === 0) {
     const empty = document.createElement('div');
     empty.className = 'email-loading';
-    empty.textContent = _senderFilter ? `No emails from ${_senderFilterLabel || _senderFilter}` : 'No emails';
+    empty.textContent = _senderFilter ? `No hay correos de ${_senderFilterLabel || _senderFilter}` : 'No hay correos';
     list.appendChild(empty);
     return;
   }
@@ -486,7 +486,7 @@ function _createEmailItem(em) {
   // ending in `:<uid>` since the per_uid map is keyed `<account_id>:<uid>`
   // and the inbox list doesn't surface the account id per row.
   let _unreadColor = color;
-  let _unreadTitle = 'Unread';
+  let _unreadTitle = 'No leído';
   try {
     const us = window._emailUrgencyState;
     if (us && us.per_uid && em.uid != null) {
@@ -495,8 +495,8 @@ function _createEmailItem(em) {
         if (k.endsWith(suffix)) {
           const v = us.per_uid[k] || {};
           const score = v.score || 0;
-          if (score >= 3) { _unreadColor = 'var(--color-error, #e06c75)'; _unreadTitle = 'Urgent — ' + (v.reason || 'needs reply now'); }
-          else if (score === 2) { _unreadColor = '#f0ad4e'; _unreadTitle = 'Reply soon — ' + (v.reason || ''); }
+          if (score >= 3) { _unreadColor = 'var(--color-error, #e06c75)'; _unreadTitle = 'Urgente — ' + (v.reason || 'necesita respuesta ahora'); }
+          else if (score === 2) { _unreadColor = '#f0ad4e'; _unreadTitle = 'Responder pronto — ' + (v.reason || ''); }
           break;
         }
       }
@@ -512,7 +512,7 @@ function _createEmailItem(em) {
     : '';
 
   const spamTag = em.is_spam_verdict
-    ? `<span class="email-tag email-tag-spam" title="AI flagged as spam — click ✓ to unflag">spam <button class="email-spam-unflag" data-uid="${em.uid}" title="Not spam">\u2713</button></span>`
+    ? `<span class="email-tag email-tag-spam" title="La IA lo marcó como spam — haz clic en ✓ para desmarcar">spam <button class="email-spam-unflag" data-uid="${em.uid}" title="No es spam">\u2713</button></span>`
     : '';
 
   const senderAddr = (em.from_address || '').toLowerCase();
@@ -526,7 +526,7 @@ function _createEmailItem(em) {
       <div class="email-subject">${_esc(em.subject)}${unreadIcon}${attachIcon}${tagPills}${spamTag}</div>
     </div>
     <div class="email-menu-wrap">
-      <button class="hamburger email-menu-btn" title="Actions">
+      <button class="hamburger email-menu-btn" title="Acciones">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
       </button>
     </div>
@@ -707,13 +707,13 @@ async function _openEmail(em, itemEl, preloadedData = null, mode = 'reply') {
           } else {
             const _msg = result.error || 'AI reply could not be generated';
             console.error('AI reply generation failed:', _msg);
-            import('./ui.js').then(m => m.showError && m.showError('AI reply failed: ' + _msg)).catch(() => {});
+            import('./ui.js').then(m => m.showError && m.showError('Error en respuesta IA: ' + _msg)).catch(() => {});
             return;
           }
         } catch (e) {
           if (draftToastTimer) clearTimeout(draftToastTimer);
           console.error('AI reply generation failed:', e);
-          import('./ui.js').then(m => m.showError && m.showError('AI reply failed: ' + (e.message || e))).catch(() => {});
+          import('./ui.js').then(m => m.showError && m.showError('Error en respuesta IA: ' + (e.message || e))).catch(() => {});
           return;
         }
       }
@@ -908,7 +908,7 @@ async function _openEmail(em, itemEl, preloadedData = null, mode = 'reply') {
     // look like "nothing happened". Dynamic import — uiModule isn't a
     // static import in this file.
     const msg = e && e.message ? e.message : String(e);
-    import('./ui.js').then(m => m.showError && m.showError('Reply failed: ' + msg)).catch(() => {});
+    import('./ui.js').then(m => m.showError && m.showError('Error al responder: ' + msg)).catch(() => {});
   } finally {
     if (spinner) { spinner.destroy(); spinner.element.remove(); }
     if (itemEl) {
@@ -925,10 +925,10 @@ function _showEmailMenu(em, anchor, itemEl) {
   dropdown.className = 'dropdown email-dropdown show';
 
   const actions = [
-    { label: 'Open', icon: _replyIcon, action: () => _openEmail(em, itemEl) },
-    { label: 'Remind to reply', icon: _bellIcon, submenu: 'remind' },
-    { label: 'Archive', icon: _archiveIcon, action: () => _archiveEmail(em) },
-    { label: 'Delete', icon: _deleteIcon, danger: true, action: () => _deleteEmail(em) },
+    { label: 'Abrir', icon: _replyIcon, action: () => _openEmail(em, itemEl) },
+    { label: 'Recordar responder', icon: _bellIcon, submenu: 'remind' },
+    { label: 'Archivar', icon: _archiveIcon, action: () => _archiveEmail(em) },
+    { label: 'Eliminar', icon: _deleteIcon, danger: true, action: () => _deleteEmail(em) },
   ];
 
   for (const a of actions) {
@@ -967,7 +967,7 @@ function _showRemindSubmenu(em, parentDropdown) {
   const header = document.createElement('div');
   header.className = 'dropdown-item-compact';
   header.style.cssText = 'opacity:0.5;font-size:10px;pointer-events:none;text-transform:uppercase;letter-spacing:0.5px;padding-top:6px;';
-  header.innerHTML = '<span>Remind me</span>';
+  header.innerHTML = '<span>Recordarme</span>';
   parentDropdown.appendChild(header);
 
   const now = new Date();
@@ -981,9 +981,9 @@ function _showRemindSubmenu(em, parentDropdown) {
   const nextWeek = new Date(now); nextWeek.setDate(now.getDate() + daysUntilMon); nextWeek.setHours(8, 0, 0, 0);
 
   const presets = [
-    { label: 'Later today', sub: laterToday.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: laterToday },
-    { label: 'Tomorrow', sub: tomorrow.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: tomorrow },
-    { label: 'Next week', sub: nextWeek.toLocaleDateString([], { weekday: 'short' }) + ' ' + nextWeek.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: nextWeek },
+    { label: 'Más tarde hoy', sub: laterToday.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: laterToday },
+    { label: 'Mañana', sub: tomorrow.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: tomorrow },
+    { label: 'La semana que viene', sub: nextWeek.toLocaleDateString([], { weekday: 'short' }) + ' ' + nextWeek.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), date: nextWeek },
   ];
   for (const p of presets) {
     const item = document.createElement('div');
@@ -998,7 +998,7 @@ function _showRemindSubmenu(em, parentDropdown) {
   }
   const customItem = document.createElement('div');
   customItem.className = 'dropdown-item-compact';
-  customItem.innerHTML = '<span>Pick date and time…</span>';
+  customItem.innerHTML = '<span>Elegir fecha y hora…</span>';
   customItem.addEventListener('click', async (e) => {
     e.stopPropagation();
     parentDropdown.remove();
@@ -1062,14 +1062,14 @@ async function _createReplyReminder(em, dueDate) {
     if (!res.ok) throw new Error('Failed');
     const { showToast } = await import('./ui.js');
     const fmt = dueDate.toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-    showToast(`Reminder set for ${fmt}`);
+    showToast(`Recordatorio establecido para ${fmt}`);
     // Request notification permission if needed
     if ('Notification' in window && Notification.permission === 'default') {
       try { Notification.requestPermission(); } catch {}
     }
   } catch (e) {
     const { showError } = await import('./ui.js');
-    showError('Failed to create reminder');
+    showError('Error al crear el recordatorio');
   }
 }
 
@@ -1086,7 +1086,7 @@ async function _archiveEmail(em) {
 async function _deleteEmail(em) {
   const subject = em.subject || '(no subject)';
   const { styledConfirm } = await import('./ui.js');
-  const ok = await styledConfirm(`Delete "${subject}"?`, { confirmText: 'Delete', cancelText: 'Cancel', danger: true });
+  const ok = await styledConfirm(`¿Eliminar "${subject}"?`, { confirmText: 'Eliminar', cancelText: 'Cancelar', danger: true });
   if (!ok) return;
   try {
     await fetch(`${API_BASE}/api/email/delete/${em.uid}?folder=${encodeURIComponent(_currentFolder)}${_acct()}`, { method: 'DELETE' });
@@ -1144,7 +1144,7 @@ async function _createEmailChat(emailData) {
       await sessionModule.createDirectChat(url, model, endpointId);
       // Set a helpful title in the chat meta
       const meta = document.getElementById('current-meta');
-      if (meta) meta.textContent = `Email: ${(emailData.subject || '').slice(0, 60)}`;
+      if (meta) meta.textContent = `Correo: ${(emailData.subject || '').slice(0, 60)}`;
     }
   } catch (e) {
     console.error('Failed to create email chat:', e);

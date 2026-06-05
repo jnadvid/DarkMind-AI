@@ -1,81 +1,81 @@
-# Threat Model
+# Modelo de Amenazas
 
-DarkMind is a **self-hosted AI workspace with privileged local access**. This document states the trust boundary so contributors can reason about security decisions without reading through the full auth and middleware stack.
+DarkMind-AI es un **espacio de trabajo de IA autoalojado con acceso local privilegiado**. Este documento establece el límite de confianza para que los contribuidores puedan razonar sobre las decisiones de seguridad sin necesidad de leer toda la pila de autenticación y middleware.
 
-## Trust Boundary
+## Límite de Confianza
 
-DarkMind is designed for **trusted users on a private network**, not public exposure. The README describes it as "treat it like an admin console" — that framing is accurate. A logged-in admin can execute shell commands, read and write files, send email, and control model serving. This is intentional. The threat model does not try to prevent admins from doing these things. It does try to prevent:
+DarkMind-AI está diseñado para **usuarios de confianza en una red privada**, no para exposición pública. El README lo describe como «trátalo como una consola de administración» — ese enfoque es preciso. Un administrador conectado puede ejecutar comandos de shell, leer y escribir archivos, enviar correo electrónico y controlar el servicio de modelos. Esto es intencional. El modelo de amenazas no intenta impedir que los administradores hagan estas cosas. Lo que sí intenta impedir es:
 
-- Unauthenticated access
-- Non-admins reaching admin-only capabilities
-- The AI agent acting on instructions injected through untrusted content (web results, emails, fetched pages, memories)
-- Internal services (ChromaDB, Ollama, SearXNG, etc.) being reachable from outside the host
+- Acceso no autenticado
+- Usuarios no administradores que accedan a capacidades exclusivas de administrador
+- El agente de IA que actúa según instrucciones inyectadas a través de contenido no confiable (resultados web, correos electrónicos, páginas obtenidas, memorias)
+- Servicios internos (ChromaDB, Ollama, SearXNG, etc.) accesibles desde fuera del host
 
-## Roles and Capabilities
+## Roles y Capacidades
 
-| Capability | Admin | Non-admin (default) |
+| Capacidad | Administrador | No administrador (por defecto) |
 |---|---|---|
-| Chat with agent | ✓ | ✓ |
-| Browser tool | ✓ | ✓ |
-| Documents | ✓ | ✓ |
-| Research mode | ✓ | ✓ |
-| Image generation | ✓ | ✓ |
-| Memory management | ✓ | ✓ |
-| Shell / Python execution | ✓ | ✗ |
-| File read / write | ✓ | ✗ |
-| Email send / read | ✓ | ✗ |
-| MCP tools | ✓ | ✗ |
-| Calendar management | ✓ | ✗ |
-| Token / webhook management | ✓ | ✗ |
-| Model serving | ✓ | ✗ |
-| Vault | ✓ | ✗ |
-| Settings | ✓ | ✗ |
+| Chat con agente | ✓ | ✓ |
+| Herramienta de navegador | ✓ | ✓ |
+| Documentos | ✓ | ✓ |
+| Modo investigación | ✓ | ✓ |
+| Generación de imágenes | ✓ | ✓ |
+| Gestión de memoria | ✓ | ✓ |
+| Shell / Ejecución Python | ✓ | ✗ |
+| Lectura / escritura de archivos | ✓ | ✗ |
+| Envío / lectura de correo | ✓ | ✗ |
+| Herramientas MCP | ✓ | ✗ |
+| Gestión del calendario | ✓ | ✗ |
+| Gestión de tokens / webhooks | ✓ | ✗ |
+| Servicio de modelos | ✓ | ✗ |
+| Bóveda | ✓ | ✗ |
+| Configuración | ✓ | ✗ |
 
-Non-admin defaults are in `core/auth.py:DEFAULT_PRIVILEGES`. Tool enforcement is in `src/tool_security.py:NON_ADMIN_BLOCKED_TOOLS`. Any tool whose name starts with `mcp__` is also blocked for non-admins. Admins always get full access regardless of stored privilege values.
+Los valores predeterminados de no administrador están en `core/auth.py:DEFAULT_PRIVILEGES`. La aplicación de herramientas está en `src/tool_security.py:NON_ADMIN_BLOCKED_TOOLS`. Cualquier herramienta cuyo nombre comience con `mcp__` también está bloqueada para los no administradores. Los administradores siempre tienen acceso completo independientemente de los valores de privilegio almacenados.
 
-## Authentication
+## Autenticación
 
-- **Sessions:** bcrypt passwords, 7-day session tokens stored atomically in `data/sessions.json` via `core/atomic_io.py`.
-- **2FA:** TOTP with 8 single-use backup codes. Verified after password check, before session issuance.
-- **Reserved usernames:** `internal-tool`, `api`, `demo`, `system` cannot be registered or renamed into. Defined in `core/auth.py:RESERVED_USERNAMES`.
-  - `internal-tool` is security-critical: `core/middleware.py:require_admin` treats any request where `request.state.current_user == "internal-tool"` as the in-process tool loopback and grants admin unconditionally. A real account with that name would silently pass every `require_admin` check.
-- **Orphan sessions:** `validate_token` re-checks that the user record still exists on every call. A deleted user's cookie is dropped on next request rather than continuing to authenticate.
+- **Sesiones:** contraseñas bcrypt, tokens de sesión de 7 días almacenados atómicamente en `data/sessions.json` mediante `core/atomic_io.py`.
+- **2FA:** TOTP con 8 códigos de respaldo de un solo uso. Verificado tras la comprobación de contraseña, antes de la emisión de sesión.
+- **Nombres de usuario reservados:** `internal-tool`, `api`, `demo`, `system` no pueden registrarse ni cambiarse a ninguno de ellos. Definidos en `core/auth.py:RESERVED_USERNAMES`.
+  - `internal-tool` es crítico para la seguridad: `core/middleware.py:require_admin` trata cualquier solicitud donde `request.state.current_user == "internal-tool"` como el *loopback* de herramienta en proceso y concede acceso de administrador incondicionalmente. Una cuenta real con ese nombre pasaría silenciosamente cada comprobación de `require_admin`.
+- **Sesiones huérfanas:** `validate_token` vuelve a comprobar que el registro de usuario aún existe en cada llamada. La *cookie* de un usuario eliminado se descarta en la siguiente solicitud en lugar de continuar autenticando.
 
-## Internal Tool Loopback
+## Loopback Interno de Herramientas
 
-Agent tool calls reach admin-gated HTTP routes over an in-process HTTP loopback. The mechanism:
+Las llamadas a herramientas del agente llegan a las rutas HTTP restringidas a administradores a través de un *loopback* HTTP en proceso. El mecanismo:
 
-1. At app startup, `core/middleware.py` generates a random `INTERNAL_TOOL_TOKEN` via `secrets.token_hex(32)`. It is never persisted and never sent to clients.
-2. Loopback requests carry `X-DarkMind-Internal-Token: <token>` or have `request.state.current_user` already set to `"internal-tool"` by the auth middleware.
-3. `require_admin` recognises either signal and grants access without checking the session user.
+1. Al iniciar la aplicación, `core/middleware.py` genera un `INTERNAL_TOOL_TOKEN` aleatorio mediante `secrets.token_hex(32)`. Nunca se persiste y nunca se envía a los clientes.
+2. Las solicitudes de *loopback* llevan `X-DarkMind-Internal-Token: <token>` o tienen `request.state.current_user` ya establecido en `"internal-tool"` por el middleware de autenticación.
+3. `require_admin` reconoce cualquiera de las dos señales y concede acceso sin comprobar el usuario de la sesión.
 
-The agent may be running in a non-admin user's session, but tool dispatch first calls `src/tool_security.py:owner_is_admin_or_single_user` to verify the session owner is an admin before issuing any loopback call. Non-admin users cannot invoke admin tools even via the agent.
+El agente puede estar ejecutándose en la sesión de un usuario no administrador, pero el despacho de herramientas llama primero a `src/tool_security.py:owner_is_admin_or_single_user` para verificar que el propietario de la sesión es un administrador antes de emitir cualquier llamada de *loopback*. Los usuarios no administradores no pueden invocar herramientas de administrador ni siquiera a través del agente.
 
-## Prompt-Injection Hardening
+## Refuerzo contra Inyección de Instrucciones
 
-External content that reaches the LLM is treated as untrusted via `src/prompt_security.py`:
+El contenido externo que llega al LLM se trata como no confiable mediante `src/prompt_security.py`:
 
-- `untrusted_context_message(label, content)` wraps the content in a `user`-role message with a header block instructing the model not to follow instructions inside it. Content goes in as data, not as a system instruction.
-- `UNTRUSTED_CONTEXT_POLICY` is a system-prompt preamble that states the same policy at the top of every session where untrusted data may appear.
+- `untrusted_context_message(label, content)` envuelve el contenido en un mensaje con rol `user` con un bloque de encabezado que instruye al modelo a no seguir instrucciones dentro de él. El contenido se introduce como datos, no como instrucción del sistema.
+- `UNTRUSTED_CONTEXT_POLICY` es un preámbulo del *prompt* del sistema que establece la misma política al inicio de cada sesión donde puedan aparecer datos no confiables.
 
-**Untrusted surfaces that must go through this wrapper:** web search results, fetched URLs, emails (read), saved memories, skill text, notes, and any tool output sourced from outside the server. Injecting untrusted content directly into the system role is a security bug.
+**Superficies no confiables que deben pasar por este envoltorio:** resultados de búsqueda web, URLs obtenidas, correos electrónicos (lectura), memorias guardadas, texto de habilidades, notas y cualquier salida de herramientas procedente de fuera del servidor. Inyectar contenido no confiable directamente en el rol del sistema es un error de seguridad.
 
-## Security Headers
+## Cabeceras de Seguridad
 
-`core/middleware.py:SecurityHeadersMiddleware` sets headers on every response:
+`core/middleware.py:SecurityHeadersMiddleware` establece cabeceras en cada respuesta:
 
-- `X-Frame-Options: DENY` + `frame-ancestors 'none'` on all routes except tool-render iframes (which are sandboxed at the HTML level).
-- `X-Content-Type-Options: nosniff` and `Referrer-Policy: no-referrer` everywhere.
-- **CSP:** nonce-based `script-src 'self' 'nonce-{nonce}' https://cdn.jsdelivr.net`. `style-src 'unsafe-inline'` is intentionally kept — `static/index.html` ships inline `<style>` blocks and JS modules set `style=""` attributes at runtime. Inline styles do not execute script so the risk is visual-only. Removing this requires templating the HTML files and auditing all JS-set style attributes.
+- `X-Frame-Options: DENY` + `frame-ancestors 'none'` en todas las rutas excepto los iframes de renderizado de herramientas (que están en *sandbox* a nivel HTML).
+- `X-Content-Type-Options: nosniff` y `Referrer-Policy: no-referrer` en todas partes.
+- **CSP:** `script-src` basado en nonce: `'self' 'nonce-{nonce}' https://cdn.jsdelivr.net`. `style-src 'unsafe-inline'` se mantiene intencionadamente — `static/index.html` incluye bloques `<style>` en línea y los módulos JS establecen atributos `style=""` en tiempo de ejecución. Los estilos en línea no ejecutan scripts, por lo que el riesgo es solo visual. Eliminar esto requeriría convertir los archivos HTML en plantillas y auditar todos los atributos de estilo establecidos por JS.
 
-## Known Gaps
+## Brechas Conocidas
 
-These are open, acknowledged, and contributor help is welcome:
+Estas son abiertas, reconocidas, y se agradece la ayuda de contribuidores:
 
-1. **No shell/filesystem sandbox.** The agent `bash` and `read_file`/`write_file` tools run as the app process user with no network egress filtering or filesystem confinement. A successful prompt-injection reaching a shell-enabled admin session can make outbound requests to internal services. See #1058 for the sandbox proposal.
+1. **Sin sandbox de shell/sistema de archivos.** Las herramientas `bash` del agente y `read_file`/`write_file` se ejecutan como el usuario del proceso de la aplicación sin filtrado de salida de red ni confinamiento del sistema de archivos. Una inyección de instrucciones exitosa que llegue a una sesión de administrador con shell habilitado puede realizar solicitudes salientes a los servicios internos. Consulta #1058 para la propuesta de sandbox.
 
-2. **SSRF via `/api/v1/chat` `base_url` parameter.** A chat-scoped API token can supply an arbitrary `base_url`; the server forwards the LLM request to that host without validating the scheme or address. PR #1039 fixes this.
+2. **SSRF mediante el parámetro `base_url` en `/api/v1/chat`.** Un token de API con ámbito de chat puede suministrar un `base_url` arbitrario; el servidor reenvía la solicitud LLM a ese host sin validar el esquema ni la dirección. El PR #1039 soluciona esto.
 
-3. **`src/search/` partial consolidation.** `src.search.core` and `src.search.providers` correctly alias `services.search` via `sys.modules` replacement. `analytics`, `cache`, `content`, `query`, and `ranking` are still independent copies that can drift. The SSRF regression tests in `tests/test_webhook_ssrf_resilience.py` test `src.webhook_manager` directly (separate from search), so the safety net there is intact. See #1058.
+3. **Consolidación parcial de `src/search/`.** `src.search.core` y `src.search.providers` alisan correctamente `services.search` mediante la sustitución de `sys.modules`. `analytics`, `cache`, `content`, `query` y `ranking` siguen siendo copias independientes que pueden divergir. Las pruebas de regresión de SSRF en `tests/test_webhook_ssrf_resilience.py` prueban `src.webhook_manager` directamente (independiente de la búsqueda), por lo que la red de seguridad allí está intacta. Consulta #1058.
 
-4. **Token scopes are coarse.** There is no way to grant a session a subset of the owning user's privileges. Companion/mobile tokens carry either `chat` or `admin` scope with no per-capability granularity.
+4. **Los ámbitos de token son gruesos.** No hay forma de conceder a una sesión un subconjunto de los privilegios del usuario propietario. Los tokens de compañero/móvil llevan ámbito `chat` o `admin` sin granularidad por capacidad.

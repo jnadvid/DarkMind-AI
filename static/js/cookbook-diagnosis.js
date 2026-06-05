@@ -129,88 +129,88 @@ function _inferBaseRepo(text) {
 export const ERROR_PATTERNS = [
   {
     pattern: /No available memory for the cache blocks|Available KV cache memory:.*-/i,
-    message: 'No GPU memory left for KV cache after loading model.',
+    message: 'Sin memoria de GPU disponible para la caché KV tras cargar el modelo.',
     fixes: [
-      { label: 'Retry with GPU mem 0.95', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.95') },
-      { label: 'Retry with context 2048', action: (panel) => _serveAutoRetryReplace(panel, '--max-model-len', '2048') },
-      { label: 'Retry with more GPUs (TP=8)', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '8') },
+      { label: 'Reintentar con GPU mem 0.95', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.95') },
+      { label: 'Reintentar con contexto 2048', action: (panel) => _serveAutoRetryReplace(panel, '--max-model-len', '2048') },
+      { label: 'Reintentar con más GPUs (TP=8)', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '8') },
     ],
   },
   {
     pattern: /warming up sampler|max_num_seqs.*gpu_memory_utilization/i,
-    message: 'OOM during warmup. Lower GPU memory or max sequences.',
+    message: 'OOM durante el calentamiento. Reduce la memoria de GPU o el número máximo de secuencias.',
     fixes: [
-      { label: 'Retry with GPU mem 0.80', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.80') },
-      { label: 'Retry with --max-num-seqs 64', action: (panel) => _serveAutoRetry(panel, '--max-num-seqs 64') },
-      { label: 'Retry with --max-num-seqs 32', action: (panel) => _serveAutoRetry(panel, '--max-num-seqs 32') },
+      { label: 'Reintentar con GPU mem 0.80', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.80') },
+      { label: 'Reintentar con --max-num-seqs 64', action: (panel) => _serveAutoRetry(panel, '--max-num-seqs 64') },
+      { label: 'Reintentar con --max-num-seqs 32', action: (panel) => _serveAutoRetry(panel, '--max-num-seqs 32') },
     ],
   },
   {
     pattern: /CUDA out of memory|torch\.cuda\.OutOfMemoryError|CUDA error: out of memory/i,
-    message: 'GPU ran out of memory. Try more GPUs (higher TP) or lower context.',
+    message: 'La GPU se ha quedado sin memoria. Prueba con más GPUs (mayor TP) o reduce el contexto.',
     fixes: [
-      { label: 'Retry with TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
-      { label: 'Retry with TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
-      { label: 'Retry with GPU mem 0.80', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.80') },
-      { label: 'Retry with context 4096', action: (panel) => _serveAutoRetryReplace(panel, '--max-model-len', '4096') },
-      { label: 'Retry with --enforce-eager', action: (panel) => _serveAutoRetry(panel, '--enforce-eager') },
+      { label: 'Reintentar con TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
+      { label: 'Reintentar con TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
+      { label: 'Reintentar con GPU mem 0.80', action: (panel) => _serveAutoRetryReplace(panel, '--gpu-memory-utilization', '0.80') },
+      { label: 'Reintentar con contexto 4096', action: (panel) => _serveAutoRetryReplace(panel, '--max-model-len', '4096') },
+      { label: 'Reintentar con --enforce-eager', action: (panel) => _serveAutoRetry(panel, '--enforce-eager') },
     ],
   },
   {
     pattern: /not divisible by weight quantization|quantization block/i,
-    message: 'FP8 MoE quantization is incompatible with this tensor-parallel split.',
-    suggestion: 'Suggested action: retry with a lower tensor-parallel size, such as TP=4 or TP=2. If it still fails, use a non-FP8/GGUF version of the model.',
+    message: 'La cuantización FP8 MoE es incompatible con esta división tensor-parallel.',
+    suggestion: 'Acción sugerida: reintenta con un tamaño tensor-parallel menor, como TP=4 o TP=2. Si sigue fallando, usa una versión no FP8/GGUF del modelo.',
     fixes: [
-      { label: 'Retry with TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
-      { label: 'Retry with TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
-      { label: 'Edit serve', action: (panel) => _openServeEditFromDiagnosis(panel) },
+      { label: 'Reintentar con TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
+      { label: 'Reintentar con TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
+      { label: 'Editar servicio', action: (panel) => _openServeEditFromDiagnosis(panel) },
     ],
   },
   {
     pattern: /not divisib|must be divisible|attention heads.*divisible/i,
-    message: 'Tensor parallel size incompatible with model dimensions.',
+    message: 'El tamaño tensor-parallel es incompatible con las dimensiones del modelo.',
     fixes: [
-      { label: 'Retry with TP=1', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '1') },
-      { label: 'Retry with TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
-      { label: 'Retry with TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
+      { label: 'Reintentar con TP=1', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '1') },
+      { label: 'Reintentar con TP=2', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '2') },
+      { label: 'Reintentar con TP=4', action: (panel) => _serveAutoRetryReplace(panel, '--tensor-parallel-size', '4') },
     ],
   },
   {
     pattern: /Too large swap space|swap space.*total CPU memory/i,
-    message: 'Swap space too large for available CPU memory.',
+    message: 'El espacio de intercambio es demasiado grande para la memoria CPU disponible.',
     fixes: [
-      { label: 'Retry without swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
-      { label: 'Retry with swap 1', action: (panel) => _serveAutoRetryReplace(panel, '--swap-space', '1') },
+      { label: 'Reintentar sin swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
+      { label: 'Reintentar con swap 1', action: (panel) => _serveAutoRetryReplace(panel, '--swap-space', '1') },
     ],
   },
   {
     pattern: /swap space|not enough.*memory.*cpu|Cannot allocate memory/i,
-    message: 'Not enough CPU RAM or swap space.',
+    message: 'RAM de CPU o espacio de intercambio insuficiente.',
     fixes: [
-      { label: 'Retry without swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
-      { label: 'Lower max context to 4096', action: (panel) => _setPanelField(panel, 'ctx', '4096') },
+      { label: 'Reintentar sin swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
+      { label: 'Reducir contexto máximo a 4096', action: (panel) => _setPanelField(panel, 'ctx', '4096') },
     ],
   },
   {
     pattern: /unrecognized arguments:\s*--swap-space/i,
-    message: '--swap-space was removed in newer vLLM versions. Remove it from the command.',
+    message: '--swap-space fue eliminado en versiones más recientes de vLLM. Quítalo del comando.',
     fixes: [
-      { label: 'Retry without swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
+      { label: 'Reintentar sin swap', action: (panel) => _serveAutoRetryRemove(panel, '--swap-space') },
     ],
   },
   {
     pattern: /Address already in use|bind.*address.*in use/i,
-    message: 'Port is already in use. Another server may be running.',
+    message: 'El puerto ya está en uso. Es posible que haya otro servidor en ejecución.',
     fixes: [
-      { label: 'Kill existing vLLM', action: (panel) => _runQuickCmd(panel, 'pkill -f vllm') },
-      { label: 'Use port 8001', action: (panel) => _setPanelField(panel, 'port', '8001') },
+      { label: 'Matar proceso vLLM existente', action: (panel) => _runQuickCmd(panel, 'pkill -f vllm') },
+      { label: 'Usar puerto 8001', action: (panel) => _setPanelField(panel, 'port', '8001') },
     ],
   },
   {
     pattern: /No CUDA GPUs are available|no GPU.*found|CUDA_VISIBLE_DEVICES.*invalid/i,
-    message: 'No GPUs visible. Check your GPU selection or driver.',
+    message: 'No se detectan GPUs. Comprueba la selección de GPU o el controlador.',
     fixes: [
-      { label: 'Clear GPU selection (use all)', action: (panel) => {
+      { label: 'Limpiar selección de GPU (usar todas)', action: (panel) => {
         _setPanelField(panel, 'gpus', '');
         _envState.gpus = '';
         _persistEnvState();
@@ -219,17 +219,17 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /403 Forbidden|401 Unauthorized|Access to model.*is restricted|gated repo|not in the authorized list|awaiting a review/i,
-    message: 'Gated model. Your HF token IS being sent — but its account must be granted access first: open the model page, accept the license, and wait for approval (Meta models can take a while).',
+    message: 'Modelo con acceso restringido. Tu token HF SÍ se está enviando, pero la cuenta debe obtener acceso primero: abre la página del modelo, acepta la licencia y espera la aprobación (los modelos de Meta pueden tardar).',
     // Extract repo name from error text to build HF link
     _repoPattern: /Access to model\s+(\S+)\s+is restricted|gated repo.*?huggingface\.co\/([^\s/]+\/[^\s/]+)/i,
     fixes: [
-      { label: 'Request access on HF', action: (panel, _text) => {
+      { label: 'Solicitar acceso en HF', action: (panel, _text) => {
         const m = _text && (_text.match(/Access to model\s+(\S+)\s+is restricted/i) || _text.match(/huggingface\.co\/([^\s/]+\/[^\s/]+)/i));
         const repo = m && (m[1] || m[2]);
         if (repo) window.open('https://huggingface.co/' + repo, '_blank');
         else window.open('https://huggingface.co/settings/gated-repos', '_blank');
       }},
-      { label: 'Check HF Token', action: (panel) => {
+      { label: 'Comprobar token HF', action: (panel) => {
         const el = panel.querySelector('[data-field="hf_token"]');
         if (el) { el.focus(); el.style.borderColor = 'var(--red)'; }
       }},
@@ -237,9 +237,9 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /Weights for this component appear to be missing|load the component before passing/i,
-    message: 'Single-file checkpoint needs a base model for missing components (text encoder, VAE). The base model may be gated — accept the license and set your HF token.',
+    message: 'El checkpoint de un solo archivo necesita un modelo base para los componentes que faltan (codificador de texto, VAE). El modelo base puede estar restringido — acepta la licencia y configura tu token HF.',
     fixes: [
-      { label: 'Request access to base model', action: (panel, _text) => {
+      { label: 'Solicitar acceso al modelo base', action: (panel, _text) => {
         // Extract gated repo from error, or infer from model name
         const gated = _text && _text.match(/Access to model\s+(\S+)\s+is restricted/i);
         const base = _text && _text.match(/config=([^\s,)]+)/i);
@@ -248,7 +248,7 @@ export const ERROR_PATTERNS = [
         if (repo) window.open('https://huggingface.co/' + repo, '_blank');
         else if (model && model[1]) window.open('https://huggingface.co/' + model[1].replace(/[.]$/, ''), '_blank');
       }},
-      { label: 'Check HF Token', action: (panel) => {
+      { label: 'Comprobar token HF', action: (panel) => {
         const el = panel.querySelector('[data-field="hf_token"]');
         if (el) { el.focus(); el.style.borderColor = 'var(--red)'; }
       }},
@@ -256,15 +256,15 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /Entry Not Found.*model_index\.json|Could not load model.*Check diffusers/i,
-    message: 'Single-file model — needs base config from a gated repo. Accept the license and set your HF token.',
+    message: 'Modelo de un solo archivo — necesita la configuración base de un repositorio restringido. Acepta la licencia y configura tu token HF.',
     fixes: [
-      { label: 'Request access to base model', action: (panel, _text) => {
+      { label: 'Solicitar acceso al modelo base', action: (panel, _text) => {
         const gated = _text && _text.match(/Access to model\s+(\S+)\s+is restricted/i);
         const repo = (gated && gated[1]) || _inferBaseRepo(_text);
         if (repo) window.open('https://huggingface.co/' + repo, '_blank');
         else window.open('https://huggingface.co/settings/gated-repos', '_blank');
       }},
-      { label: 'Check HF Token', action: (panel) => {
+      { label: 'Comprobar token HF', action: (panel) => {
         const el = panel.querySelector('[data-field="hf_token"]');
         if (el) { el.focus(); el.style.borderColor = 'var(--red)'; }
       }},
@@ -272,9 +272,9 @@ export const ERROR_PATTERNS = [
   },
   {
     pattern: /does not appear to have a file named|not a valid model|No such file or directory.*model/i,
-    message: 'Model path or ID not found.',
+    message: 'No se encontró la ruta o el ID del modelo.',
     fixes: [
-      { label: 'Check model name', action: (panel) => {
+      { label: 'Comprobar nombre del modelo', action: (panel) => {
         const header = panel.querySelector('.hwfit-panel-model');
         if (header) header.style.color = 'var(--red)';
       }},

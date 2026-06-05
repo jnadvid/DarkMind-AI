@@ -3,12 +3,12 @@
 // Pure constants + zero-state helpers for the calendar UI.
 // No DOM, no fetch, no global mutable state — safe to import anywhere.
 
-export const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+export const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
 
-export const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'];
+export const MONTHS = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-export const MON_SHORT = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+export const MON_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 export const CAL_PALETTE = [
   'var(--accent)', '#5b8abf', '#bf6b5b', '#5bbf7a', '#bf9a5b',
@@ -16,19 +16,19 @@ export const CAL_PALETTE = [
 ];
 
 export const CAL_COLORS = [
-  { name: 'default', hex: '' },
+  { name: 'predeterminado', hex: '' },
   // Pale/pastel palette — softer event tints.
-  { name: 'red',     hex: '#f0b5ba' },
-  { name: 'orange',  hex: '#e8ccb2' },
-  { name: 'yellow',  hex: '#f2dfbd' },
-  { name: 'green',   hex: '#cce0bc' },
-  { name: 'blue',    hex: '#b0d7f7' },
-  { name: 'purple',  hex: '#e2bcee' },
-  { name: 'teal',    hex: '#abdbe0' },
-  { name: 'pink',    hex: '#f0b5cc' },
+  { name: 'rojo',      hex: '#f0b5ba' },
+  { name: 'naranja',   hex: '#e8ccb2' },
+  { name: 'amarillo',  hex: '#f2dfbd' },
+  { name: 'verde',     hex: '#cce0bc' },
+  { name: 'azul',      hex: '#b0d7f7' },
+  { name: 'morado',    hex: '#e2bcee' },
+  { name: 'turquesa',  hex: '#abdbe0' },
+  { name: 'rosa',      hex: '#f0b5cc' },
   // Custom — mirrors the notes color picker. Clicking opens a file picker
   // and the chosen image URL is stored as a `bg:<url>` sentinel.
-  { name: 'custom',  hex: 'custom' },
+  { name: 'personalizado', hex: 'custom' },
 ];
 
 export const _CAL_CUSTOM_GRADIENT = 'conic-gradient(from 0deg, #e06c75, #d19a66, #e5c07b, #98c379, #61afef, #c678dd, #e06c75)';

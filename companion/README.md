@@ -1,28 +1,19 @@
-# Companion bridge
+# Puente companion
 
-A thin, additive layer so a LAN client (e.g. a phone) can discover what an
-DarkMind server offers and pair to it, without duplicating any LLM logic.
+Una capa delgada y aditiva para que un cliente en LAN (p. ej. un teléfono) pueda descubrir lo que ofrece un servidor DarkMind-AI y emparejarse con él, sin duplicar ninguna lógica LLM.
 
-| Method | Path | Auth | Purpose |
+| Método | Ruta | Auth | Propósito |
 |---|---|---|---|
-| GET | `/api/companion/ping` | session or token | cheap, auth-validated health check |
-| GET | `/api/companion/info` | session or token | server identity + capability flags |
-| GET | `/api/companion/models` | session or token | the **caller's own** model endpoints |
-| GET | `/api/companion/pair` | **admin cookie** | pairing page (a form; never mints) |
-| POST | `/api/companion/pair` | **admin cookie** | mint a one-time pairing token (`?format=json` for an in-app screen) |
+| GET | `/api/companion/ping` | sesión o token | comprobación de salud barata y validada por autenticación |
+| GET | `/api/companion/info` | sesión o token | identidad del servidor + indicadores de capacidad |
+| GET | `/api/companion/models` | sesión o token | los endpoints de modelo **del propio solicitante** |
+| GET | `/api/companion/pair` | **cookie de administrador** | página de emparejamiento (un formulario; nunca acuña) |
+| POST | `/api/companion/pair` | **cookie de administrador** | acuña un token de emparejamiento de un solo uso (`?format=json` para una pantalla en la app) |
 
-`/models` scopes to the caller's real owner plus legacy null-owner shared rows
-(same rule as `owner_filter`) and never returns API-key material.
+`/models` aplica ámbito al propietario real del solicitante más las filas heredadas compartidas de propietario nulo (misma regla que `owner_filter`) y nunca devuelve material de clave de API.
 
-## Pairing CSRF posture
+## Postura CSRF del emparejamiento
 
-Minting happens **only on POST**. The session cookie is `SameSite=Lax`
-(`routes/auth_routes.py`), so a browser will not send it on a cross-site POST —
-the same protection `POST /api/tokens` relies on. A `GET` would be unsafe (Lax
-cookies ride top-level GET navigations), so `GET /pair` only renders a form.
-Minting invalidates the auth middleware's token cache, so a freshly minted token
-works on the next request without a restart.
+El acuñamiento ocurre **solo en POST**. La *cookie* de sesión es `SameSite=Lax` (`routes/auth_routes.py`), por lo que un navegador no la enviará en un POST de sitio cruzado — la misma protección en la que confía `POST /api/tokens`. Un `GET` no sería seguro (las *cookies* Lax viajan en navegaciones GET de nivel superior), por lo que `GET /pair` solo renderiza un formulario. El acuñamiento invalida la caché de tokens del middleware de autenticación, por lo que un token recién acuñado funciona en la siguiente solicitud sin necesidad de reiniciar.
 
-The pairing/scoping rules live in small, tested units (`token_owner`,
-`owner_can_see`, `mint_pairing_token`, `pairing.*`) — see
-`tests/test_companion_readonly.py` and `tests/test_companion_pairing.py`.
+Las reglas de emparejamiento/ámbito viven en unidades pequeñas y probadas (`token_owner`, `owner_can_see`, `mint_pairing_token`, `pairing.*`) — consulta `tests/test_companion_readonly.py` y `tests/test_companion_pairing.py`.
