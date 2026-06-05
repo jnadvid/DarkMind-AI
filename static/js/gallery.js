@@ -333,9 +333,9 @@ async function _handleGalleryDrop(e) {
     dtItems.some(it => it.kind === 'string')
   );
   if (looksLikeFolderUri) {
-    uiModule.showError('Browsers can’t read folders dropped from native file managers (Thunar/Nautilus). Use the "Upload album" tile in the Albums tab instead.');
+    uiModule.showError('Los navegadores no pueden leer carpetas arrastradas desde gestores de archivos nativos (Thunar/Nautilus). Usa en su lugar la casilla «Subir álbum» de la pestaña Álbumes.');
   } else if (entries.length || dtItems.length) {
-    uiModule.showToast('No images found in that drop');
+    uiModule.showToast('No se encontraron imágenes en lo soltado');
   }
 }
 
@@ -489,7 +489,7 @@ function _ensureAlbumsToolbar(container) {
   });
   container.querySelector('#gallery-albums-bulk-delete').addEventListener('click', (e) => {
     e.stopPropagation();
-    if (!_albumSelected.size) { uiModule.showToast('Select albums first'); return; }
+    if (!_albumSelected.size) { uiModule.showToast('Selecciona primero los álbumes'); return; }
     _bulkDeleteAlbums([..._albumSelected]);
   });
 }
@@ -581,7 +581,7 @@ function _renderAlbumsGrid() {
     html += `
       <div class="${cls}" data-album="${_esc(a.id)}">
         ${dot}
-        <button class="gallery-album-menu-btn" data-album="${_esc(a.id)}" title="Options" aria-label="Album options"${_albumSelectMode ? ' style="display:none"' : ''}>
+        <button class="gallery-album-menu-btn" data-album="${_esc(a.id)}" title="Options" aria-label="Opciones del álbum"${_albumSelectMode ? ' style="display:none"' : ''}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="position:relative;top:2px;"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
         </button>
         <div class="gallery-album-menu-pop dropdown" data-album="${_esc(a.id)}" hidden>
@@ -704,9 +704,9 @@ function _wireAlbumsEvents(scope) {
       if (r.ok) {
         await _fetchAlbums();
         _renderAlbumsTab();
-        if (uiModule) uiModule.showToast('Album renamed');
+        if (uiModule) uiModule.showToast('Álbum renombrado');
       } else if (uiModule) {
-        uiModule.showError('Rename failed');
+        uiModule.showError('Error al renombrar');
       }
     });
     pop.querySelector('[data-action="delete"]')?.addEventListener('click', async (e) => {
@@ -726,9 +726,9 @@ function _wireAlbumsEvents(scope) {
         await _fetchAlbums();
         _renderAlbumsTab();
         _renderAlbums();
-        if (uiModule) uiModule.showToast('Album deleted');
+        if (uiModule) uiModule.showToast('Álbum eliminado');
       } else if (uiModule) {
-        uiModule.showError('Delete failed');
+        uiModule.showError('Error al eliminar');
       }
     });
   });
@@ -759,7 +759,7 @@ function _wireAlbumsEvents(scope) {
       const images = all.filter(_isMediaFile);
       picker.remove();
       if (!images.length) {
-        if (uiModule) uiModule.showToast('No images or videos in that folder');
+        if (uiModule) uiModule.showToast('No hay imágenes ni vídeos en esa carpeta');
         return;
       }
       // Derive folder name from the first file's relative path (e.g.
@@ -784,7 +784,7 @@ function _wireAlbumsEvents(scope) {
         }
       }
       if (!album) {
-        if (uiModule) uiModule.showError('Could not create album');
+        if (uiModule) uiModule.showError('No se pudo crear el álbum');
         return;
       }
       await _bulkUpload(images, album.id);
@@ -811,7 +811,7 @@ async function _bulkDeleteAlbums(ids) {
     if (!r.ok) failed++;
     else if (_activeAlbum === id) _activeAlbum = null;
   }
-  if (failed) uiModule.showError(`Failed to delete ${failed} of ${ids.length} albums`);
+  if (failed) uiModule.showError(`No se pudieron eliminar ${failed} de ${ids.length} álbumes`);
   else if (uiModule) uiModule.showToast(`Deleted ${ids.length} album${ids.length > 1 ? 's' : ''}`);
   _setAlbumSelectMode(false);
   await _fetchAlbums();
@@ -925,7 +925,7 @@ function _draftsPaint() {
           <div class="gallery-editor-draft-name">${_esc(d.name || 'Untitled')}</div>
           <div class="gallery-editor-draft-meta">${_esc([dims, updated].filter(Boolean).join(' · '))}</div>
         </div>
-        <button class="gallery-editor-draft-delete" data-draft-id="${_esc(d.id)}" title="Delete project" aria-label="Delete project">×</button>
+        <button class="gallery-editor-draft-delete" data-draft-id="${_esc(d.id)}" title="Delete project" aria-label="Eliminar proyecto">×</button>
       </div>`;
   }).join('');
   grid.querySelectorAll('.gallery-editor-draft-card').forEach(card => {
@@ -954,7 +954,7 @@ function _draftsPaint() {
       e.stopPropagation();
       const id = btn.dataset.draftId;
       if (!id) return;
-      const ok = await uiModule.styledConfirm('Delete this project?', {
+      const ok = await uiModule.styledConfirm('¿Eliminar este proyecto?', {
         confirmText: 'Eliminar', cancelText: 'Cancelar', danger: true,
       });
       if (!ok) return;
@@ -1099,7 +1099,7 @@ function _renderEditorLanding() {
       <div class="gallery-editor-drafts" id="gallery-editor-drafts" hidden>
         <div class="gallery-editor-drafts-header">
           <h4 class="gallery-editor-drafts-title">Saved projects</h4>
-          <input type="search" class="gallery-editor-drafts-search" id="gallery-editor-drafts-search" placeholder="Search projects…" autocomplete="off" />
+          <input type="search" class="gallery-editor-drafts-search" id="gallery-editor-drafts-search" placeholder="Buscar proyectos…" autocomplete="off" />
           <button class="gallery-select-btn" id="gallery-editor-drafts-select" title="Toggle multi-select">Select</button>
         </div>
         <div class="gallery-bulk-bar hidden" id="gallery-editor-drafts-bulk">
@@ -1345,7 +1345,7 @@ function _openDetail(img) {
     <div class="gallery-detail-header">
       <button class="gallery-detail-back" id="gallery-detail-back">&larr; Back</button>
       <div style="flex:1"></div>
-      <button class="gallery-detail-back" id="gallery-edit-direct-btn" title="Edit (E)" aria-label="Edit photo" style="display:inline-flex;align-items:center;gap:4px;">
+      <button class="gallery-detail-back" id="gallery-edit-direct-btn" title="Edit (E)" aria-label="Editar foto" style="display:inline-flex;align-items:center;gap:4px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
         Edit
       </button>
@@ -1353,7 +1353,7 @@ function _openDetail(img) {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="${img.favorite ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
       <div class="gallery-detail-menu-wrap">
-        <button class="gallery-detail-action gallery-detail-menu-btn" id="gallery-detail-menu-btn" title="Actions" aria-label="Photo actions">
+        <button class="gallery-detail-action gallery-detail-menu-btn" id="gallery-detail-menu-btn" title="Actions" aria-label="Acciones de la foto">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
         </button>
         <div class="gallery-detail-menu dropdown" id="gallery-detail-menu" hidden>
@@ -1382,10 +1382,10 @@ function _openDetail(img) {
     </div>
     <div class="gallery-detail-body">
       <div class="gallery-detail-image" id="gallery-detail-image-wrap" style="position:relative">
-        <button class="gallery-detail-rotate gallery-detail-rotate-ccw" id="gallery-rotate-ccw-btn" title="Rotate 90° counter-clockwise" aria-label="Rotate left">
+        <button class="gallery-detail-rotate gallery-detail-rotate-ccw" id="gallery-rotate-ccw-btn" title="Rotate 90° counter-clockwise" aria-label="Girar a la izquierda">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
         </button>
-        <button class="gallery-detail-rotate gallery-detail-rotate-cw" id="gallery-rotate-btn" title="Rotate 90° clockwise" aria-label="Rotate right">
+        <button class="gallery-detail-rotate gallery-detail-rotate-cw" id="gallery-rotate-btn" title="Rotate 90° clockwise" aria-label="Girar a la derecha">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
         </button>
         <button class="gallery-detail-nav gallery-detail-nav-prev" id="gallery-detail-prev" title="Previous (←)" aria-label="Previous">
@@ -1406,7 +1406,7 @@ function _openDetail(img) {
           <label>Name</label>
           <div class="gallery-name-wrap">
             <input type="text" class="gallery-detail-name-input" id="gallery-detail-name-input"
-              value="${_esc(img.prompt || '')}" placeholder="Untitled photo (press Enter to save)" />
+              value="${_esc(img.prompt || '')}" placeholder="Foto sin título (pulsa Intro para guardar)" />
             <svg class="gallery-name-enter" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 10 4 15 9 20"/><path d="M20 4v7a4 4 0 0 1-4 4H4"/></svg>
           </div>
         </div>
@@ -1427,10 +1427,10 @@ function _openDetail(img) {
         ${aiTags ? `<div class="gallery-detail-section"><label>AI Tags</label><div class="gallery-ai-tags">${aiTags.split(',').map(t => t.trim()).filter(Boolean).map(t => `<button class="gallery-ai-chip gallery-aitag-chip" data-tag-filter="${_esc(t)}" title="AI-generated tag — click to filter to photos tagged “${_esc(t)}”"><span class="gallery-aitag-mark" aria-hidden="true">✦</span>${_esc(t)}</button>`).join('')}</div></div>` : ''}
         <div class="gallery-detail-section">
           <label>Tags</label>
-          <div class="gallery-ai-tags" id="gallery-user-tag-chips">${userTags.split(',').map(t => t.trim()).filter(Boolean).map(t => `<button class="gallery-ai-chip gallery-user-chip" data-tag-filter="${_esc(t)}" title="Filter to photos tagged “${_esc(t)}”">${_esc(t)}<span class="gallery-tag-x" title="Remove tag" aria-label="Remove tag">×</span></button>`).join('')}</div>
+          <div class="gallery-ai-tags" id="gallery-user-tag-chips">${userTags.split(',').map(t => t.trim()).filter(Boolean).map(t => `<button class="gallery-ai-chip gallery-user-chip" data-tag-filter="${_esc(t)}" title="Filter to photos tagged “${_esc(t)}”">${_esc(t)}<span class="gallery-tag-x" title="Remove tag" aria-label="Quitar etiqueta">×</span></button>`).join('')}</div>
           <div class="gallery-tag-input-wrap">
             <input type="text" class="gallery-tag-input" id="gallery-tag-input"
-              value="" placeholder="Add a tag" title="Type a tag and press Enter to add it" />
+              value="" placeholder="Añadir una etiqueta" title="Escribe una etiqueta y pulsa Intro para añadirla" />
             <span class="gallery-tag-enter-hint" aria-hidden="true">↵</span>
           </div>
         </div>
@@ -1463,7 +1463,7 @@ function _openDetail(img) {
     const remaining = existing.filter(e => e.toLowerCase() !== String(tag).toLowerCase());
     const cleaned = remaining.join(', ');
     const ok = await _patchImage(img.id, { tags: cleaned });
-    if (!ok) { if (uiModule) uiModule.showError('Failed to remove tag'); return; }
+    if (!ok) { if (uiModule) uiModule.showError('No se pudo quitar la etiqueta'); return; }
     img.tags = cleaned;
     img.user_tags = cleaned;
     chip.remove();
@@ -1561,11 +1561,11 @@ function _openDetail(img) {
         uiModule.showToast(clearMode ? 'AI tags cleared' : 'AI tags added');
         _openDetail(img); // re-render detail
       } else {
-        uiModule.showError(data.error || (clearMode ? 'Clear failed' : 'AI tagging failed'));
+        uiModule.showError(data.error || (clearMode ? 'Error al borrar' : 'Error al etiquetar con IA'));
       }
     } catch (e2) {
       cleanup();
-      uiModule.showError(clearMode ? 'Clear failed' : 'AI tagging failed');
+      uiModule.showError(clearMode ? 'Error al borrar' : 'Error al etiquetar con IA');
     }
   });
 
@@ -1671,7 +1671,7 @@ function _openDetail(img) {
       openEditor(img.url, img.id, null, label);
     } catch (e) {
       console.error('[edit] failed:', e);
-      if (uiModule) uiModule.showError('Failed to open editor: ' + (e?.message || 'unknown'));
+      if (uiModule) uiModule.showError('No se pudo abrir el editor: ' + (e?.message || 'desconocido'));
     }
   };
   document.getElementById('gallery-edit-btn')?.addEventListener('click', _openInEditor);
@@ -1708,7 +1708,7 @@ function _openDetail(img) {
         credentials: 'same-origin',
         body: JSON.stringify({ angle }),
       });
-      if (!r.ok) { cleanup(); uiModule.showError('Rotate failed'); return; }
+      if (!r.ok) { cleanup(); uiModule.showError('Error al girar'); return; }
       // Cache-bust the image in the detail view, then wait for the new
       // image to actually load before clearing the spinner so the user
       // doesn't see a flash of the old/blank image.
@@ -1725,7 +1725,7 @@ function _openDetail(img) {
       _fetchLibrary(false);
     } catch (e) {
       cleanup();
-      uiModule.showError('Rotate failed');
+      uiModule.showError('Error al girar');
     }
   };
   document.getElementById('gallery-rotate-btn')?.addEventListener('click', () => _rotate(90));
@@ -1742,7 +1742,7 @@ function _openDetail(img) {
         body: JSON.stringify({ cover_id: img.id }),
       });
       if (r.ok) {
-        uiModule.showToast('Album cover updated');
+        uiModule.showToast('Portada del álbum actualizada');
         await _fetchAlbums();
       } else {
         uiModule.showError('Failed to set cover');

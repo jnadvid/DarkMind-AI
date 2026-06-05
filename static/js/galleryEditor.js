@@ -1728,7 +1728,7 @@ function _loadLayerAlphaAsSelection(layer) {
   state.wandLayerId = layer.id;
   state.wandLastSeed = null;
   composite();
-  if (uiModule) uiModule.showToast('Layer pixels selected');
+  if (uiModule) uiModule.showToast('Píxeles de la capa seleccionados');
 }
 
 // Invert the active selection: lasso (point list — turn into a polygon
@@ -1747,7 +1747,7 @@ function _invertSelection() {
     }
     ctx.putImageData(data, 0, 0);
     composite();
-    if (uiModule) uiModule.showToast('Selection inverted');
+    if (uiModule) uiModule.showToast('Selección invertida');
     return true;
   }
   if (state.lassoPoints.length >= 3 && !state.lassoActive) {
@@ -1772,7 +1772,7 @@ function _invertSelection() {
     state.lassoPoints = [];
     state.lassoActive = false;
     composite();
-    if (uiModule) uiModule.showToast('Selection inverted (converted to wand)');
+    if (uiModule) uiModule.showToast('Selección invertida (convertida a varita)');
     return true;
   }
   return false;
@@ -1855,7 +1855,7 @@ function _wandToMask() {
   state.wandLastSeed = null;
   composite();
   _renderLayerPanel();
-  if (uiModule) uiModule.showToast('Selection added to mask');
+  if (uiModule) uiModule.showToast('Selección añadida a la máscara');
 }
 
 // Reveal/hide the small "X" badge on the Lasso and Wand tool buttons
@@ -1951,7 +1951,7 @@ function _wandCopyToNewLayer() {
   composite();
   _renderLayerPanel();
   _revealLayerPanel();
-  if (uiModule) uiModule.showToast('Copied to new layer');
+  if (uiModule) uiModule.showToast('Copiado a una capa nueva');
 }
 
 function _lassoDeleteSelection() {
@@ -1978,7 +1978,7 @@ function _lassoDeleteSelection() {
 
   state.lassoPoints = [];
   composite();
-  uiModule.showToast('Selection deleted');
+  uiModule.showToast('Selección eliminada');
 }
 
 function _lassoCopyToLayer() {
@@ -2016,7 +2016,7 @@ function _lassoCopyToLayer() {
   _renderLayerPanel();
   _revealLayerPanel();
   composite();
-  uiModule.showToast('Selection copied to new layer');
+  uiModule.showToast('Selección copiada a una capa nueva');
 }
 
 function _lassoToMask() {
@@ -2052,7 +2052,7 @@ function _lassoToMask() {
   state.lassoPoints = [];
   composite();
   _renderLayerPanel();
-  uiModule.showToast('Selection added to mask');
+  uiModule.showToast('Selección añadida a la máscara');
 }
 
 // ── Edge feather ──
@@ -2133,7 +2133,7 @@ function _filterSliderPrompt(title, params, onPreview) {
 // entry we pre-saved so the canceled run leaves no trace.
 async function _applyLiveBlur({ title, params, label, renderer }) {
   const layer = activeLayer();
-  if (!layer || layer.locked) { if (uiModule) uiModule.showToast('Select an unlocked layer'); return; }
+  if (!layer || layer.locked) { if (uiModule) uiModule.showToast('Selecciona una capa desbloqueada'); return; }
   const w = layer.canvas.width, h = layer.canvas.height;
   const snap = document.createElement('canvas');
   snap.width = w; snap.height = h;
@@ -2470,7 +2470,7 @@ function _buildEditor(container) {
           const maskBtn = document.getElementById('ge-mask-vis');
           if (maskBtn) {
             maskBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-            maskBtn.title = 'Hide mask';
+            maskBtn.title = 'Ocultar máscara';
             maskBtn.classList.add('visible');
           }
         }
@@ -2731,7 +2731,7 @@ function _buildEditor(container) {
       const mime = isJpeg ? 'image/jpeg' : 'image/png';
       const quality = isJpeg ? 0.92 : undefined;
       blob = await new Promise((resolve, reject) => {
-        flat.toBlob(b => b ? resolve(b) : reject(new Error('Canvas encode failed')), mime, quality);
+        flat.toBlob(b => b ? resolve(b) : reject(new Error('Error al codificar el lienzo')), mime, quality);
       });
       const fd = new FormData();
       fd.append('image', blob, `edited.${isJpeg ? 'jpg' : 'png'}`);
@@ -2746,7 +2746,7 @@ function _buildEditor(container) {
         throw new Error(`HTTP ${resp.status}${detail ? `: ${detail}` : ''}`);
       }
       const totalMs = Math.round(performance.now() - t0);
-      if (uiModule) uiModule.showToast(`Saved over original (${(blob.size / 1024 / 1024).toFixed(1)}MB · ${(totalMs / 1000).toFixed(1)}s)`, 4000);
+      if (uiModule) uiModule.showToast(`Guardado sobre el original (${(blob.size / 1024 / 1024).toFixed(1)}MB · ${(totalMs / 1000).toFixed(1)}s)`, 4000);
       window.dispatchEvent(new CustomEvent('gallery-refresh'));
       savedOk = true;
     } catch (e) {
@@ -2758,7 +2758,7 @@ function _buildEditor(container) {
       } else {
         msg += sizeMB;
       }
-      if (uiModule) uiModule.showToast('Failed to save: ' + msg, 6000);
+      if (uiModule) uiModule.showToast('Error al guardar: ' + msg, 6000);
     } finally {
       endBusy();
       if (savedOk) _flashSaveButtonOk();
@@ -3098,7 +3098,7 @@ export async function exportToGallery() {
     const mime = isJpeg ? 'image/jpeg' : 'image/png';
     const quality = isJpeg ? 0.92 : undefined;
     blob = await new Promise((resolve, reject) => {
-      flat.toBlob(b => b ? resolve(b) : reject(new Error('Canvas encode failed')), mime, quality);
+      flat.toBlob(b => b ? resolve(b) : reject(new Error('Error al codificar el lienzo')), mime, quality);
     });
     const formData = new FormData();
     formData.append('file', blob, `edited.${isJpeg ? 'jpg' : 'png'}`);
@@ -3114,7 +3114,7 @@ export async function exportToGallery() {
     }
     const totalMs = Math.round(performance.now() - t0);
     window.dispatchEvent(new CustomEvent('gallery-refresh'));
-    if (uiModule) uiModule.showToast(`Saved copy to gallery (${(blob.size / 1024 / 1024).toFixed(1)}MB · ${(totalMs / 1000).toFixed(1)}s)`, 4000);
+    if (uiModule) uiModule.showToast(`Copia guardada en la galería (${(blob.size / 1024 / 1024).toFixed(1)}MB · ${(totalMs / 1000).toFixed(1)}s)`, 4000);
     savedOk = true;
     if (state.draftId) {
       _clearDraftServer(state.draftId);
@@ -3129,7 +3129,7 @@ export async function exportToGallery() {
     } else {
       msg += sizeMB;
     }
-    if (uiModule) uiModule.showToast('Save failed: ' + msg, 6000);
+    if (uiModule) uiModule.showToast('Error al guardar: ' + msg, 6000);
   } finally {
     endBusy();
     if (savedOk) _flashSaveButtonOk();
@@ -3277,7 +3277,7 @@ export function downloadPNG() {
 // survives the round-trip. Use Load Project to restore.
 function _saveProject() {
   if (!state.layers.length) {
-    if (uiModule) uiModule.showToast('Nothing to save');
+    if (uiModule) uiModule.showToast('Nada que guardar');
     return;
   }
   const project = {
@@ -3307,7 +3307,7 @@ function _saveProject() {
   a.download = 'project.geproj.json';
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-  if (uiModule) uiModule.showToast('Project saved', 3000);
+  if (uiModule) uiModule.showToast('Proyecto guardado', 3000);
 }
 
 // Open-file picker for Load Project. Restores layers + canvas size.
@@ -3322,16 +3322,16 @@ function _loadProjectPrompt() {
       const text = await file.text();
       const proj = JSON.parse(text);
       if (proj.type !== 'darkmind-gallery-editor-project') {
-        if (uiModule) uiModule.showToast('Not a project file', 5000);
+        if (uiModule) uiModule.showToast('No es un archivo de proyecto', 5000);
         return;
       }
       await _restoreDraft(proj);
       composite();
       _renderLayerPanel();
       _fitZoom();
-      if (uiModule) uiModule.showToast('Project loaded', 3000);
+      if (uiModule) uiModule.showToast('Proyecto cargado', 3000);
     } catch (e) {
-      if (uiModule) uiModule.showToast('Load failed: ' + (e.message || e), 6000);
+      if (uiModule) uiModule.showToast('Error al cargar: ' + (e.message || e), 6000);
     }
   });
   inp.click();
@@ -3380,7 +3380,7 @@ function _promptCanvasSize(opts) {
     }
     function onOk() {
       const dims = _parseCanvasSizePrompt(wInput.value, hInput.value, initialW, initialH);
-      if (!dims) { uiModule.showToast('Invalid size'); return; }
+      if (!dims) { uiModule.showToast('Tamaño no válido'); return; }
       cleanup(dims);
     }
     function onCancel() { cleanup(null); }
@@ -3509,7 +3509,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
   state.container = document.getElementById('gallery-editor-container');
   if (!state.container) {
     console.error('[openEditor] #gallery-editor-container not found in DOM — editor cannot open');
-    if (uiModule) uiModule.showError('Editor container missing');
+    if (uiModule) uiModule.showError('Falta el contenedor del editor');
     return;
   }
   state.container.style.display = 'flex';
@@ -3518,7 +3518,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
     _buildEditor(state.container);
   } catch (e) {
     console.error('[openEditor] _buildEditor threw:', e);
-    if (uiModule) uiModule.showError('Editor failed to build: ' + (e?.message || 'unknown'));
+    if (uiModule) uiModule.showError('No se pudo construir el editor: ' + (e?.message || 'desconocido'));
     return;
   }
 
@@ -3546,7 +3546,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
         if (!state.editorOpen) return;
         if (!d) {
           _unmountEditorLoading();
-          if (uiModule) uiModule.showToast('Draft not found');
+          if (uiModule) uiModule.showToast('Borrador no encontrado');
           closeEditor();
           return;
         }
@@ -3562,14 +3562,14 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
           const sizeLabel = document.getElementById('ge-canvas-size');
           if (sizeLabel) sizeLabel.textContent = `${state.imgWidth}×${state.imgHeight}`;
           _unmountEditorLoading();
-          if (uiModule) uiModule.showToast('Resumed draft');
+          if (uiModule) uiModule.showToast('Borrador reanudado');
         });
       })
       .catch(err => {
         if (!state.editorOpen) return;
         _unmountEditorLoading();
         console.warn('[ge] draft load failed', err);
-        if (uiModule) uiModule.showToast('Failed to load draft');
+        if (uiModule) uiModule.showToast('No se pudo cargar el borrador');
         closeEditor();
       });
   }
@@ -3616,7 +3616,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
     state.draftId = _draft.id;
     state.draftName = _draft.name || displayName || 'Untitled';
     const innerLabel = state.editorLoadingEl?.querySelector('.ge-loading-text');
-    if (innerLabel) innerLabel.textContent = 'Resuming draft…';
+    if (innerLabel) innerLabel.textContent = 'Reanudando borrador…';
     return _restoreDraft(_draft).then(() => {
       if (!state.editorOpen) return null;
       // If the draft was broken/empty (0 layers reconstructed), fall
@@ -3633,7 +3633,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
       const sizeLabel = document.getElementById('ge-canvas-size');
       if (sizeLabel) sizeLabel.textContent = `${state.imgWidth}×${state.imgHeight}`;
       _unmountEditorLoading();
-      if (uiModule) uiModule.showToast('Resumed previous edit');
+      if (uiModule) uiModule.showToast('Edición anterior reanudada');
       return 'restored';
     });
   }).then(restored => {
@@ -3680,7 +3680,7 @@ export function openEditor(imageUrl, imageId, presetSize, displayName, draftId) 
   img.onerror = (e) => {
     console.error('[_loadSourceImage] onerror — failed to load', imageUrl, e);
     _removeLoading();
-    if (uiModule) uiModule.showToast('Failed to load image');
+    if (uiModule) uiModule.showToast('No se pudo cargar la imagen');
     closeEditor();
   };
   img.src = imageUrl;
