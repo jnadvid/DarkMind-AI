@@ -1,24 +1,16 @@
 @echo off
-setlocal EnableExtensions EnableDelayedExpansion
+setlocal EnableExtensions
 title DarkMind-AI - Lanzador nativo (sin Docker)
 
-rem ===========================================================================
+rem ==========================================================================
 rem  DarkMind-AI - Lanzador nativo para Windows (SIN Docker)
-rem
-rem  Un solo comando para: crear un entorno virtual (venv), instalar las
-rem  dependencias, ejecutar la configuracion inicial (muestra una contrasena
-rem  de administrador en el primer arranque) e iniciar el servidor.
-rem  Es seguro volver a ejecutarlo: omite lo que ya este hecho.
-rem
-rem  Uso:
-rem    iniciar.bat                 (escucha en 127.0.0.1:7000)
-rem    iniciar.bat 8080            (puerto personalizado)
-rem    iniciar.bat 7000 0.0.0.0    (accesible desde la red local)
-rem
+rem  Crea el entorno virtual, instala dependencias, ejecuta la configuracion
+rem  inicial e inicia el servidor. Es seguro volver a ejecutarlo.
+rem  Uso:  iniciar.bat  [puerto]  [host]
 rem  Autor del proyecto: Jose Israel Nadal Vidal
-rem ===========================================================================
+rem ==========================================================================
 
-pushd "%~dp0" >nul
+cd /d "%~dp0"
 
 set "PORT=%~1"
 if "%PORT%"=="" set "PORT=7000"
@@ -31,71 +23,66 @@ echo  DarkMind-AI - Iniciando (version sin Docker)
 echo =========================================
 echo.
 
-rem 1. Localizar un interprete de Python 3.11+
-echo ==^> Comprobando Python...
+rem 1. Localizar Python 3.11+
+echo [1/5] Comprobando Python...
 set "PYCMD="
-where py >nul 2>nul
-if %errorlevel%==0 (
-  for %%V in (-3.13 -3.12 -3.11) do (
-    if not defined PYCMD (
-      py %%V -c "import sys" >nul 2>nul && set "PYCMD=py %%V"
-    )
-  )
+py -3 -c "import sys;raise SystemExit(0 if sys.version_info[:2]>=(3,11) else 1)" 2>nul
+if not errorlevel 1 set "PYCMD=py -3"
+if not defined PYCMD (
+  python -c "import sys;raise SystemExit(0 if sys.version_info[:2]>=(3,11) else 1)" 2>nul
+  if not errorlevel 1 set "PYCMD=python"
 )
 if not defined PYCMD (
-  where python >nul 2>nul
-  if %errorlevel%==0 (
-    python -c "import sys; assert sys.version_info[:2] >= (3,11)" >nul 2>nul && set "PYCMD=python"
-  )
+  python3 -c "import sys;raise SystemExit(0 if sys.version_info[:2]>=(3,11) else 1)" 2>nul
+  if not errorlevel 1 set "PYCMD=python3"
 )
 if not defined PYCMD (
   echo.
   echo [ERROR] No se encontro Python 3.11 o superior.
-  echo         Instala Python 3.11+ desde https://www.python.org/downloads/
-  echo         y vuelve a ejecutar este script.
-  goto :fail
+  echo         Instalalo desde https://www.python.org/downloads/ y marca
+  echo         "Add Python to PATH". Luego vuelve a ejecutar este archivo.
+  goto :fin
 )
-echo     Usando: %PYCMD%
+echo       Usando: %PYCMD%
 
 rem 2. Crear el entorno virtual si no existe
-set "VENVPY=%~dp0venv\Scripts\python.exe"
-if not exist "%VENVPY%" (
-  echo ==^> Creando entorno virtual (venv)...
+if not exist "venv\Scripts\python.exe" (
+  echo [2/5] Creando el entorno virtual...
   %PYCMD% -m venv venv
-  if errorlevel 1 goto :fail
+  if errorlevel 1 (
+    echo [ERROR] No se pudo crear el entorno virtual.
+    goto :fin
+  )
 ) else (
-  echo     El venv ya existe, se omite su creacion.
+  echo [2/5] El venv ya existe, se omite.
 )
 
-rem 3. Instalar / actualizar dependencias
-echo ==^> Instalando dependencias (el primer arranque puede tardar varios minutos)...
+set "VENVPY=venv\Scripts\python.exe"
+
+rem 3. Instalar dependencias
+echo [3/5] Instalando dependencias (el primer arranque puede tardar)...
 "%VENVPY%" -m pip install --upgrade pip --quiet
 "%VENVPY%" -m pip install -r requirements.txt
 if errorlevel 1 (
-  echo [ERROR] Fallo la instalacion de dependencias. Revisa el error de pip arriba.
-  goto :fail
+  echo [ERROR] Fallo la instalacion de dependencias. Revisa el error de pip.
+  goto :fin
 )
 
-rem 4. Configuracion inicial (crea carpetas de datos, BD, .env y usuario admin)
-echo ==^> Ejecutando la configuracion inicial...
+rem 4. Configuracion inicial
+echo [4/5] Ejecutando la configuracion inicial...
 "%VENVPY%" setup.py
-if errorlevel 1 goto :fail
+if errorlevel 1 (
+  echo [ERROR] setup.py fallo.
+  goto :fin
+)
 
 rem 5. Iniciar el servidor
-echo.
-echo ==^> Iniciando DarkMind-AI en http://%BIND%:%PORT%
-echo     Pulsa Ctrl+C para detenerlo.
+echo [5/5] Iniciando DarkMind-AI en http://%BIND%:%PORT%
+echo       Pulsa Ctrl+C para detenerlo.
 echo.
 "%VENVPY%" -m uvicorn app:app --host %BIND% --port %PORT%
-goto :done
 
-:fail
+:fin
 echo.
-echo El arranque ha fallado. Revisa el mensaje anterior e intentalo de nuevo.
-popd >nul
 pause
-exit /b 1
-
-:done
-popd >nul
-pause
+endlocal
