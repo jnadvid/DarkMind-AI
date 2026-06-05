@@ -1,14 +1,16 @@
 // Exportación de respuestas del asistente a Markdown (.md), PDF (.pdf) y Word (.docx).
 //
-// Reutiliza las librerías ya incluidas en el editor de documentos
-// (/static/lib/html2pdf.bundle.min.js y /static/lib/docx.umd.min.js), que se
-// cargan de forma diferida solo cuando el usuario exporta por primera vez.
+// Incluye un pequeño parser de Markdown propio para que el PDF y el DOCX salgan
+// bien formateados (encabezados, listas con y sin orden y anidadas, negrita,
+// cursiva, código en línea y en bloque, citas, reglas horizontales, enlaces y
+// tablas). Las librerías html2pdf y docx se cargan de forma diferida.
 //
 // Autor del proyecto: José Israel Nadal Vidal
-import markdownModule from './markdown.js';
 import uiModule from './ui.js';
 
-// ---- Carga diferida de librerías -----------------------------------------
+// ===========================================================================
+//  Carga diferida de librerías
+// ===========================================================================
 let _docxReady = null;
 function ensureDocx() {
   if (_docxReady) return _docxReady;
@@ -37,24 +39,24 @@ function ensureHtml2Pdf() {
   return _html2pdfReady;
 }
 
-// ---- Utilidades ----------------------------------------------------------
-function _esc(s) {
+// ===========================================================================
+//  Utilidades
+// ===========================================================================
+function _escHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
-
+function _escAttr(s) {
+  return _escHtml(s).replace(/"/g, '&quot;');
+}
 function _baseName() {
   const d = new Date();
   const p = (n) => String(n).padStart(2, '0');
   return `darkmind-respuesta-${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}`;
 }
-
-// El markdown crudo de cada respuesta se guarda en msgElement.dataset.raw
-// (es lo mismo que usa el botón «Copiar»). Como respaldo, el texto del cuerpo.
 function _getRaw(msgElement) {
   if (!msgElement) return '';
   return msgElement.dataset.raw || msgElement.querySelector('.body')?.textContent || '';
 }
-
 function _download(blob, filename) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -62,12 +64,223 @@ function _download(blob, filename) {
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
+function _empty() { uiModule.showToast?.('No hay contenido que exportar'); }
 
-function _empty() {
-  uiModule.showToast?.('No hay contenido que exportar');
+// ===========================================================================
+//  Parser de Markdown -> bloques
+// ===========================================================================
+function _splitRow(line) {
+  let s = line.trim();
+  if (s.startsWith('|')) s = s.slice(1);
+  if (s.endsWith('|')) s = s.slice(0, -1);
+  return s.split('|').map((c) => c.trim());
 }
 
-// ---- Markdown ------------------------------------------------------------
+function parseBlocks(md) {
+  const lines = String(md).replace(/\r\n?/g, '\n').split('\n');
+  const blocks = [];
+  const indentStack = [0]; // para los niveles de lista
+  function levelFor(indent) {
+    while (indentStack.length > 1 && indent < indentStack[indentStack.length - 1]) indentStack.pop();
+    if (indent > indentStack[indentStack.length - 1]) indentStack.push(indent);
+    return indentStack.length - 1;
+  }
+  function resetLists() { indentStack.length = 1; indentStack[0] = 0; }
+
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+
+    // Bloque de código cercado ``` o ~~~
+    const fence = line.match(/^(\s*)(```|~~~)(.*)$/);
+    if (fence) {
+      const lang = fence[3].trim();
+      const code = [];
+      i++;
+      while (i < lines.length && !lines[i].match(/^(\s*)(```|~~~)\s*$/)) { code.push(lines[i]); i++; }
+      i++; // salta el cierre
+      blocks.push({ type: 'code', lang, lines: code });
+      resetLists();
+      continue;
+    }
+
+    // Línea en blanco
+    if (/^\s*$/.test(line)) { blocks.push({ type: 'blank' }); resetLists(); i++; continue; }
+
+    // Encabezado
+    const h = line.match(/^(#{1,6})\s+(.*)$/);
+    if (h) { blocks.push({ type: 'heading', level: h[1].length, text: h[2].replace(/\s+#+\s*$/, '') }); resetLists(); i++; continue; }
+
+    // Regla horizontal (---, ***, ___)
+    if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { blocks.push({ type: 'hr' }); resetLists(); i++; continue; }
+
+    // Tabla (encabezado + fila separadora con guiones)
+    if (line.includes('|') && i + 1 < lines.length &&
+        /^\s*\|?[\s:|-]*-[\s:|-]*\|?\s*$/.test(lines[i + 1]) && lines[i + 1].includes('-')) {
+      const headers = _splitRow(line);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') { rows.push(_splitRow(lines[i])); i++; }
+      blocks.push({ type: 'table', headers, rows });
+      resetLists();
+      continue;
+    }
+
+    // Cita
+    const bq = line.match(/^\s*>\s?(.*)$/);
+    if (bq) {
+      const ql = [bq[1]];
+      i++;
+      while (i < lines.length && /^\s*>\s?/.test(lines[i])) { ql.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+      blocks.push({ type: 'quote', text: ql.join('\n') });
+      resetLists();
+      continue;
+    }
+
+    // Elemento de lista (con o sin orden, anidado por indentación)
+    const li = line.match(/^(\s*)([-*+]|\d+[.)])\s+(.*)$/);
+    if (li) {
+      const indent = li[1].length;
+      const level = levelFor(indent);
+      const ordered = /\d/.test(li[2]);
+      blocks.push({ type: 'li', ordered, level, num: ordered ? parseInt(li[2], 10) : null, text: li[3] });
+      i++;
+      continue;
+    }
+
+    // Párrafo (une líneas consecutivas que no sean especiales)
+    resetLists();
+    const para = [line];
+    i++;
+    while (i < lines.length && !/^\s*$/.test(lines[i]) &&
+           !lines[i].match(/^(#{1,6})\s|^\s*([-*+]|\d+[.)])\s|^(\s*)(```|~~~)|^\s*>/)) {
+      para.push(lines[i]);
+      i++;
+    }
+    blocks.push({ type: 'para', text: para.join('\n') });
+  }
+  return blocks;
+}
+
+// ===========================================================================
+//  Formato en línea (negrita / cursiva / código / tachado / enlaces)
+// ===========================================================================
+function parseInline(text) {
+  const tokens = [];
+  // Primero aislamos el código en línea para no tocar su contenido.
+  const codeSplit = String(text).split(/(`[^`]+`)/g);
+  for (const seg of codeSplit) {
+    if (!seg) continue;
+    if (seg.length >= 2 && seg[0] === '`' && seg[seg.length - 1] === '`') {
+      tokens.push({ text: seg.slice(1, -1), code: true });
+      continue;
+    }
+    // Enlaces [texto](url)
+    const linkRe = /\[([^\]]+)\]\(([^)\s]+)[^)]*\)/g;
+    let last = 0, m;
+    while ((m = linkRe.exec(seg))) {
+      if (m.index > last) _emph(seg.slice(last, m.index), null, tokens);
+      _emph(m[1], m[2], tokens);
+      last = linkRe.lastIndex;
+    }
+    if (last < seg.length) _emph(seg.slice(last), null, tokens);
+  }
+  return tokens;
+}
+
+function _emph(t, href, out) {
+  const re = /(\*\*\*([^*]+)\*\*\*|___([^_]+)___|\*\*([^*]+)\*\*|__([^_]+)__|\*([^*]+)\*|_([^_]+)_|~~([^~]+)~~)/g;
+  let last = 0, m;
+  while ((m = re.exec(t))) {
+    if (m.index > last) out.push({ text: t.slice(last, m.index), href });
+    if (m[2] !== undefined || m[3] !== undefined) out.push({ text: m[2] ?? m[3], bold: true, italic: true, href });
+    else if (m[4] !== undefined || m[5] !== undefined) out.push({ text: m[4] ?? m[5], bold: true, href });
+    else if (m[6] !== undefined || m[7] !== undefined) out.push({ text: m[6] ?? m[7], italic: true, href });
+    else if (m[8] !== undefined) out.push({ text: m[8], strike: true, href });
+    last = re.lastIndex;
+  }
+  if (last < t.length) out.push({ text: t.slice(last), href });
+}
+
+function inlineHtml(text) {
+  return parseInline(text).map((t) => {
+    let s = _escHtml(t.text);
+    if (t.code) {
+      s = `<code>${s}</code>`;
+    } else {
+      if (t.bold) s = `<strong>${s}</strong>`;
+      if (t.italic) s = `<em>${s}</em>`;
+      if (t.strike) s = `<del>${s}</del>`;
+    }
+    if (t.href) s = `<a href="${_escAttr(t.href)}">${s}</a>`;
+    return s;
+  }).join('');
+}
+
+// ===========================================================================
+//  Renderizado a HTML (para PDF)
+// ===========================================================================
+function _tableHtml(b) {
+  let h = '<table><thead><tr>' + b.headers.map((c) => `<th>${inlineHtml(c)}</th>`).join('') + '</tr></thead><tbody>';
+  for (const r of b.rows) h += '<tr>' + r.map((c) => `<td>${inlineHtml(c)}</td>`).join('') + '</tr>';
+  return h + '</tbody></table>';
+}
+
+function blocksToHtml(blocks) {
+  let html = '';
+  const listStack = [];
+  const closeOne = () => { const l = listStack.pop(); html += l.ordered ? '</ol>' : '</ul>'; };
+  for (const b of blocks) {
+    if (b.type === 'li') {
+      while (listStack.length && listStack[listStack.length - 1].level > b.level) closeOne();
+      if (!listStack.length || listStack[listStack.length - 1].level < b.level) {
+        html += b.ordered ? '<ol>' : '<ul>';
+        listStack.push({ ordered: b.ordered, level: b.level });
+      } else if (listStack[listStack.length - 1].ordered !== b.ordered) {
+        closeOne();
+        html += b.ordered ? '<ol>' : '<ul>';
+        listStack.push({ ordered: b.ordered, level: b.level });
+      }
+      html += `<li>${inlineHtml(b.text)}</li>`;
+      continue;
+    }
+    while (listStack.length) closeOne();
+    if (b.type === 'heading') html += `<h${b.level}>${inlineHtml(b.text)}</h${b.level}>`;
+    else if (b.type === 'hr') html += '<hr>';
+    else if (b.type === 'code') html += `<pre><code>${_escHtml(b.lines.join('\n'))}</code></pre>`;
+    else if (b.type === 'quote') html += `<blockquote>${inlineHtml(b.text).replace(/\n/g, '<br>')}</blockquote>`;
+    else if (b.type === 'table') html += _tableHtml(b);
+    else if (b.type === 'para') html += `<p>${inlineHtml(b.text).replace(/\n/g, '<br>')}</p>`;
+    // 'blank' se ignora
+  }
+  while (listStack.length) closeOne();
+  return html;
+}
+
+const _PDF_CSS = `
+.dm-export{font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:13px;line-height:1.55;color:#111;}
+.dm-export h1{font-size:22px;margin:16px 0 8px;font-weight:700;}
+.dm-export h2{font-size:18px;margin:15px 0 7px;font-weight:700;}
+.dm-export h3{font-size:15px;margin:13px 0 6px;font-weight:700;}
+.dm-export h4,.dm-export h5,.dm-export h6{font-size:13px;margin:11px 0 5px;font-weight:700;}
+.dm-export p{margin:6px 0;}
+.dm-export ul,.dm-export ol{margin:6px 0 6px 24px;padding:0;}
+.dm-export li{margin:3px 0;}
+.dm-export hr{border:none;border-top:1px solid #ddd;margin:14px 0;}
+.dm-export code{font-family:Consolas,Menlo,monospace;background:#f3f3f3;padding:1px 4px;border-radius:3px;font-size:12px;}
+.dm-export pre{background:#f6f8fa;border:1px solid #e3e3e3;border-radius:6px;padding:10px;white-space:pre-wrap;word-break:break-word;}
+.dm-export pre code{background:none;padding:0;}
+.dm-export blockquote{margin:8px 0;padding:4px 12px;border-left:3px solid #ccc;color:#555;}
+.dm-export table{border-collapse:collapse;width:100%;margin:10px 0;font-size:12px;}
+.dm-export th,.dm-export td{border:1px solid #ccc;padding:5px 8px;text-align:left;vertical-align:top;}
+.dm-export th{background:#f2f2f2;}
+.dm-export a{color:#0a58ca;text-decoration:none;}
+.dm-export img{max-width:100%;}
+`;
+
+// ===========================================================================
+//  Exportar a Markdown
+// ===========================================================================
 export function exportMarkdown(msgElement) {
   const raw = _getRaw(msgElement);
   if (!raw.trim()) return _empty();
@@ -75,7 +288,9 @@ export function exportMarkdown(msgElement) {
   uiModule.showToast?.('Exportado como Markdown');
 }
 
-// ---- PDF -----------------------------------------------------------------
+// ===========================================================================
+//  Exportar a PDF
+// ===========================================================================
 export async function exportPdf(msgElement) {
   const raw = _getRaw(msgElement);
   if (!raw.trim()) return _empty();
@@ -85,29 +300,113 @@ export async function exportPdf(msgElement) {
     uiModule.showError?.('No se pudo cargar la librería PDF');
     return;
   }
-  let html = '';
-  try {
-    if (markdownModule && markdownModule.mdToHtml) {
-      html = markdownModule.mdToHtml(raw, { shortcodes: false });
-    }
-  } catch (_) { html = ''; }
-  if (!html) {
-    html = '<pre style="white-space:pre-wrap;font-family:monospace;font-size:11px;">' + _esc(raw) + '</pre>';
-  }
+  const html = blocksToHtml(parseBlocks(raw));
   const container = document.createElement('div');
-  container.style.cssText = 'padding:20px;font-family:sans-serif;font-size:12px;color:#000;background:#fff;line-height:1.6;';
-  container.innerHTML = html;
-  window.html2pdf().set({
-    margin: 10,
-    filename: _baseName() + '.pdf',
-    image: { type: 'jpeg', quality: 0.95 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  }).from(container).save();
-  uiModule.showToast?.('Exportando PDF...');
+  container.className = 'dm-export';
+  container.style.cssText = 'position:fixed;left:-99999px;top:0;width:760px;padding:24px;background:#fff;';
+  container.innerHTML = `<style>${_PDF_CSS}</style>${html}`;
+  document.body.appendChild(container);
+  try {
+    await window.html2pdf().set({
+      margin: [12, 12, 16, 12],
+      filename: _baseName() + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', windowWidth: 820 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] },
+    }).from(container).save();
+    uiModule.showToast?.('Exportado como PDF');
+  } catch (e) {
+    uiModule.showError?.('No se pudo generar el PDF');
+  } finally {
+    container.remove();
+  }
 }
 
-// ---- DOCX (Word) ---------------------------------------------------------
+// ===========================================================================
+//  Exportar a DOCX (Word)
+// ===========================================================================
+function _docxRuns(text, TextRun, extra) {
+  const base = extra || {};
+  const runs = parseInline(text)
+    .filter((t) => t.text !== '')
+    .map((t) => {
+      const opt = Object.assign({ text: t.text }, base);
+      if (t.bold) opt.bold = true;
+      if (t.italic) opt.italics = true;
+      if (t.strike) opt.strike = true;
+      if (t.code) { opt.font = 'Consolas'; }
+      return new TextRun(opt);
+    });
+  return runs.length ? runs : [new TextRun(Object.assign({ text: '' }, base))];
+}
+
+function _docxTable(b, docx) {
+  const { Table, TableRow, TableCell, Paragraph, TextRun, WidthType } = docx;
+  const pct = (n) => ({ size: n, type: WidthType.PERCENTAGE });
+  const cols = b.headers.length || 1;
+  const colW = Math.floor(100 / cols);
+  const mkCell = (txt, bold) => new TableCell({
+    width: pct(colW),
+    children: [new Paragraph({ children: _docxRuns(txt, TextRun, bold ? { bold: true } : undefined) })],
+  });
+  const rows = [new TableRow({ tableHeader: true, children: b.headers.map((c) => mkCell(c, true)) })];
+  for (const r of b.rows) {
+    const cells = [];
+    for (let c = 0; c < cols; c++) cells.push(mkCell(r[c] || '', false));
+    rows.push(new TableRow({ children: cells }));
+  }
+  return new Table({ width: pct(100), rows });
+}
+
+function blocksToDocx(blocks, docx) {
+  const { Paragraph, TextRun, HeadingLevel, BorderStyle } = docx;
+  const HL = [null, HeadingLevel.HEADING_1, HeadingLevel.HEADING_2, HeadingLevel.HEADING_3, HeadingLevel.HEADING_4, HeadingLevel.HEADING_5, HeadingLevel.HEADING_6];
+  const out = [];
+  for (const b of blocks) {
+    if (b.type === 'heading') {
+      out.push(new Paragraph({ children: _docxRuns(b.text, TextRun), heading: HL[b.level] || HeadingLevel.HEADING_6 }));
+    } else if (b.type === 'hr') {
+      out.push(new Paragraph({ text: '', border: { bottom: { color: 'CCCCCC', space: 1, size: 6, style: BorderStyle.SINGLE } } }));
+    } else if (b.type === 'code') {
+      const lns = b.lines.length ? b.lines : [''];
+      for (const ln of lns) {
+        out.push(new Paragraph({
+          children: [new TextRun({ text: ln || ' ', font: 'Consolas', size: 18 })],
+          shading: { type: 'clear', fill: 'F2F2F2' },
+        }));
+      }
+    } else if (b.type === 'quote') {
+      out.push(new Paragraph({
+        children: _docxRuns(b.text.replace(/\n/g, ' '), TextRun, { italics: true }),
+        indent: { left: 480 },
+        border: { left: { color: 'BBBBBB', space: 8, size: 18, style: BorderStyle.SINGLE } },
+      }));
+    } else if (b.type === 'li') {
+      if (b.ordered) {
+        out.push(new Paragraph({
+          children: [new TextRun({ text: (b.num || 1) + '. ' }), ..._docxRuns(b.text, TextRun)],
+          indent: { left: 360 * (b.level + 1), hanging: 260 },
+        }));
+      } else {
+        out.push(new Paragraph({ children: _docxRuns(b.text, TextRun), bullet: { level: b.level } }));
+      }
+    } else if (b.type === 'table') {
+      try {
+        out.push(_docxTable(b, docx));
+        out.push(new Paragraph({ text: '' }));
+      } catch (_) {
+        out.push(new Paragraph({ children: _docxRuns(b.headers.join('  |  '), TextRun, { bold: true }) }));
+        for (const r of b.rows) out.push(new Paragraph({ children: _docxRuns(r.join('  |  '), TextRun) }));
+      }
+    } else if (b.type === 'para') {
+      out.push(new Paragraph({ children: _docxRuns(b.text.replace(/\n/g, ' '), TextRun) }));
+    }
+    // 'blank' se omite (Word ya separa los párrafos)
+  }
+  return out.length ? out : [new Paragraph({ text: '' })];
+}
+
 export async function exportDocx(msgElement) {
   const raw = _getRaw(msgElement);
   if (!raw.trim()) return _empty();
@@ -117,36 +416,21 @@ export async function exportDocx(msgElement) {
     uiModule.showError?.('No se pudo cargar la librería DOCX');
     return;
   }
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = window.docx;
-  // Conversión sencilla de Markdown a párrafos de Word: encabezados (#, ##, ###)
-  // y negrita/cursiva en línea. (Mismo enfoque que el editor de documentos.)
-  const paragraphs = raw.split('\n').map((line) => {
-    const h1 = line.match(/^# (.+)/);
-    const h2 = line.match(/^## (.+)/);
-    const h3 = line.match(/^### (.+)/);
-    if (h1) return new Paragraph({ text: h1[1], heading: HeadingLevel.HEADING_1 });
-    if (h2) return new Paragraph({ text: h2[1], heading: HeadingLevel.HEADING_2 });
-    if (h3) return new Paragraph({ text: h3[1], heading: HeadingLevel.HEADING_3 });
-    const runs = [];
-    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/);
-    for (const part of parts) {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        runs.push(new TextRun({ text: part.slice(2, -2), bold: true }));
-      } else if (part.startsWith('*') && part.endsWith('*')) {
-        runs.push(new TextRun({ text: part.slice(1, -1), italics: true }));
-      } else if (part) {
-        runs.push(new TextRun(part));
-      }
-    }
-    return new Paragraph({ children: runs });
-  });
-  const doc = new Document({ sections: [{ children: paragraphs }] });
-  const blob = await Packer.toBlob(doc);
-  _download(blob, _baseName() + '.docx');
-  uiModule.showToast?.('Exportado como DOCX');
+  try {
+    const { Document, Packer } = window.docx;
+    const children = blocksToDocx(parseBlocks(raw), window.docx);
+    const doc = new Document({ sections: [{ children }] });
+    const blob = await Packer.toBlob(doc);
+    _download(blob, _baseName() + '.docx');
+    uiModule.showToast?.('Exportado como DOCX');
+  } catch (e) {
+    uiModule.showError?.('No se pudo generar el DOCX');
+  }
 }
 
-// ---- Despachador ---------------------------------------------------------
+// ===========================================================================
+//  Despachador
+// ===========================================================================
 export function exportMessage(msgElement, format) {
   if (format === 'md') return exportMarkdown(msgElement);
   if (format === 'pdf') return exportPdf(msgElement);
