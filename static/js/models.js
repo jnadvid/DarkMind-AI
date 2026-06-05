@@ -13,6 +13,40 @@ import { modelColor } from './chatRenderer.js';
 import { providerLogo } from './providers.js';
 import { sortModelIds } from './modelSort.js';
 
+// Frases célebres (temática náutica / viaje / inspiración) que rotan en el
+// subtítulo de bienvenida. Se recorren en orden, guardando el índice en
+// localStorage para que cada arranque muestre la siguiente.
+const _FRASES_CELEBRES = [
+  '«No se descubren nuevos océanos sin atreverse a perder de vista la costa.» — André Gide',
+  '«Un barco está seguro en el puerto, pero no se construyó para eso.» — John A. Shedd',
+  '«Si quieres construir un barco, no reúnas a la gente para recoger madera: enséñales a anhelar el ancho e infinito mar.» — Antoine de Saint-Exupéry',
+  '«No puedes controlar el viento, pero puedes ajustar las velas.» — Proverbio',
+  '«Navega lejos del puerto seguro. Atrapa los vientos en tus velas. Explora. Sueña. Descubre.» — Mark Twain',
+  '«No hay viento favorable para quien no sabe a dónde va.» — Séneca',
+  '«Un viaje de mil millas comienza con un solo paso.» — Lao Tse',
+  '«Sólo quienes se arriesgan a ir demasiado lejos descubren lo lejos que se puede llegar.» — T. S. Eliot',
+  '«El mundo es un libro, y quienes no viajan leen sólo una página.» — San Agustín',
+  '«La calma del mar nunca hizo a un buen marinero.» — Proverbio',
+  '«No es el mar el que hunde el barco, sino el agua que entra en él.» — Proverbio',
+  '«Atrévete a saber.» — Horacio',
+  '«La mejor manera de predecir el futuro es crearlo.» — Peter Drucker',
+  '«El éxito es la suma de pequeños esfuerzos repetidos cada día.» — Robert Collier',
+  '«No cuentes los días, haz que los días cuenten.» — Muhammad Ali',
+  '«Quien tiene un porqué para vivir puede soportar casi cualquier cómo.» — Friedrich Nietzsche',
+  '«La imaginación es más importante que el conocimiento.» — Albert Einstein',
+  '«El que mueve montañas comienza apartando piedras pequeñas.» — Confucio',
+  '«La suerte favorece a la mente preparada.» — Louis Pasteur',
+  '«Lo esencial es invisible a los ojos.» — Antoine de Saint-Exupéry',
+];
+
+function _fraseCelebreRotativa() {
+  const KEY = 'darkmind-frase-idx';
+  let idx = 0;
+  try { idx = (parseInt(localStorage.getItem(KEY), 10) || 0) % _FRASES_CELEBRES.length; } catch (_) { idx = 0; }
+  try { localStorage.setItem(KEY, String((idx + 1) % _FRASES_CELEBRES.length)); } catch (_) {}
+  return _FRASES_CELEBRES[idx];
+}
+
 let API_BASE = '';
 let _cachedItems = []; // cached /api/models items for model-switch dropdown
 let _lastFetchTime = 0;
@@ -568,7 +602,7 @@ export async function refreshModels(force = false) {
     } else {
       // Configured installs should feel ready, not stuck in onboarding.
       const welcomeSub = document.getElementById('welcome-sub');
-      if (welcomeSub) welcomeSub.textContent = '«No se descubren nuevos océanos sin atreverse a perder de vista la costa.» — André Gide';
+      if (welcomeSub) welcomeSub.textContent = _fraseCelebreRotativa();
       const welcomeTip = document.getElementById('welcome-tip');
       if (welcomeTip) {
         const tips = window.innerWidth <= 768
