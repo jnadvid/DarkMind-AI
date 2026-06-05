@@ -48,14 +48,14 @@ export function wireClipboardAndDrop({
       if (tb) tb.querySelectorAll('.ge-tool-btn').forEach(b => b.classList.toggle('active', b.dataset.tool === 'move'));
       renderLayerPanel();
       composite();
-      uiModule.showToast('Pasted as new layer');
+      uiModule.showToast('Pegado como nueva capa');
     }
 
     // Check internal clipboard first (from Ctrl+C lasso/wand).
     if (state.internalClipboard) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      pasteAsLayer(state.internalClipboard, 'Pasted Selection');
+      pasteAsLayer(state.internalClipboard, 'Selección pegada');
       return;
     }
 
@@ -69,7 +69,7 @@ export function wireClipboardAndDrop({
       const blob = item.getAsFile();
       const url = URL.createObjectURL(blob);
       const img = new Image();
-      img.onload = () => { pasteAsLayer(img, 'Pasted'); URL.revokeObjectURL(url); };
+      img.onload = () => { pasteAsLayer(img, 'Pegado'); URL.revokeObjectURL(url); };
       img.src = url;
       break;
     }
@@ -89,7 +89,7 @@ export function wireClipboardAndDrop({
     if (!ov) {
       ov = document.createElement('div');
       ov.className = 'ge-drop-overlay';
-      ov.innerHTML = '<div class="ge-drop-overlay-msg">Drop image to add as new layer</div>';
+      ov.innerHTML = '<div class="ge-drop-overlay-msg">Suelta la imagen para añadirla como nueva capa</div>';
       dropZone.appendChild(ov);
     }
     ov.style.display = '';

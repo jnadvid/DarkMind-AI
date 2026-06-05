@@ -491,7 +491,7 @@ function _initModelPickerDropdown() {
       try {
         const res = await fetch(`${API_BASE}/api/session/${currentSessionId}`, { method: 'PATCH', body: fd });
         if (!res.ok) {
-          uiModule.showError('Failed to set model');
+          uiModule.showError('Error al configurar el modelo');
           return;
         }
         const sessions = _deps.getSessions();
@@ -499,7 +499,7 @@ function _initModelPickerDropdown() {
         if (s) { s.model = m.mid; s.endpoint_url = m.url; }
         // Header stays as session name — model info shown in picker only
       } catch (e) {
-        uiModule.showError('Failed to set model: ' + e);
+        uiModule.showError('Error al configurar el modelo: ' + e);
         return;
       }
     }

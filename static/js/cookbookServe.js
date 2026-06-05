@@ -58,26 +58,26 @@ function _serveBackendWarning(model, repo, backend, fields = {}) {
   const ggufLike = _repoLooksGgufLike(model, repo);
   if (awqLike && (backend === 'llamacpp' || backend === 'ollama')) {
     return {
-      title: 'AWQ needs vLLM or SGLang',
-      body: 'This model looks like AWQ/GPTQ/FP8 safetensors. llama.cpp and Ollama need GGUF files, so this backend cannot serve it. Choose vLLM/SGLang on a CUDA/ROCm GPU server, or download a GGUF version for llama.cpp/Ollama.',
+      title: 'AWQ necesita vLLM o SGLang',
+      body: 'Este modelo parece ser un safetensors AWQ/GPTQ/FP8. llama.cpp y Ollama necesitan archivos GGUF, por lo que este backend no puede servirlo. Elige vLLM/SGLang en un servidor GPU CUDA/ROCm, o descarga una versión GGUF para llama.cpp/Ollama.',
     };
   }
   if (awqLike && _isMetal() && (backend === 'vllm' || backend === 'sglang')) {
     return {
-      title: 'AWQ is not a unified-memory path',
-      body: 'This model looks like AWQ/GPTQ/FP8 safetensors. AWQ is for vLLM/SGLang on CUDA/ROCm-style GPU servers, not local unified-memory llama.cpp/Ollama serving. For unified memory, download a GGUF model and use llama.cpp/Ollama.',
+      title: 'AWQ no es compatible con memoria unificada',
+      body: 'Este modelo parece ser un safetensors AWQ/GPTQ/FP8. AWQ es para vLLM/SGLang en servidores GPU CUDA/ROCm, no para servicio local con memoria unificada llama.cpp/Ollama. Para memoria unificada, descarga un modelo GGUF y usa llama.cpp/Ollama.',
     };
   }
   if (awqLike && fields.unified_mem) {
     return {
-      title: 'AWQ is not a unified-memory path',
-      body: 'This model looks like AWQ/GPTQ/FP8 safetensors, but unified-memory local serving expects GGUF. Use vLLM/SGLang on a compatible GPU server, or download a GGUF version for llama.cpp/Ollama.',
+      title: 'AWQ no es compatible con memoria unificada',
+      body: 'Este modelo parece ser un safetensors AWQ/GPTQ/FP8, pero el servicio local con memoria unificada requiere GGUF. Usa vLLM/SGLang en un servidor GPU compatible, o descarga una versión GGUF para llama.cpp/Ollama.',
     };
   }
   if (ggufLike && (backend === 'vllm' || backend === 'sglang')) {
     return {
-      title: 'GGUF needs llama.cpp or Ollama',
-      body: 'This model looks like GGUF. vLLM/SGLang expect HuggingFace safetensors-style repos. Choose llama.cpp/Ollama for GGUF, or download a safetensors model for vLLM/SGLang.',
+      title: 'GGUF necesita llama.cpp u Ollama',
+      body: 'Este modelo parece ser GGUF. vLLM/SGLang esperan repositorios HuggingFace en formato safetensors. Elige llama.cpp/Ollama para GGUF, o descarga un modelo safetensors para vLLM/SGLang.',
     };
   }
   return null;
@@ -146,12 +146,12 @@ async function _fetchServeRuntimePackage(panel, backend) {
 function _runtimeNoteText(backend, pkg, target) {
   const labels = { vllm: 'vLLM', sglang: 'SGLang', llamacpp: 'llama.cpp', diffusers: 'Diffusers' };
   const label = labels[backend] || backend;
-  if (!pkg) return `${label} readiness unavailable for ${target.label}.`;
+  if (!pkg) return `Estado de ${label} no disponible para ${target.label}.`;
   const note = pkg.status_note || pkg.update_note || '';
   if (pkg.installed) {
-    return note ? `${label} ready on ${target.label}: ${note}` : `${label} ready on ${target.label}.`;
+    return note ? `${label} disponible en ${target.label}: ${note}` : `${label} disponible en ${target.label}.`;
   }
-  return note ? `${label} missing on ${target.label}: ${note}` : `${label} missing on ${target.label}.`;
+  return note ? `${label} no instalado en ${target.label}: ${note}` : `${label} no instalado en ${target.label}.`;
 }
 
 // ── Filter/sort cached model list ──
@@ -296,7 +296,7 @@ function _rerenderCachedModels() {
     if (ggufCount > 1) metaParts.push(`${ggufCount} GGUFs`);
     if (m.status === 'downloading') {
       const _active = _isActivelyDownloading(m.repo_id);
-      metaParts.push(`<span class="cookbook-dl-status" style="color:var(--accent,var(--red));">${_active ? 'downloading' : 'download stalled'}</span>`);
+      metaParts.push(`<span class="cookbook-dl-status" style="color:var(--accent,var(--red));">${_active ? 'descargando' : 'descarga interrumpida'}</span>`);
     }
     const isSelectMode = document.getElementById('hwfit-cache-select')?.classList.contains('active');
     html += `<div class="doclib-card memory-item" data-repo="${esc(m.repo_id)}" data-tag="${m._tag || ''}" data-family="${m._family || ''}" style="cursor:pointer;">`;
@@ -304,7 +304,7 @@ function _rerenderCachedModels() {
     html += `<div style="flex:1;min-width:0;">`;
     const _mc = modelColor(m.repo_id) || '';
     const _runningPill = _isActivelyServing(m.repo_id)
-      ? ' <span class="cookbook-serve-running-pill" title="This model is currently being served">running</span>'
+      ? ' <span class="cookbook-serve-running-pill" title="Este modelo se está sirviendo actualmente">ejecutando</span>'
       : '';
     html += `<div class="memory-item-title"${_mc ? ` style="color:${_mc}"` : ''}>${modelLogo(m.repo_id)}${esc(shortName)}${hfLink ? ` <a href="${esc(hfLink)}" target="_blank" rel="noopener" class="cookbook-hf-link">HF ↗</a>` : ''}${_runningPill}</div>`;
     html += `<div class="memory-item-meta" style="font-size:10px;opacity:0.4;margin-top:2px;">${metaParts.join(' \u00b7 ')}</div>`;
@@ -317,7 +317,7 @@ function _rerenderCachedModels() {
     html += `<div class="memory-item-actions"><button type="button" class="memory-item-btn hwfit-cached-menu-btn" title="Actions" aria-label="Model actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>`;
     html += `</div>`;
   }
-  if (!visibleCount) html += '<div class="hwfit-loading">No matching models</div>';
+  if (!visibleCount) html += '<div class="hwfit-loading">No hay modelos coincidentes</div>';
   list.innerHTML = html;
 
   // Wire tag chips
@@ -389,10 +389,10 @@ function _rerenderCachedModels() {
       const _deleteIco = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>';
       const _selectIco = '<span style="font-size:16px;line-height:1;position:relative;top:-2px;">●</span>';
       const items = [];
-      if (m && m.status === 'ready') items.push({ label: 'Serve', icon: _serveIco, action: 'serve' });
-      if (m && m.status === 'downloading') items.push({ label: 'Retry', icon: _retryIco, action: 'retry' });
-      items.push({ label: 'Select', icon: _selectIco, action: 'select' });
-      items.push({ label: 'Delete', icon: _deleteIco, action: 'delete', danger: true });
+      if (m && m.status === 'ready') items.push({ label: 'Servir', icon: _serveIco, action: 'serve' });
+      if (m && m.status === 'downloading') items.push({ label: 'Reintentar', icon: _retryIco, action: 'retry' });
+      items.push({ label: 'Seleccionar', icon: _selectIco, action: 'select' });
+      items.push({ label: 'Eliminar', icon: _deleteIco, action: 'delete', danger: true });
       for (const opt of items) {
         const div = document.createElement('div');
         div.className = 'dropdown-item-compact' + (opt.danger ? ' dropdown-item-danger' : '');
@@ -407,7 +407,7 @@ function _rerenderCachedModels() {
             const bulkBar = document.getElementById('serve-bulk-bar');
             if (selectBtn) {
               selectBtn.classList.add('active');
-              selectBtn.textContent = 'Cancel';
+              selectBtn.textContent = 'Cancelar';
             }
             if (bulkBar) bulkBar.classList.remove('hidden');
             document.querySelectorAll('.serve-select-cb').forEach(dot => {
@@ -417,7 +417,7 @@ function _rerenderCachedModels() {
             if (dot) dot.classList.add('selected');
             const count = document.querySelectorAll('.serve-select-cb.selected').length;
             const countEl = document.getElementById('serve-bulk-count');
-            if (countEl) countEl.textContent = count + ' selected';
+            if (countEl) countEl.textContent = count + ' seleccionados';
             const all = document.getElementById('serve-select-all');
             const dots = document.querySelectorAll('.serve-select-cb');
             if (all) all.checked = dots.length > 0 && count === dots.length;
@@ -430,7 +430,7 @@ function _rerenderCachedModels() {
       const _cancelIco = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
       const cancelDiv = document.createElement('div');
       cancelDiv.className = 'dropdown-item-compact dropdown-cancel-mobile';
-      cancelDiv.innerHTML = _di(_cancelIco) + '<span>Cancel</span>';
+      cancelDiv.innerHTML = _di(_cancelIco) + '<span>Cancelar</span>';
       cancelDiv.addEventListener('click', () => { closeDropdown(); });
       dropdown.appendChild(cancelDiv);
       const rect = btn.getBoundingClientRect();
@@ -552,10 +552,10 @@ function _rerenderCachedModels() {
       // to click it to find out the badge isn't a notification dot.
       const _arrowLabel = _modelPresets.length > 0 ? `${_modelPresets.length} ▾` : '▾';
       const _arrowTitle = _modelPresets.length > 0
-        ? `${_modelPresets.length} saved launch config${_modelPresets.length === 1 ? '' : 's'} for ${_repoShort} — click ▾ to load or delete`
-        : `No saved launch configs for ${_repoShort} yet — click Save to add one`;
+        ? `${_modelPresets.length} configuración${_modelPresets.length === 1 ? '' : 'es'} de lanzamiento guardada${_modelPresets.length === 1 ? '' : 's'} para ${_repoShort} — haz clic en ▾ para cargar o eliminar`
+        : `Aún no hay configuraciones de lanzamiento guardadas para ${_repoShort} — haz clic en Guardar para añadir una`;
       let _slotsHtml = `<div class="cookbook-serve-slots cookbook-saved-split">`
-        + `<button type="button" class="cookbook-slot-btn cookbook-saved-save" title="Save current config"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save</button>`
+        + `<button type="button" class="cookbook-slot-btn cookbook-saved-save" title="Guardar configuración actual"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Guardar</button>`
         + `<button type="button" class="cookbook-slot-btn cookbook-saved-arrow" title="${esc(_arrowTitle)}">${_arrowLabel}</button>`
         + `</div>`;
 
@@ -565,8 +565,8 @@ function _rerenderCachedModels() {
       // crash trying to read missing shards), but they should know.
       if (m && (m.status === 'downloading' || m.status === 'stalled' || m.has_incomplete)) {
         const _warnText = m.status === 'stalled'
-          ? `This model looks like a stale download shell (${esc(m.size || '0 KB')}). The weights aren't on disk — the serve will fail to load. Re-download first, or pick another model.`
-          : `This model's download isn't complete yet (${esc(m.size || 'partial')}). The serve will start but is likely to crash on a missing shard. Wait for the download to finish, or relaunch after it's done.`;
+          ? `Este modelo parece una descarga incompleta (${esc(m.size || '0 KB')}). Los pesos no están en disco — el servicio fallará al cargar. Vuelve a descargarlo primero, o elige otro modelo.`
+          : `La descarga de este modelo aún no está completa (${esc(m.size || 'parcial')}). El servicio se iniciará pero probablemente fallará al leer un fragmento faltante. Espera a que termine la descarga, o relanza después.`;
         panelHtml += `<div class="hwfit-serve-warn" style="margin:0 0 8px;padding:6px 10px;border-radius:5px;font-size:11px;background:color-mix(in srgb, var(--color-warning, #f0ad4e) 14%, transparent);border:1px solid color-mix(in srgb, var(--color-warning, #f0ad4e) 40%, transparent);color:var(--color-warning, #f0ad4e);display:flex;gap:6px;align-items:flex-start;line-height:1.4;"><span aria-hidden="true">⚠</span><span>${_warnText}</span></div>`;
       }
       // Row 1: Backend + Server + Env
@@ -578,11 +578,11 @@ function _rerenderCachedModels() {
         ? [['llamacpp','llama.cpp'],['ollama','Ollama']]
         : [['vllm','vLLM'],['sglang','SGLang'],['llamacpp','llama.cpp'],['ollama','Ollama'],['diffusers','Diffusers']];
       const backendOpts = _backendChoices.map(([v,l]) => `<option value="${v}"${defaultBackend===v?' selected':''}>${l}</option>`).join('');
-      panelHtml += `<label>${_l('Backend','Inference engine: vLLM, SGLang, llama.cpp, Ollama, or Diffusers')}<select class="hwfit-sf" data-field="backend">${backendOpts}</select></label>`;
+      panelHtml += `<label>${_l('Backend','Motor de inferencia: vLLM, SGLang, llama.cpp, Ollama o Diffusers')}<select class="hwfit-sf" data-field="backend">${backendOpts}</select></label>`;
       panelHtml += `<input type="hidden" class="hwfit-sf" data-field="host" value="${esc(_es.remoteHost || '')}" />`;
-      panelHtml += `<label>${_l('venv','Path to Python venv or conda env activate script')}<input type="text" class="hwfit-sf hwfit-sf-wide" data-field="venv" value="${esc(sv('venv', _es.envPath || _srvVenv || ''))}" placeholder="~/venv" /></label>`;
+      panelHtml += `<label>${_l('venv','Ruta al entorno virtual Python (venv) o script de activación de conda')}<input type="text" class="hwfit-sf hwfit-sf-wide" data-field="venv" value="${esc(sv('venv', _es.envPath || _srvVenv || ''))}" placeholder="~/venv" /></label>`;
       const defaultPort = defaultBackend === 'ollama' ? '11434' : _nextAvailablePort();
-      panelHtml += `<label>${_l('Port','HTTP port for the API server')}<input type="text" class="hwfit-sf" data-field="port" value="${esc(sv('port', defaultPort))}" /></label>`;
+      panelHtml += `<label>${_l('Puerto','Puerto HTTP del servidor de API')}<input type="text" class="hwfit-sf" data-field="port" value="${esc(sv('port', defaultPort))}" /></label>`;
       const _activeGpus = (defaultGpus || '').split(',').map(s => s.trim()).filter(Boolean);
       const detectedGpuCount = Number(_getGpuToggleTotal?.() || 0);
       const _gpuMax = Math.max(detectedGpuCount || 8, ...(_activeGpus.map(Number).filter(n => !isNaN(n)).map(n => n + 1)));
@@ -591,67 +591,67 @@ function _rerenderCachedModels() {
         const on = _activeGpus.includes(String(i));
         _gpuBtnsHtml += `<button type="button" class="cookbook-gpu-btn${on ? ' active' : ''}" data-gpu="${i}">${i}</button>`;
       }
-      panelHtml += `<label>${_l('GPUs','Toggle which GPUs to use')}<div class="cookbook-gpu-group">${_gpuBtnsHtml}</div><input type="hidden" class="hwfit-sf" data-field="gpus" value="${esc(defaultGpus)}" /></label>`;
+      panelHtml += `<label>${_l('GPUs','Selecciona qué GPUs usar')}<div class="cookbook-gpu-group">${_gpuBtnsHtml}</div><input type="hidden" class="hwfit-sf" data-field="gpus" value="${esc(defaultGpus)}" /></label>`;
       panelHtml += `</div>`;
       panelHtml += `<div class="hwfit-serve-runtime-note" style="display:none;font-size:11px;line-height:1.35;color:var(--fg-muted);margin-top:-4px;"></div>`;
       if (_ggufChoices.length > 1) {
         panelHtml += `<div class="hwfit-serve-row hwfit-backend-llamacpp">`;
-        panelHtml += `<label class="hwfit-backend-llamacpp">${_l('GGUF File','Choose the exact GGUF artifact to serve from this cached model folder.')}<select class="hwfit-sf hwfit-sf-wide" data-field="gguf_file">${_ggufOptions}</select></label>`;
+        panelHtml += `<label class="hwfit-backend-llamacpp">${_l('Archivo GGUF','Elige el archivo GGUF exacto a servir desde esta carpeta de modelo en caché.')}<select class="hwfit-sf hwfit-sf-wide" data-field="gguf_file">${_ggufOptions}</select></label>`;
         panelHtml += `</div>`;
       } else if (_defaultGguf) {
         panelHtml += `<input type="hidden" class="hwfit-sf" data-field="gguf_file" value="${esc(_defaultGguf)}" />`;
       }
       // Row 2: Core settings
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-vllm hwfit-backend-sglang hwfit-backend-llamacpp">`;
-      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('TP','Tensor Parallelism — split model across N GPUs')}<select class="hwfit-sf" data-field="tp">${tpOpts}</select></label>`;
+      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('TP','Paralelismo tensorial — divide el modelo entre N GPUs')}<select class="hwfit-sf" data-field="tp">${tpOpts}</select></label>`;
       // ctx resets to the model's max on every panel open (the real ctx slider
       // lives in the Scan/Download toolbar — see cookbook.js .hwfit-ctx-control).
-      panelHtml += `<label>${_l('Context','Max tokens per request — resets to the model max on every open. Lower = less VRAM')}<input type="text" class="hwfit-sf" data-field="ctx" value="${esc(m.context_length || m.context || '20000')}" /></label>`;
-      panelHtml += `<label>${_l('GPU','Which GPU to use. Leave empty for default')}<input type="text" class="hwfit-sf" data-field="gpu_id" value="${esc(sv('gpu_id', ''))}" placeholder="auto" style="width:50px;" /></label>`;
-      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('GPU Mem','Fraction of GPU memory (0.0–1.0). Lower if OOM')}<input type="text" class="hwfit-sf" data-field="gpu_mem" value="${esc(sv('gpu_mem', '0.90'))}" /></label>`;
-      panelHtml += `<label class="hwfit-backend-vllm">${_l('Swap','CPU swap space in GB. Leave empty to omit (removed in newer vLLM)')}<input type="text" class="hwfit-sf" data-field="swap" value="${esc(sv('swap', ''))}" placeholder="off" /></label>`;
-      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('Max Seqs','Maximum concurrent requests. Lower = less memory. Default 4 — prosumer GPUs often OOM on vLLM default 256 during CUDA graph capture.')}<input type="text" class="hwfit-sf" data-field="max_seqs" value="${esc(sv('max_seqs', '4'))}" placeholder="4" /></label>`;
-      panelHtml += `<label>${_l('Dtype','Data type for weights. auto picks best for GPU')}<select class="hwfit-sf" data-field="dtype">${dtypeOpts}</select></label>`;
-      panelHtml += `<label class="hwfit-backend-vllm">${_l('KV Cache','vLLM --kv-cache-dtype. auto uses the model/runtime default; fp8 reduces KV memory for long context.')}<select class="hwfit-sf" data-field="vllm_kv_cache_dtype" style="height:32px;">${vllmKvCacheOpts}</select></label>`;
+      panelHtml += `<label>${_l('Contexto','Tokens máximos por solicitud — se restablece al máximo del modelo en cada apertura. Menor = menos VRAM')}<input type="text" class="hwfit-sf" data-field="ctx" value="${esc(m.context_length || m.context || '20000')}" /></label>`;
+      panelHtml += `<label>${_l('GPU','Qué GPU usar. Deja vacío para el predeterminado')}<input type="text" class="hwfit-sf" data-field="gpu_id" value="${esc(sv('gpu_id', ''))}" placeholder="auto" style="width:50px;" /></label>`;
+      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('Mem. GPU','Fracción de memoria GPU (0.0–1.0). Reduce si hay OOM')}<input type="text" class="hwfit-sf" data-field="gpu_mem" value="${esc(sv('gpu_mem', '0.90'))}" /></label>`;
+      panelHtml += `<label class="hwfit-backend-vllm">${_l('Swap','Espacio de intercambio en CPU en GB. Deja vacío para omitir (eliminado en vLLM reciente)')}<input type="text" class="hwfit-sf" data-field="swap" value="${esc(sv('swap', ''))}" placeholder="off" /></label>`;
+      panelHtml += `<label class="hwfit-backend-vllm hwfit-backend-sglang">${_l('Seqs. máx.','Peticiones concurrentes máximas. Menor = menos memoria. Por defecto 4 — las GPUs de consumo suelen tener OOM con el valor predeterminado de 256 de vLLM durante la captura de grafos CUDA.')}<input type="text" class="hwfit-sf" data-field="max_seqs" value="${esc(sv('max_seqs', '4'))}" placeholder="4" /></label>`;
+      panelHtml += `<label>${_l('Dtype','Tipo de datos para los pesos. auto elige el mejor para la GPU')}<select class="hwfit-sf" data-field="dtype">${dtypeOpts}</select></label>`;
+      panelHtml += `<label class="hwfit-backend-vllm">${_l('Caché KV','vLLM --kv-cache-dtype. auto usa el predeterminado del modelo/runtime; fp8 reduce la memoria KV para contexto largo.')}<select class="hwfit-sf" data-field="vllm_kv_cache_dtype" style="height:32px;">${vllmKvCacheOpts}</select></label>`;
       panelHtml += `</div>`;
       // Row 2b: Diffusers settings
       const diffDtypeOpts = ['bfloat16','float16','float32'].map(d => `<option value="${d}"${sv('diff_dtype','bfloat16')===d?' selected':''}>${d}</option>`).join('');
       const deviceMapOpts = ['balanced','auto','sequential'].map(d => `<option value="${d}"${sv('diff_device_map','balanced')===d?' selected':''}>${d}</option>`).join('');
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-diffusers">`;
-      panelHtml += `<label>Dtype${_h('Precision. bfloat16 recommended for Flux, float16 for SD')} <select class="hwfit-sf" data-field="diff_dtype">${diffDtypeOpts}</select></label>`;
-      panelHtml += `<label>Device Map${_h('How to place model on GPUs. balanced = split evenly')} <select class="hwfit-sf" data-field="diff_device_map">${deviceMapOpts}</select></label>`;
-      panelHtml += `<label>Steps${_h('Default inference steps. More = better quality, slower')} <input type="text" class="hwfit-sf" data-field="diff_steps" value="${esc(sv('diff_steps', ''))}" placeholder="auto" /></label>`;
-      panelHtml += `<label>Width${_h('Default output width')} <input type="text" class="hwfit-sf" data-field="diff_width" value="${esc(sv('diff_width', ''))}" placeholder="1024" /></label>`;
-      panelHtml += `<label>Height${_h('Default output height')} <input type="text" class="hwfit-sf" data-field="diff_height" value="${esc(sv('diff_height', ''))}" placeholder="1024" /></label>`;
+      panelHtml += `<label>Dtype${_h('Precisión. bfloat16 recomendado para Flux, float16 para SD')} <select class="hwfit-sf" data-field="diff_dtype">${diffDtypeOpts}</select></label>`;
+      panelHtml += `<label>Mapa de disp.${_h('Cómo situar el modelo en las GPUs. balanced = reparto equilibrado')} <select class="hwfit-sf" data-field="diff_device_map">${deviceMapOpts}</select></label>`;
+      panelHtml += `<label>Pasos${_h('Pasos de inferencia por defecto. Más = mejor calidad, más lento')} <input type="text" class="hwfit-sf" data-field="diff_steps" value="${esc(sv('diff_steps', ''))}" placeholder="auto" /></label>`;
+      panelHtml += `<label>Ancho${_h('Ancho de salida por defecto')} <input type="text" class="hwfit-sf" data-field="diff_width" value="${esc(sv('diff_width', ''))}" placeholder="1024" /></label>`;
+      panelHtml += `<label>Alto${_h('Alto de salida por defecto')} <input type="text" class="hwfit-sf" data-field="diff_height" value="${esc(sv('diff_height', ''))}" placeholder="1024" /></label>`;
       panelHtml += `</div>`;
       // Row 3: Checkboxes (vLLM)
       panelHtml += `<div class="hwfit-serve-checks hwfit-backend-vllm hwfit-backend-sglang">`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="enforce_eager"${sv('enforce_eager',false)?' checked':''} /> Enforce Eager${_h('Disable CUDA graphs. Slower but uses less memory')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="trust_remote"${sv('trust_remote',false)?' checked':''} /> Trust Remote Code${_h('Allow model to run custom code from HuggingFace')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="prefix_cache"${sv('prefix_cache',false)?' checked':''} /> Prefix Caching${_h('Cache shared prompt prefixes across requests')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb hwfit-backend-vllm"><input type="checkbox" class="hwfit-sf" data-field="auto_tool"${sv('auto_tool',false)?' checked':''} /> Auto Tool Choice${_h('Enable function/tool calling for agent mode')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="enforce_eager"${sv('enforce_eager',false)?' checked':''} /> Enforce Eager${_h('Desactiva los grafos CUDA. Más lento pero usa menos memoria')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="trust_remote"${sv('trust_remote',false)?' checked':''} /> Trust Remote Code${_h('Permite al modelo ejecutar código personalizado de HuggingFace')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb"><input type="checkbox" class="hwfit-sf" data-field="prefix_cache"${sv('prefix_cache',false)?' checked':''} /> Prefix Caching${_h('Almacena en caché los prefijos de prompt compartidos entre solicitudes')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb hwfit-backend-vllm"><input type="checkbox" class="hwfit-sf" data-field="auto_tool"${sv('auto_tool',false)?' checked':''} /> Auto Tool Choice${_h('Activa la selección automática de herramientas/funciones para modo agente')}</label>`;
       panelHtml += `</div>`;
       // Row 2c: llama.cpp fit/perf flags (set by Auto profiles, editable by hand)
       const _kvOpts = ['', 'q4_0', 'q8_0', 'f16'].map(k => `<option value="${k}"${sv('cache_type','')===k?' selected':''}>${k||'default'}</option>`).join('');
       const llamaFitOpts = ['', 'off', 'on'].map(d => `<option value="${d}"${sv('llama_fit','')===d?' selected':''}>${d||'default'}</option>`).join('');
       const llamaSplitModeOpts = ['', 'layer', 'tensor', 'row', 'none'].map(d => `<option value="${d}"${sv('llama_split_mode','')===d?' selected':''}>${d||'default'}</option>`).join('');
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-llamacpp">`;
-      panelHtml += `<label>${_l('CPU MoE','n-cpu-moe: number of MoE expert layers to run on CPU when the model is bigger than VRAM. 0 = all on GPU. Set automatically by the Auto profiles below.')}<input type="text" class="hwfit-sf" data-field="n_cpu_moe" value="${esc(sv('n_cpu_moe',''))}" placeholder="0" style="width:54px;" /></label>`;
-      panelHtml += `<label>${_l('KV Cache','cache-type-k/v: quantize the KV cache. q4_0 = smallest (more context), q8_0 = sharp long-context, f16 = full. Blank = llama.cpp default.')}<select class="hwfit-sf" data-field="cache_type">${_kvOpts}</select></label>`;
-      panelHtml += `<label class="hwfit-sf-cb" style="align-self:end;"><input type="checkbox" class="hwfit-sf" data-field="flash_attn"${sv('flash_attn',false)?' checked':''} /> Flash Attn${_h('--flash-attn on: faster attention + needed for quantized KV cache.')}</label>`;
-      panelHtml += `<label class="hwfit-sf-cb" style="align-self:end;"><input type="checkbox" class="hwfit-sf" data-field="vision"${sv('vision',false)?' checked':''} /> Vision${_h('Serve with the vision encoder so the model can read images. Auto-finds an mmproj-*.gguf next to the model (download one into the model folder). Adds ~1 GB VRAM + a small per-image cost.')}</label>`;
-      panelHtml += `<label>${_l('Fit','llama.cpp --fit. Leave default unless you need explicit off/on behavior for a preset.')}<select class="hwfit-sf" data-field="llama_fit">${llamaFitOpts}</select></label>`;
+      panelHtml += `<label>${_l('CPU MoE','n-cpu-moe: número de capas de expertos MoE a ejecutar en CPU cuando el modelo supera la VRAM. 0 = todo en GPU. Los perfiles Auto lo ajustan automáticamente.')}<input type="text" class="hwfit-sf" data-field="n_cpu_moe" value="${esc(sv('n_cpu_moe',''))}" placeholder="0" style="width:54px;" /></label>`;
+      panelHtml += `<label>${_l('Caché KV','cache-type-k/v: cuantiza la caché KV. q4_0 = más pequeña (más contexto), q8_0 = contexto largo nítido, f16 = completa. Vacío = predeterminado de llama.cpp.')}<select class="hwfit-sf" data-field="cache_type">${_kvOpts}</select></label>`;
+      panelHtml += `<label class="hwfit-sf-cb" style="align-self:end;"><input type="checkbox" class="hwfit-sf" data-field="flash_attn"${sv('flash_attn',false)?' checked':''} /> Flash Attn${_h('--flash-attn on: atención más rápida + necesario para caché KV cuantizada.')}</label>`;
+      panelHtml += `<label class="hwfit-sf-cb" style="align-self:end;"><input type="checkbox" class="hwfit-sf" data-field="vision"${sv('vision',false)?' checked':''} /> Visión${_h('Sirve con el codificador de visión para que el modelo pueda leer imágenes. Busca automáticamente un mmproj-*.gguf junto al modelo (descarga uno en la carpeta del modelo). Añade ~1 GB de VRAM + un coste pequeño por imagen.')}</label>`;
+      panelHtml += `<label>${_l('Fit','llama.cpp --fit. Deja el predeterminado salvo que necesites un comportamiento explícito off/on para un preset.')}<select class="hwfit-sf" data-field="llama_fit">${llamaFitOpts}</select></label>`;
       panelHtml += `</div>`;
       // Row 2d: native llama-server placement/runtime controls. These are
       // explicit overrides for known-good advanced presets; blank keeps
       // llama.cpp/profile defaults.
       panelHtml += `<div class="hwfit-serve-row hwfit-backend-llamacpp">`;
-      panelHtml += `<label>${_l('Split Mode','llama.cpp GPU placement. layer is the usual default; tensor splits weights and KV across GPUs.')}<select class="hwfit-sf" data-field="llama_split_mode">${llamaSplitModeOpts}</select></label>`;
-      panelHtml += `<label>${_l('Tensor Split','GPU proportions for llama.cpp, e.g. 50,50 across two visible GPUs. Leave blank for auto.')}<input type="text" class="hwfit-sf" data-field="llama_tensor_split" value="${esc(sv('llama_tensor_split', ''))}" placeholder="50,50" /></label>`;
-      panelHtml += `<label>${_l('Main GPU','llama.cpp --main-gpu index inside the visible GPU set. Mostly useful for split mode none/row.')}<input type="text" class="hwfit-sf" data-field="llama_main_gpu" value="${esc(sv('llama_main_gpu', ''))}" placeholder="auto" /></label>`;
-      panelHtml += `<label>${_l('Parallel','llama.cpp parallel slots. Leave blank for llama.cpp default; 1 matches single-lane presets.')}<input type="text" class="hwfit-sf" data-field="llama_parallel" value="${esc(sv('llama_parallel', ''))}" placeholder="1" /></label>`;
-      panelHtml += `<label>${_l('Batch','llama.cpp prompt batch size. Leave blank for llama.cpp default.')}<input type="text" class="hwfit-sf" data-field="llama_batch_size" value="${esc(sv('llama_batch_size', ''))}" placeholder="2048" /></label>`;
-      panelHtml += `<label>${_l('UBatch','llama.cpp physical micro-batch size. Leave blank for llama.cpp default.')}<input type="text" class="hwfit-sf" data-field="llama_ubatch_size" value="${esc(sv('llama_ubatch_size', ''))}" placeholder="512" /></label>`;
+      panelHtml += `<label>${_l('Modo Split','Colocación GPU en llama.cpp. layer es el predeterminado habitual; tensor divide pesos y KV entre GPUs.')}<select class="hwfit-sf" data-field="llama_split_mode">${llamaSplitModeOpts}</select></label>`;
+      panelHtml += `<label>${_l('Tensor Split','Proporciones de GPU para llama.cpp, p. ej. 50,50 entre dos GPUs visibles. Deja vacío para auto.')}<input type="text" class="hwfit-sf" data-field="llama_tensor_split" value="${esc(sv('llama_tensor_split', ''))}" placeholder="50,50" /></label>`;
+      panelHtml += `<label>${_l('GPU principal','Índice --main-gpu de llama.cpp en el conjunto de GPUs visibles. Útil sobre todo para los modos split none/row.')}<input type="text" class="hwfit-sf" data-field="llama_main_gpu" value="${esc(sv('llama_main_gpu', ''))}" placeholder="auto" /></label>`;
+      panelHtml += `<label>${_l('Paralelo','Slots paralelos de llama.cpp. Deja vacío para el predeterminado de llama.cpp; 1 corresponde a presets de un solo carril.')}<input type="text" class="hwfit-sf" data-field="llama_parallel" value="${esc(sv('llama_parallel', ''))}" placeholder="1" /></label>`;
+      panelHtml += `<label>${_l('Lote','Tamaño de lote de prompt de llama.cpp. Deja vacío para el predeterminado de llama.cpp.')}<input type="text" class="hwfit-sf" data-field="llama_batch_size" value="${esc(sv('llama_batch_size', ''))}" placeholder="2048" /></label>`;
+      panelHtml += `<label>${_l('MicroLote','Tamaño físico de micro-lote de llama.cpp. Deja vacío para el predeterminado de llama.cpp.')}<input type="text" class="hwfit-sf" data-field="llama_ubatch_size" value="${esc(sv('llama_ubatch_size', ''))}" placeholder="512" /></label>`;
       panelHtml += `</div>`;
       // Row 2d: Auto profiles — computed from detected hardware (see profiles.py).
       // Buttons are injected after the panel mounts (needs an async fetch).

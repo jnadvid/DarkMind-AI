@@ -64,7 +64,7 @@ export function wireAIToolsMisc({
     // whole-image img2img — i.e. regenerate the whole photo. Block
     // that and tell the user what's missing.
     if (!body_mask) {
-      if (uiModule) uiModule.showToast('Harmonize needs a second layer pasted/imported over the base photo — nothing to color-match against.', 6000);
+      if (uiModule) uiModule.showToast('Armonizar necesita una segunda capa pegada/importada sobre la foto base — no hay nada contra lo que igualar el color.', 6000);
       return;
     }
     const payload = { prompt, color_match, seam_fix, body_mask };
@@ -94,7 +94,7 @@ export function wireAIToolsMisc({
     if (sizeLabel) sizeLabel.textContent = `${newW}×${newH}`;
     fitZoom();
     composite();
-    uiModule.showToast(`Upscaled ${factor}× to ${newW}×${newH}`);
+    uiModule.showToast(`Ampliado ${factor}× a ${newW}×${newH}`);
   }
   document.getElementById('ge-upscale-2x')?.addEventListener('click', () => canvasUpscale(2));
   document.getElementById('ge-upscale-4x')?.addEventListener('click', () => canvasUpscale(4));
@@ -111,9 +111,9 @@ export function wireAIToolsMisc({
       btn.innerHTML = '';
       btn.appendChild(upWp.element);
       const lbl = document.createElement('span');
-      lbl.textContent = 'Upscaling…';
+      lbl.textContent = 'Ampliando…';
       btn.appendChild(lbl);
-    } catch (_) { btn.textContent = 'Upscaling…'; }
+    } catch (_) { btn.textContent = 'Ampliando…'; }
     try {
       const flat = flatten();
       const imageB64 = flat.toDataURL('image/png').split(',')[1];
@@ -142,14 +142,14 @@ export function wireAIToolsMisc({
           fitZoom();
           composite();
           renderLayerPanel();
-          uiModule.showToast(`AI upscaled to ${newW}×${newH}`);
+          uiModule.showToast(`Ampliado con IA a ${newW}×${newH}`);
         };
         img.src = 'data:image/png;base64,' + data.image;
       } else {
         throw new Error(data.error || 'No image returned');
       }
     } catch (e) {
-      uiModule.showToast('AI upscale failed: ' + e.message);
+      uiModule.showToast('Error al ampliar con IA: ' + e.message);
     }
     try { upWp?.destroy(); } catch (_) {}
     btn.disabled = false;
@@ -163,9 +163,9 @@ export function wireAIToolsMisc({
   document.getElementById('ge-style-run')?.addEventListener('click', async () => {
     const btn = document.getElementById('ge-style-run');
     const prompt = document.getElementById('ge-style-prompt').value.trim();
-    if (!prompt) { uiModule.showToast('Enter a style prompt'); return; }
+    if (!prompt) { uiModule.showToast('Escribe un indicador de estilo'); return; }
     const strength = parseInt(document.getElementById('ge-style-strength').value) / 100;
-    btn.disabled = true; btn.textContent = 'Applying...';
+    btn.disabled = true; btn.textContent = 'Aplicando…';
     try {
       const flat = flatten();
       const blob = await new Promise(r => flat.toBlob(r, 'image/png'));
@@ -187,16 +187,16 @@ export function wireAIToolsMisc({
           state.activeLayerId = layer.id;
           composite();
           renderLayerPanel();
-          uiModule.showToast('Style applied');
+          uiModule.showToast('Estilo aplicado');
         };
         img.src = 'data:image/png;base64,' + data.image;
       } else {
         throw new Error(data.error || 'No image returned');
       }
     } catch (e) {
-      uiModule.showToast('Style transfer failed: ' + e.message);
+      uiModule.showToast('Error en la transferencia de estilo: ' + e.message);
     }
-    btn.disabled = false; btn.textContent = 'Apply Style';
+    btn.disabled = false; btn.textContent = 'Aplicar estilo';
   });
 
   // ── Add empty layer (used by the layer-panel header button + the

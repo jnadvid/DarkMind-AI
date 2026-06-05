@@ -33,7 +33,7 @@ export function createCanvasTransforms({ saveState, composite, fitZoom, showCanv
     rotateAll(deg) {
       if (!state.layers.length) return;
       saveState(`Rotate ${deg}°`);
-      showCanvasLoading('Rotating…');
+      showCanvasLoading('Rotando…');
       const oldW = state.imgWidth, oldH = state.imgHeight;
       const swap = (deg === 90 || deg === 270);
       const newW = swap ? oldH : oldW;

@@ -120,7 +120,7 @@ export function wireAIModelSelectors({ container, apiBase, openCookbookForImg2im
           const value = `${ep.base_url}::${modelId}`;
           const shortModel = modelId ? String(modelId).split('/').pop() : (ep.name || ep.base_url);
           const epHint = modelId && ep.name && ep.name !== modelId ? ` · ${ep.name}` : '';
-          const label = `${shortModel}${epHint}${epUsable ? '' : ' (offline)'}`;
+          const label = `${shortModel}${epHint}${epUsable ? '' : ' (sin conexión)'}`;
           if (caps.gen && aiGenSelect) {
             const opt = document.createElement('option');
             opt.value = value;
@@ -176,7 +176,7 @@ export function wireAIModelSelectors({ container, apiBase, openCookbookForImg2im
         sel.appendChild(sep);
         const serveOpt = document.createElement('option');
         serveOpt.value = '__serve_cookbook__';
-        serveOpt.textContent = '+ Serve a model in Cookbook…';
+        serveOpt.textContent = '+ Servir un modelo en Cookbook…';
         sel.appendChild(serveOpt);
       };
       for (const ts of perToolSelects) appendServeSentinel(ts);
@@ -221,7 +221,7 @@ export function wireAIModelSelectors({ container, apiBase, openCookbookForImg2im
       // Fetch failed — still give the user the affordance to set up
       // a model. Otherwise the dropdown shows only "Auto" with no
       // hint about what to do next.
-      const fallback = '<option value="">Auto</option><option value="" disabled>──────────</option><option value="__serve_cookbook__">+ Serve a model in Cookbook…</option>';
+      const fallback = '<option value="">Auto</option><option value="" disabled>──────────</option><option value="__serve_cookbook__">+ Servir un modelo en Cookbook…</option>';
       if (aiGenSelect) aiGenSelect.innerHTML = fallback;
       if (aiInpaintSelect) aiInpaintSelect.innerHTML = fallback;
       document.querySelectorAll('select.ge-tool-model').forEach(ts => { ts.innerHTML = fallback; });

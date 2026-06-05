@@ -24,7 +24,7 @@ export async function openAssistantChat() {
   try {
     const info = await _fetchJSON(`${API}/session`);
     if (!info?.session_id) {
-      uiModule.showToast('Assistant session unavailable');
+      uiModule.showToast('Sesión del asistente no disponible');
       return;
     }
     await selectSession(info.session_id);
@@ -32,7 +32,7 @@ export async function openAssistantChat() {
     _cachedSettings = null;
   } catch (e) {
     console.error('openAssistantChat failed:', e);
-    uiModule.showToast('Could not open assistant');
+    uiModule.showToast('No se pudo abrir el asistente');
   }
 }
 
@@ -69,10 +69,10 @@ async function _runCheckInNow(taskId) {
       method: 'POST',
       credentials: 'same-origin',
     });
-    uiModule.showToast('Check-in running…');
+    uiModule.showToast('Check-in en curso…');
   } catch (e) {
     console.error(e);
-    uiModule.showToast('Could not run check-in');
+    uiModule.showToast('No se pudo ejecutar el check-in');
   }
 }
 
@@ -95,12 +95,12 @@ function _ensureModalEl() {
       <div class="modal-header">
         <h4>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px;"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
-          Assistant settings
+          Ajustes del asistente
         </h4>
         <button class="close-btn" id="assistant-settings-close">✖</button>
       </div>
       <div class="modal-body" id="assistant-settings-body">
-        <div class="hwfit-loading">Loading…</div>
+        <div class="hwfit-loading">Cargando…</div>
       </div>
     </div>`;
   document.body.appendChild(modal);
@@ -147,15 +147,15 @@ function _renderSettingsBody(body, data, tzList) {
     <div class="assistant-checkin-row" data-task-id="${_esc(c.id)}">
       <div class="assistant-checkin-head">
         <input type="checkbox" class="assistant-checkin-enabled" ${c.enabled ? 'checked' : ''} title="Enable this check-in" />
-        <input type="text" class="assistant-checkin-name" value="${_esc(c.name)}" placeholder="Name" />
+        <input type="text" class="assistant-checkin-name" value="${_esc(c.name)}" placeholder="Nombre" />
         <input type="time" class="assistant-checkin-time" value="${_esc(c.scheduled_time || '')}" />
-        <button type="button" class="assistant-checkin-run" title="Run now">Run now</button>
+        <button type="button" class="assistant-checkin-run" title="Ejecutar ahora">Ejecutar ahora</button>
       </div>
-      <textarea class="assistant-checkin-prompt" rows="3" placeholder="Prompt for this check-in">${_esc(c.prompt || '')}</textarea>
+      <textarea class="assistant-checkin-prompt" rows="3" placeholder="Prompt para este check-in">${_esc(c.prompt || '')}</textarea>
       <div class="assistant-checkin-meta">
-        ${c.next_run ? `next run: ${_esc(c.next_run)}` : ''}
-        ${c.last_run ? ` · last run: ${_esc(c.last_run)}` : ''}
-        ${typeof c.run_count === 'number' ? ` · ${c.run_count} runs` : ''}
+        ${c.next_run ? `próxima ejecución: ${_esc(c.next_run)}` : ''}
+        ${c.last_run ? ` · última ejecución: ${_esc(c.last_run)}` : ''}
+        ${typeof c.run_count === 'number' ? ` · ${c.run_count} ejecuciones` : ''}
       </div>
     </div>`).join('');
 
@@ -174,56 +174,56 @@ function _renderSettingsBody(body, data, tzList) {
   body.innerHTML = `
     <div class="assistant-settings-form">
       <label class="assistant-field">
-        <span>Name</span>
-        <input type="text" id="assistant-name" value="${_esc(crew.name)}" placeholder="Assistant" />
+        <span>Nombre</span>
+        <input type="text" id="assistant-name" value="${_esc(crew.name)}" placeholder="Asistente" />
       </label>
       <div class="assistant-field">
-        <span style="display:flex;align-items:center;gap:8px;">Personality
+        <span style="display:flex;align-items:center;gap:8px;">Personalidad
           <select id="assistant-character-pick" style="font-size:11px;padding:1px 6px;border:1px solid var(--border);border-radius:3px;background:var(--bg);color:var(--fg);max-width:180px;">
-            <option value="">-- pick from persona --</option>
+            <option value="">-- elegir personaje --</option>
           </select>
         </span>
-        <textarea id="assistant-personality" rows="6" placeholder="Describe the assistant's personality, tone, and behavior...">${_esc(crew.personality || '')}</textarea>
+        <textarea id="assistant-personality" rows="6" placeholder="Describe la personalidad, el tono y el comportamiento del asistente...">${_esc(crew.personality || '')}</textarea>
       </div>
       <div class="assistant-field-row">
         <label class="assistant-field">
-          <span>Timezone</span>
+          <span>Zona horaria</span>
           <select id="assistant-timezone">
-            <option value=""${!crew.timezone ? ' selected' : ''}>(default -- UTC)</option>
+            <option value=""${!crew.timezone ? ' selected' : ''}>(por defecto -- UTC)</option>
             ${tzOptions}
           </select>
         </label>
       </div>
       <div class="assistant-field-row">
         <label class="assistant-field" style="flex:1;">
-          <span>Model endpoint</span>
+          <span>Endpoint del modelo</span>
           <select id="assistant-endpoint" style="width:100%;">
-            <option value="">(loading...)</option>
+            <option value="">(cargando...)</option>
           </select>
         </label>
         <label class="assistant-field" style="flex:1;">
-          <span>Model</span>
+          <span>Modelo</span>
           <select id="assistant-model" style="width:100%;">
             <option value="${_esc(crew.model || '')}">${_esc(crew.model || '(default)')}</option>
           </select>
         </label>
       </div>
       <div class="assistant-field">
-        <span style="display:flex;align-items:center;gap:8px;">Tools
-          <button type="button" id="assistant-tools-all" class="assistant-tools-toggle" style="font-size:10px;opacity:0.5;cursor:pointer;background:none;border:1px solid var(--border);border-radius:3px;padding:1px 6px;">all</button>
-          <button type="button" id="assistant-tools-none" class="assistant-tools-toggle" style="font-size:10px;opacity:0.5;cursor:pointer;background:none;border:1px solid var(--border);border-radius:3px;padding:1px 6px;">none</button>
+        <span style="display:flex;align-items:center;gap:8px;">Herramientas
+          <button type="button" id="assistant-tools-all" class="assistant-tools-toggle" style="font-size:10px;opacity:0.5;cursor:pointer;background:none;border:1px solid var(--border);border-radius:3px;padding:1px 6px;">todas</button>
+          <button type="button" id="assistant-tools-none" class="assistant-tools-toggle" style="font-size:10px;opacity:0.5;cursor:pointer;background:none;border:1px solid var(--border);border-radius:3px;padding:1px 6px;">ninguna</button>
         </span>
         <div class="assistant-tools-grid" id="assistant-tools-grid">
           ${toolsHTML}
         </div>
       </div>
       <div class="assistant-checkins">
-        <h5>Daily check-ins</h5>
-        ${checkInsHTML || '<div style="opacity:0.6;">No check-ins configured.</div>'}
+        <h5>Check-ins diarios</h5>
+        ${checkInsHTML || '<div style="opacity:0.6;">No hay check-ins configurados.</div>'}
       </div>
       <div class="assistant-settings-actions">
-        <button type="button" class="cal-btn" id="assistant-settings-cancel">Cancel</button>
-        <button type="button" class="cal-btn cal-btn-primary" id="assistant-settings-save">Save</button>
+        <button type="button" class="cal-btn" id="assistant-settings-cancel">Cancelar</button>
+        <button type="button" class="cal-btn cal-btn-primary" id="assistant-settings-save">Guardar</button>
       </div>
     </div>
   `;
@@ -232,7 +232,7 @@ function _renderSettingsBody(body, data, tzList) {
   const epSelect = body.querySelector('#assistant-endpoint');
   const modelSelect = body.querySelector('#assistant-model');
   _fetchEndpoints().then(endpoints => {
-    let epHTML = '<option value="">(use session default)</option>';
+    let epHTML = '<option value="">(usar sesión por defecto)</option>';
     for (const ep of endpoints) {
       if (!ep.is_enabled) continue;
       const url = ep.base_url || '';
@@ -244,10 +244,10 @@ function _renderSettingsBody(body, data, tzList) {
     // When endpoint changes, load its models
     epSelect.addEventListener('change', async () => {
       const url = epSelect.value;
-      if (!url) { modelSelect.innerHTML = '<option value="">(default)</option>'; return; }
+      if (!url) { modelSelect.innerHTML = '<option value="">(por defecto)</option>'; return; }
       const ep = endpoints.find(e => e.base_url === url);
       if (!ep) return;
-      modelSelect.innerHTML = '<option value="">loading...</option>';
+      modelSelect.innerHTML = '<option value="">cargando...</option>';
       try {
         const models = await _fetchJSON(`/api/model-endpoints/${ep.id}/models`);
         let mHTML = '';
@@ -256,8 +256,8 @@ function _renderSettingsBody(body, data, tzList) {
           const sel = mid === crew.model ? ' selected' : '';
           mHTML += `<option value="${_esc(mid)}"${sel}>${_esc(mid.split('/').pop())}</option>`;
         }
-        modelSelect.innerHTML = mHTML || '<option value="">(no models)</option>';
-      } catch { modelSelect.innerHTML = '<option value="">(failed)</option>'; }
+        modelSelect.innerHTML = mHTML || '<option value="">(sin modelos)</option>';
+      } catch { modelSelect.innerHTML = '<option value="">(error)</option>'; }
     });
     // Trigger initial model load if endpoint is pre-selected
     if (epSelect.value) epSelect.dispatchEvent(new Event('change'));
@@ -293,9 +293,9 @@ function _renderSettingsBody(body, data, tzList) {
           allPresets.push(...presetsRaw);
         }
         const allTemplates = Array.isArray(templates) ? templates : [];
-        let opts = '<option value="">-- pick from persona --</option>';
+        let opts = '<option value="">-- elegir personaje --</option>';
         if (allPresets.length) {
-          opts += '<optgroup label="Presets">';
+          opts += '<optgroup label="Preajustes">';
           for (const p of allPresets) {
             if (!p.system_prompt) continue;
             const name = p.character_name || p.name || p._key || 'Unnamed';
@@ -304,7 +304,7 @@ function _renderSettingsBody(body, data, tzList) {
           opts += '</optgroup>';
         }
         if (allTemplates.length) {
-          opts += '<optgroup label="Personas">';
+          opts += '<optgroup label="Personajes">';
           for (const t of allTemplates) {
             if (!t.system_prompt && !t.personality) continue;
             const name = t.character_name || t.name || 'Unnamed';
@@ -359,11 +359,11 @@ function _renderSettingsBody(body, data, tzList) {
     };
     try {
       await _saveSettings(payload);
-      uiModule.showToast('Assistant settings saved');
+      uiModule.showToast('Ajustes del asistente guardados');
       _closeModal();
     } catch (e) {
       console.error(e);
-      uiModule.showToast('Save failed');
+      uiModule.showToast('Error al guardar');
     }
   });
   body.querySelectorAll('.assistant-checkin-run').forEach((btn) => {
@@ -373,7 +373,7 @@ function _renderSettingsBody(body, data, tzList) {
       if (!row?.dataset.taskId) return;
       const taskId = row.dataset.taskId;
       btn.disabled = true;
-      btn.textContent = 'Running...';
+      btn.textContent = 'Ejecutando...';
       await _runCheckInNow(taskId);
       _closeModal();
       // Poll until done, then navigate to assistant chat
@@ -403,13 +403,13 @@ export async function openAssistantSettings() {
   modal.classList.remove('hidden');
   modal.style.display = 'flex';
   const body = modal.querySelector('#assistant-settings-body');
-  body.innerHTML = '<div class="hwfit-loading">Loading…</div>';
+  body.innerHTML = '<div class="hwfit-loading">Cargando…</div>';
   try {
     const [data, tzList] = await Promise.all([_getSettings(true), _listTimezones()]);
     _renderSettingsBody(body, data, tzList);
   } catch (e) {
     console.error(e);
-    body.innerHTML = '<div style="padding:12px;opacity:0.6;">Could not load assistant settings.</div>';
+    body.innerHTML = '<div style="padding:12px;opacity:0.6;">No se pudieron cargar los ajustes del asistente.</div>';
   }
 }
 
@@ -432,7 +432,7 @@ async function _ensureHeaderAffordances(sessionId) {
   const gear = document.createElement('button');
   gear.id = 'assistant-header-gear';
   gear.type = 'button';
-  gear.title = 'Assistant settings';
+  gear.title = 'Ajustes del asistente';
   gear.className = 'chat-header-btn';
   gear.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
   gear.addEventListener('click', openAssistantSettings);

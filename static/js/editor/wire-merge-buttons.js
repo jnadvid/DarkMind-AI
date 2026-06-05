@@ -58,14 +58,14 @@ export function wireMergeButtons({ saveState, createLayer, renderLayerPanel, com
     state.activeLayerId = merged.id;
     renderLayerPanel();
     composite();
-    uiModule.showToast('Flattened copy created');
+    uiModule.showToast('Copia aplanada creada');
   });
 
   // Merge All — drop hidden layers; base = lowest visible.
   document.getElementById('ge-merge-all')?.addEventListener('click', () => {
     const visibleLayers = state.layers.filter(l => l.visible);
     if (visibleLayers.length < 2) {
-      if (uiModule) uiModule.showToast('Need at least two visible layers to merge');
+      if (uiModule) uiModule.showToast('Se necesitan al menos dos capas visibles para fusionar');
       return;
     }
     saveState('Merge all');
@@ -87,7 +87,7 @@ export function wireMergeButtons({ saveState, createLayer, renderLayerPanel, com
     state.activeLayerId = base.id;
     renderLayerPanel();
     composite();
-    uiModule.showToast('Visible layers merged');
+    uiModule.showToast('Capas visibles fusionadas');
   });
 
   // Merge Down.
@@ -98,6 +98,6 @@ export function wireMergeButtons({ saveState, createLayer, renderLayerPanel, com
     mergeLayerDownAtIndex(idx);
     renderLayerPanel();
     composite();
-    uiModule.showToast('Layer merged down');
+    uiModule.showToast('Capa fusionada hacia abajo');
   });
 }

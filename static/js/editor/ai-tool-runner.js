@@ -101,9 +101,9 @@ export function createApplyImageTool({
         state.activeLayerId = layer.id;
         composite();
         renderLayerPanel();
-        if (uiModule) uiModule.showToast(layerName + ' complete', 4500);
+        if (uiModule) uiModule.showToast(layerName + ' completado', 4500);
       };
-      img.onerror = () => { if (uiModule) uiModule.showToast('Failed to load result', 6000); };
+      img.onerror = () => { if (uiModule) uiModule.showToast('Error al cargar el resultado', 6000); };
       img.src = 'data:image/png;base64,' + data.image;
     } catch (e) {
       // Detect known failure modes and surface an action-toast.
@@ -121,19 +121,19 @@ export function createApplyImageTool({
       }
       if (uiModule) {
         if (depMatch && uiModule.showToast.length >= 2) {
-          uiModule.showToast(layerName + ' failed: ' + depMatch + ' is not installed on the server.', {
+          uiModule.showToast(layerName + ' fallido: ' + depMatch + ' no está instalado en el servidor.', {
             duration: 9000,
-            action: `Install ${depMatch}`,
+            action: `Instalar ${depMatch}`,
             onAction: () => openCookbookForDependency(depMatch),
           });
         } else if (needsImg2Img && uiModule.showToast.length >= 2) {
-          uiModule.showToast(layerName + ' failed: ' + e.message, {
+          uiModule.showToast(layerName + ' fallido: ' + e.message, {
             duration: 9000,
-            action: 'Open Cookbook',
+            action: 'Abrir Cookbook',
             onAction: () => openCookbookForImg2img(),
           });
         } else {
-          uiModule.showToast(layerName + ' failed: ' + e.message, 6000);
+          uiModule.showToast(layerName + ' fallido: ' + e.message, 6000);
         }
       }
     } finally {

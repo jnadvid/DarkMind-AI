@@ -481,9 +481,9 @@ async function initDefaultChat() {
           default_model_fallbacks: clean
         })
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(function() { msg.textContent = ''; }, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   epSel.addEventListener('change', function() { refreshModels(''); saveDefault(); });
@@ -508,8 +508,8 @@ async function initUtilityModel() {
   var msg = el('set-utilityChatMsg');
   var _endpoints = [];
   var fallbackWidget = null;
-  if (epSel && epSel.options[0]) epSel.options[0].textContent = 'Same as chat';
-  if (modelSel && modelSel.options[0]) modelSel.options[0].textContent = 'Same as chat';
+  if (epSel && epSel.options[0]) epSel.options[0].textContent = 'Igual que el chat';
+  if (modelSel && modelSel.options[0]) modelSel.options[0].textContent = 'Igual que el chat';
 
   try {
     _endpoints = await _fetchModelEndpoints();
@@ -550,9 +550,9 @@ async function initUtilityModel() {
           utility_model: modelSel.value || ''
         })
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(function() { msg.textContent = ''; }, 1500);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   epSel.addEventListener('change', function() { refreshModels(''); saveUtility(); });
@@ -645,10 +645,10 @@ async function initTeacherModel() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ teacher_enabled: enabled, teacher_model: spec })
       });
-      msg.textContent = enabled ? (spec ? 'Saved' : 'Pick an endpoint + model') : 'Disabled';
+      msg.textContent = enabled ? (spec ? 'Guardado' : 'Elige un endpoint y modelo') : 'Desactivado';
       msg.style.color = enabled && !spec ? 'var(--red)' : 'var(--fg)';
       setTimeout(function() { msg.textContent = ''; }, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   if (enabledToggle) {
@@ -721,8 +721,8 @@ async function initImageSettings() {
     try {
       await fetch('/api/auth/settings', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image_gen_enabled: enabledToggle ? enabledToggle.checked : true, image_model: modelSel.value, image_quality: qualSel.value }) });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)'; setTimeout(() => { msg.textContent = ''; }, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)'; setTimeout(() => { msg.textContent = ''; }, 2000);
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
   modelSel.addEventListener('change', saveSettings);
   qualSel.addEventListener('change', saveSettings);
@@ -794,8 +794,8 @@ async function initVisionSettings() {
     try {
       await fetch('/api/auth/settings', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ vision_enabled: enabledToggle ? enabledToggle.checked : true, vision_model: vlSel.value }) });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)'; setTimeout(() => { msg.textContent = ''; }, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)'; setTimeout(() => { msg.textContent = ''; }, 2000);
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
   vlSel.addEventListener('change', saveSettings);
   if (enabledToggle) enabledToggle.addEventListener('change', function() { syncVisionDisabled(); saveSettings(); });
@@ -876,9 +876,9 @@ async function initTtsSettings() {
     try {
       await fetch('/api/auth/settings', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tts_enabled: ttsEnabledToggle ? ttsEnabledToggle.checked : true, tts_provider: provSel.value, tts_model: getModel() || 'tts-1', tts_voice: getVoice() || 'alloy', tts_speed: speedSelect.value || '1' }) });
-      ttsMsg.textContent = 'Saved'; ttsMsg.style.color = 'var(--fg)'; setTimeout(() => { ttsMsg.textContent = ''; }, 2000);
+      ttsMsg.textContent = 'Guardado'; ttsMsg.style.color = 'var(--fg)'; setTimeout(() => { ttsMsg.textContent = ''; }, 2000);
       if (window.aiTTSManager) window.aiTTSManager.checkAvailability();
-    } catch (e) { ttsMsg.textContent = 'Failed to save'; ttsMsg.style.color = 'var(--red)'; }
+    } catch (e) { ttsMsg.textContent = 'Error al guardar'; ttsMsg.style.color = 'var(--red)'; }
   }
 
   async function saveAndClearCache() {
@@ -906,7 +906,7 @@ async function initTtsSettings() {
   if (previewBtn) {
     var previewAudio = null;
     var previewPlaying = false;
-    function resetPreview() { previewPlaying = false; previewBtn.textContent = 'Preview'; previewBtn.style.borderColor = ''; }
+    function resetPreview() { previewPlaying = false; previewBtn.textContent = 'Vista previa'; previewBtn.style.borderColor = ''; }
 
     previewBtn.addEventListener('click', async function() {
       if (previewPlaying) {
@@ -916,11 +916,11 @@ async function initTtsSettings() {
       }
       var prov = provSel.value;
       if (prov === 'disabled') {
-        ttsMsg.textContent = 'Select a provider first'; ttsMsg.style.color = 'var(--red, #e55)';
+        ttsMsg.textContent = 'Selecciona un proveedor primero'; ttsMsg.style.color = 'var(--red, #e55)';
         setTimeout(function() { ttsMsg.textContent = ''; }, 2000); return;
       }
       var testText = 'Hello, this is a test of text to speech.';
-      previewPlaying = true; previewBtn.textContent = 'Loading...';
+      previewPlaying = true; previewBtn.textContent = 'Cargando...';
       try {
         if (prov === 'browser') {
           if (!('speechSynthesis' in window)) throw new Error('Browser TTS not supported');
@@ -934,7 +934,7 @@ async function initTtsSettings() {
             if (match) utt.voice = match;
           }
           utt.rate = parseFloat(speedSelect.value) || 1;
-          previewBtn.textContent = 'Stop'; previewBtn.style.borderColor = 'var(--red, #e55)';
+          previewBtn.textContent = 'Detener'; previewBtn.style.borderColor = 'var(--red, #e55)';
           await new Promise(function(resolve, reject) {
             utt.onend = resolve;
             utt.onerror = function(e) { reject(new Error('Browser TTS: ' + e.error)); };
@@ -950,7 +950,7 @@ async function initTtsSettings() {
           var blob = await res.blob();
           var url = URL.createObjectURL(blob);
           previewAudio = new Audio(url);
-          previewBtn.textContent = 'Stop'; previewBtn.style.borderColor = 'var(--red, #e55)';
+          previewBtn.textContent = 'Detener'; previewBtn.style.borderColor = 'var(--red, #e55)';
           await new Promise(function(resolve, reject) {
             previewAudio.onended = function() { URL.revokeObjectURL(url); previewAudio = null; resolve(); };
             previewAudio.onerror = function() { URL.revokeObjectURL(url); previewAudio = null; reject(new Error('Playback failed')); };
@@ -958,7 +958,7 @@ async function initTtsSettings() {
           });
         }
       } catch (e) {
-        ttsMsg.textContent = 'Preview failed: ' + e.message; ttsMsg.style.color = 'var(--red, #e55)';
+        ttsMsg.textContent = 'Error en la vista previa: ' + e.message; ttsMsg.style.color = 'var(--red, #e55)';
         setTimeout(function() { ttsMsg.textContent = ''; }, 3000);
       } finally {
         resetPreview();
@@ -1039,11 +1039,11 @@ async function initSttSettings() {
       await fetch('/api/auth/settings', { method: 'POST', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ stt_enabled: enabled, stt_provider: provSel.value, stt_model: getModel() || 'base', stt_language: langInput.value.trim() }) });
-      sttMsg.textContent = 'Saved'; sttMsg.style.color = 'var(--fg)'; setTimeout(() => { sttMsg.textContent = ''; }, 2000);
+      sttMsg.textContent = 'Guardado'; sttMsg.style.color = 'var(--fg)'; setTimeout(() => { sttMsg.textContent = ''; }, 2000);
       // Notify voiceRecorder of effective provider and update send button icon
       if (window.voiceRecorderModule) window.voiceRecorderModule._sttProvider = effectiveProvider();
       if (window._updateSendBtnIcon) window._updateSendBtnIcon();
-    } catch (e) { sttMsg.textContent = 'Failed to save'; sttMsg.style.color = 'var(--red)'; }
+    } catch (e) { sttMsg.textContent = 'Error al guardar'; sttMsg.style.color = 'var(--red)'; }
   }
 
   provSel.addEventListener('change', function() { updateVisibility(); saveSTT(); });
@@ -1058,13 +1058,13 @@ async function initSttSettings() {
    ═══════════════════════════════════════════ */
 
 var _searchProviderHints = {
-  searxng: 'Self-hosted SearXNG instance. Leave URL empty to use the SEARXNG_INSTANCE env var.',
-  duckduckgo: 'Free search — no API key required. Works out of the box.',
-  brave: 'Get your API key from brave.com/search/api',
-  google_pse: 'Requires a Google API key and a Programmable Search Engine ID (CX). Create one at programmablesearchengine.google.com',
-  tavily: 'AI-optimized search. 1,000 free credits/month at tavily.com',
-  serper: 'Google results via API. 2,500 free queries at serper.dev',
-  disabled: 'Web search and deep research tools will be unavailable.',
+  searxng: 'Instancia SearXNG propia. Deja la URL vacía para usar la variable de entorno SEARXNG_INSTANCE.',
+  duckduckgo: 'Búsqueda gratuita — no requiere clave de API. Funciona sin configuración.',
+  brave: 'Obtén tu clave de API en brave.com/search/api',
+  google_pse: 'Requiere una clave de API de Google y un ID de Programmable Search Engine (CX). Créalo en programmablesearchengine.google.com',
+  tavily: 'Búsqueda optimizada para IA. 1.000 créditos gratuitos/mes en tavily.com',
+  serper: 'Resultados de Google vía API. 2.500 consultas gratuitas en serper.dev',
+  disabled: 'La búsqueda web y las herramientas de investigación profunda no estarán disponibles.',
 };
 var _searchNeedsKey = { brave: 1, google_pse: 1, tavily: 1, serper: 1 };
 var _searchLabels = {
@@ -1155,12 +1155,12 @@ async function initSearchSettings() {
       var kf = keyFieldFor(active);
       var hasKey = kf ? ((s[kf] || '').trim() || (s.search_api_key || '').trim()) : false;
       if (_searchNeedsKey[active]) {
-        extra = hasKey ? ' (key set)' : ' (no key)';
+        extra = hasKey ? ' (clave configurada)' : ' (sin clave)';
       } else if (active === 'searxng' && (s.search_url || '').trim()) {
         extra = ' (' + s.search_url + ')';
       }
       var count = s.search_result_count || 5;
-      msg.textContent = 'Active: ' + label + extra + ' \u00b7 ' + count + ' results';
+      msg.textContent = 'Activo: ' + label + extra + ' \u00b7 ' + count + ' resultados';
       msg.style.color = active === 'disabled' ? 'var(--red)' : (_searchNeedsKey[active] && !hasKey) ? 'var(--red)' : 'var(--fg)';
     } catch (e) { /* ignore */ }
   }
@@ -1195,10 +1195,10 @@ async function initSearchSettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(refreshStatus, 2000);
       if (searchModule && searchModule.refresh) searchModule.refresh();
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   provSel.addEventListener('change', function() { updateVisibility(); saveSearch(); _syncSearchPicker(); });
@@ -1274,15 +1274,15 @@ async function initSearchSettings() {
       var label = _searchLabels[p] || p;
       var logo = _SEARCH_PROVIDER_LOGOS[p] || '';
       return '<span class="search-fb-chip" draggable="true" data-idx="' + i + '" data-value="' + esc(p) + '">' +
-        '<span class="search-fb-grip" title="Drag to reorder">⋮⋮</span>' +
+        '<span class="search-fb-grip" title="Arrastra para reordenar">⋮⋮</span>' +
         '<span class="search-fb-logo">' + logo + '</span>' +
         '<span>' + esc(label) + '</span>' +
-        '<button type="button" class="search-fb-remove" data-value="' + esc(p) + '" title="Remove">&times;</button>' +
+        '<button type="button" class="search-fb-remove" data-value="' + esc(p) + '" title="Eliminar">&times;</button>' +
       '</span>';
     }).join('');
     var addOptions = _availableFallbackOptions();
     var addSelect = addOptions.length
-      ? '<select class="search-fb-add" id="search-fb-add"><option value="">+ Add</option>' +
+      ? '<select class="search-fb-add" id="search-fb-add"><option value="">+ Añadir</option>' +
           addOptions.map(function(o) { return '<option value="' + esc(o.value) + '">' + esc(o.label) + '</option>'; }).join('') +
         '</select>'
       : '';
@@ -1333,9 +1333,9 @@ async function initSearchSettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ search_fallback_chain: chain }),
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(refreshStatus, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
     _renderFallbackChain();
   }
   _renderFallbackChain();
@@ -1348,7 +1348,7 @@ async function initSearchSettings() {
     testBtn.addEventListener('click', async function() {
       var prov = provSel.value;
       if (!prov || prov === 'disabled') {
-        msg.textContent = 'Pick a provider first';
+        msg.textContent = 'Elige un proveedor primero';
         msg.style.color = 'var(--red)';
         return;
       }
@@ -1356,7 +1356,7 @@ async function initSearchSettings() {
       await saveSearch();
       testBtn.disabled = true;
       var orig = testBtn.textContent;
-      testBtn.textContent = 'Testing...';
+      testBtn.textContent = 'Probando...';
       msg.textContent = '';
       var t0 = performance.now();
       try {
@@ -1445,22 +1445,22 @@ async function initResearchSettings() {
       parts.push('Max tokens: ' + tokensInput.value);
     }
     if (extractTimeoutInput.value) {
-      parts.push('Extract: ' + extractTimeoutInput.value + 's');
+      parts.push('Extracción: ' + extractTimeoutInput.value + 's');
     }
     if (extractConcurrencyInput.value) {
-      parts.push('Parallel: ' + extractConcurrencyInput.value);
+      parts.push('Paralelo: ' + extractConcurrencyInput.value);
     }
     if (runTimeoutInput.value !== '') {
       var rtv = parseInt(runTimeoutInput.value, 10);
       if (!isNaN(rtv)) {
-        parts.push(rtv === 0 ? 'Max time: no limit' : 'Max time: ' + rtv + 's');
+        parts.push(rtv === 0 ? 'Tiempo máx.: sin límite' : 'Tiempo máx.: ' + rtv + 's');
       }
     }
     if (parts.length) {
       msg.textContent = parts.join(' · ');
       msg.style.color = 'var(--fg)';
     } else {
-      msg.textContent = 'Using chat defaults';
+      msg.textContent = 'Usando los valores del chat por defecto';
       msg.style.color = 'var(--fg)';
     }
   }
@@ -1489,9 +1489,9 @@ async function initResearchSettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(showStatus, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   epSel.addEventListener('change', async function() {
@@ -1547,9 +1547,9 @@ async function initResearchSearchSettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ research_search_provider: searchSel.value })
       });
-      msg.textContent = 'Saved'; msg.style.color = 'var(--fg)';
+      msg.textContent = 'Guardado'; msg.style.color = 'var(--fg)';
       setTimeout(function() { msg.textContent = ''; }, 2000);
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   searchSel.addEventListener('change', saveResearchSearch);
@@ -1589,18 +1589,18 @@ async function initAgentSettings() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      msg.textContent = (tools > 0 ? 'Limit: ' + tools + ' tool calls' : 'Unlimited tool calls') +
-        (rounds != null ? ' · ' + rounds + ' steps/message' : '');
+      msg.textContent = (tools > 0 ? 'Límite: ' + tools + ' llamadas a herramientas' : 'Llamadas a herramientas ilimitadas') +
+        (rounds != null ? ' · ' + rounds + ' pasos/mensaje' : '');
       msg.style.color = 'var(--fg)';
-    } catch (e) { msg.textContent = 'Failed to save'; msg.style.color = 'var(--red)'; }
+    } catch (e) { msg.textContent = 'Error al guardar'; msg.style.color = 'var(--red)'; }
   }
 
   toolsInput.addEventListener('change', save);
   if (roundsInput) roundsInput.addEventListener('change', save);
   var cur = parseInt(toolsInput.value, 10) || 0;
   var curR = roundsInput ? (parseInt(roundsInput.value, 10) || 20) : null;
-  msg.textContent = (cur > 0 ? 'Limit: ' + cur + ' tool calls' : 'Unlimited tool calls') +
-    (curR != null ? ' · ' + curR + ' steps/message' : '');
+  msg.textContent = (cur > 0 ? 'Límite: ' + cur + ' llamadas a herramientas' : 'Llamadas a herramientas ilimitadas') +
+    (curR != null ? ' · ' + curR + ' pasos/mensaje' : '');
 }
 
 /* ═══════════════════════════════════════════
@@ -1617,7 +1617,7 @@ function initAppearance() {
       if (window.UI_VIS_ADMIN_ONLY && window.UI_VIS_ADMIN_ONLY.has(key) && !chk.checked && !window._isAdmin) {
         chk.checked = true;
         if (uiModule && uiModule.showToast) {
-          uiModule.showToast('Only admins can hide Settings.');
+          uiModule.showToast('Solo los administradores pueden ocultar Configuración.');
         }
         return;
       }
@@ -1630,17 +1630,17 @@ function initAppearance() {
         try {
           ok = await (uiModule && uiModule.styledConfirm
             ? uiModule.styledConfirm(
-                'Hide the Settings cog?\n\nYou can re-open this panel any time by typing /settings in the chat input.',
-                { confirmText: 'Hide', cancelText: 'Cancel' }
+                '¿Ocultar el icono de Configuración?\n\nPuedes volver a abrir este panel en cualquier momento escribiendo /settings en el chat.',
+                { confirmText: 'Ocultar', cancelText: 'Cancelar' }
               )
-            : Promise.resolve(window.confirm('Hide the Settings cog?\n\nYou can re-open this panel any time by typing /settings in the chat input.')));
+            : Promise.resolve(window.confirm('¿Ocultar el icono de Configuración?\n\nPuedes volver a abrir este panel en cualquier momento escribiendo /settings en el chat.')));
         } catch (_) { ok = false; }
         if (!ok) {
           chk.checked = true;
           return;
         }
         if (uiModule && uiModule.showToast) {
-          uiModule.showToast('Settings cog hidden — type /settings to bring it back.', 5000);
+          uiModule.showToast('Icono de Configuración ocultado — escribe /settings para recuperarlo.', 5000);
         }
       }
 
@@ -1740,33 +1740,33 @@ const SHORTCUT_ICONS = {
 };
 
 const SHORTCUT_LABELS = {
-  search:         'Search conversations',
-  toggle_sidebar: 'Toggle sidebar',
-  new_session:    'New session',
-  fav_session:    'Favorite session',
-  delete_session: 'Delete session',
-  cancel:         'Cancel / close',
-  tts:            'Play/stop TTS',
-  incognito:      'Toggle incognito',
-  settings:       'Toggle Window',
-  focus_input:    'Focus chat input',
-  open_calendar:  'Open Calendar',
-  open_compare:   'Open Compare',
-  open_cookbook:  'Open Cookbook',
-  open_research:  'Open Deep Research',
-  open_gallery:   'Open Gallery',
-  open_library:   'Open Library',
-  open_memory:    'Open Memory',
-  open_notes:     'Open Notes',
-  open_tasks:     'Open Tasks',
-  open_theme:     'Open Theme',
+  search:         'Buscar conversaciones',
+  toggle_sidebar: 'Alternar barra lateral',
+  new_session:    'Nueva sesión',
+  fav_session:    'Sesión favorita',
+  delete_session: 'Eliminar sesión',
+  cancel:         'Cancelar / cerrar',
+  tts:            'Reproducir/detener TTS',
+  incognito:      'Alternar incógnito',
+  settings:       'Alternar ventana',
+  focus_input:    'Enfocar el chat',
+  open_calendar:  'Abrir Calendario',
+  open_compare:   'Abrir Comparar',
+  open_cookbook:  'Abrir Libro de recetas',
+  open_research:  'Abrir Investigación profunda',
+  open_gallery:   'Abrir Galería',
+  open_library:   'Abrir Biblioteca',
+  open_memory:    'Abrir Memoria',
+  open_notes:     'Abrir Notas',
+  open_tasks:     'Abrir Tareas',
+  open_theme:     'Abrir Tema',
 };
 
 const SHORTCUT_CATEGORIES = [
-  { name: 'Navigation', keys: ['search', 'toggle_sidebar', 'focus_input', 'settings'] },
-  { name: 'Sessions', keys: ['new_session', 'fav_session', 'delete_session'] },
-  { name: 'Tools', keys: ['incognito', 'tts', 'cancel'] },
-  { name: 'Open Tools', keys: ['open_calendar', 'open_compare', 'open_cookbook', 'open_research', 'open_gallery', 'open_library', 'open_memory', 'open_notes', 'open_tasks', 'open_theme'] },
+  { name: 'Navegación', keys: ['search', 'toggle_sidebar', 'focus_input', 'settings'] },
+  { name: 'Sesiones', keys: ['new_session', 'fav_session', 'delete_session'] },
+  { name: 'Herramientas', keys: ['incognito', 'tts', 'cancel'] },
+  { name: 'Abrir herramientas', keys: ['open_calendar', 'open_compare', 'open_cookbook', 'open_research', 'open_gallery', 'open_library', 'open_memory', 'open_notes', 'open_tasks', 'open_theme'] },
 ];
 
 function _formatKeyCaps(combo) {
@@ -1851,11 +1851,11 @@ async function initShortcuts() {
         row.dataset.action = action;
         const keyContent = combo ? _formatKeyCaps(combo) : '<span class="shortcut-unset">Set</span>';
         row.innerHTML = `
-          <span class="shortcut-label"><span class="shortcut-icon">${icon}</span>${esc(label)}${hasConflict ? '<span class="shortcut-warn" title="Duplicate shortcut">!</span>' : ''}</span>
+          <span class="shortcut-label"><span class="shortcut-icon">${icon}</span>${esc(label)}${hasConflict ? '<span class="shortcut-warn" title="Atajo duplicado">!</span>' : ''}</span>
           <div class="shortcut-controls">
             <span class="shortcut-hint" hidden></span>
-            <button class="shortcut-key${combo ? '' : ' shortcut-key-unset'}" data-action="${action}" title="Click to rebind">${keyContent}</button>
-            <button class="shortcut-action-btn ${isCustom ? 'is-reset' : ''}" data-action="${action}" title="${isCustom ? 'Reset to default' : 'Confirm'}" style="${isCustom ? '' : 'visibility:hidden'}">
+            <button class="shortcut-key${combo ? '' : ' shortcut-key-unset'}" data-action="${action}" title="Haz clic para reasignar">${keyContent}</button>
+            <button class="shortcut-action-btn ${isCustom ? 'is-reset' : ''}" data-action="${action}" title="${isCustom ? 'Restablecer al valor predeterminado' : 'Confirmar'}" style="${isCustom ? '' : 'visibility:hidden'}">
               ${isCustom ? '\u21A9' : '\u2713'}
             </button>
           </div>
@@ -1894,16 +1894,16 @@ async function initShortcuts() {
     });
 
     btn.classList.add('listening');
-    btn.textContent = 'Press keys...';
+    btn.textContent = 'Pulsa teclas...';
     // Show confirm button
     actionBtn.textContent = '\u2713';
     actionBtn.classList.remove('is-reset');
     actionBtn.style.visibility = 'visible';
-    actionBtn.title = 'Confirm';
+    actionBtn.title = 'Confirmar';
     // Hint: tell the user how to commit / cancel the rebind.
     if (hintEl) {
       hintEl.hidden = false;
-      hintEl.textContent = 'press a key';
+      hintEl.textContent = 'pulsa una tecla';
     }
 
     let pendingCombo = null;
@@ -1930,7 +1930,7 @@ async function initShortcuts() {
         if (isCustom) {
           actionBtn.textContent = '\u21A9';
           actionBtn.classList.add('is-reset');
-          actionBtn.title = 'Reset to default';
+          actionBtn.title = 'Restablecer al valor predeterminado';
         } else {
           actionBtn.style.visibility = 'hidden';
         }
@@ -1952,7 +1952,7 @@ async function initShortcuts() {
       pendingCombo = combo;
       btn.innerHTML = _formatKeyCaps(combo);
       // Now that a combo is captured, prompt to commit with Enter.
-      if (hintEl) hintEl.textContent = '\u21B5 Enter to save';
+      if (hintEl) hintEl.textContent = '\u21B5 Enter para guardar';
     }
 
     function cleanup() {
@@ -1974,7 +1974,7 @@ async function initShortcuts() {
       });
       // Update global keybinds so they take effect immediately
       window._darkmindKeybinds = keybinds;
-      if (uiModule && uiModule.showToast) uiModule.showToast('Shortcut saved');
+      if (uiModule && uiModule.showToast) uiModule.showToast('Atajo guardado');
     } catch (e) {
       console.error('Failed to save keybinds:', e);
     }
@@ -1985,7 +1985,7 @@ async function initShortcuts() {
       keybinds = { ...SHORTCUT_DEFAULTS };
       render();
       await saveKeybinds();
-      if (uiModule && uiModule.showToast) uiModule.showToast('Shortcuts reset to defaults');
+      if (uiModule && uiModule.showToast) uiModule.showToast('Atajos restablecidos a los valores predeterminados');
     });
   }
 
@@ -2020,9 +2020,9 @@ function initAccount() {
       const nw = el('settings-pw-new').value;
       const conf = el('settings-pw-confirm').value;
       msgEl.style.color = '';
-      if (!cur || !nw) { msgEl.textContent = 'Fill in all fields'; msgEl.style.color = 'var(--red)'; return; }
-      if (nw.length < 8) { msgEl.textContent = 'Min 8 characters'; msgEl.style.color = 'var(--red)'; return; }
-      if (nw !== conf) { msgEl.textContent = 'Passwords don\'t match'; msgEl.style.color = 'var(--red)'; return; }
+      if (!cur || !nw) { msgEl.textContent = 'Rellena todos los campos'; msgEl.style.color = 'var(--red)'; return; }
+      if (nw.length < 8) { msgEl.textContent = 'Mínimo 8 caracteres'; msgEl.style.color = 'var(--red)'; return; }
+      if (nw !== conf) { msgEl.textContent = 'Las contraseñas no coinciden'; msgEl.style.color = 'var(--red)'; return; }
       saveBtn.disabled = true;
       try {
         const res = await fetch('/api/auth/change-password', {
@@ -2032,7 +2032,7 @@ function initAccount() {
         });
         if (!res.ok) { const d = await res.json(); throw new Error(d.detail || 'Failed'); }
         msgEl.style.color = 'var(--green)';
-        msgEl.textContent = 'Password updated';
+        msgEl.textContent = 'Contraseña actualizada';
         el('settings-pw-current').value = '';
         el('settings-pw-new').value = '';
         el('settings-pw-confirm').value = '';
@@ -2056,18 +2056,18 @@ function initAccount() {
           // 2FA is ON — show disable option
           tfaContent.innerHTML = `
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-              <span style="color:var(--color-save-green, #4caf50);font-size:12px;font-weight:600;">&#x2713; Enabled</span>
-              <span style="font-size:11px;opacity:0.5;">Authenticator app required on login</span>
+              <span style="color:var(--color-save-green, #4caf50);font-size:12px;font-weight:600;">&#x2713; Activada</span>
+              <span style="font-size:11px;opacity:0.5;">Se requiere app de autenticación al iniciar sesión</span>
             </div>
-            <input id="tfa-disable-pw" type="password" placeholder="Enter password to disable" autocomplete="current-password" style="padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--fg);font-family:inherit;font-size:12px;width:100%;box-sizing:border-box;margin-bottom:6px;">
+            <input id="tfa-disable-pw" type="password" placeholder="Introduce tu contraseña para desactivar" autocomplete="current-password" style="padding:6px 8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--fg);font-family:inherit;font-size:12px;width:100%;box-sizing:border-box;margin-bottom:6px;">
             <div class="settings-row" style="justify-content:flex-end;">
               <span id="tfa-msg" style="font-size:11px;margin-right:auto;"></span>
-              <button class="admin-btn-add" id="tfa-disable-btn" style="opacity:0.7;">Disable 2FA</button>
+              <button class="admin-btn-add" id="tfa-disable-btn" style="opacity:0.7;">Desactivar 2FA</button>
             </div>`;
           el('tfa-disable-btn').addEventListener('click', async () => {
             const pw = el('tfa-disable-pw').value;
             const msg = el('tfa-msg');
-            if (!pw) { msg.textContent = 'Enter your password'; msg.style.color = 'var(--red)'; return; }
+            if (!pw) { msg.textContent = 'Introduce tu contraseña'; msg.style.color = 'var(--red)'; return; }
             try {
               const r = await fetch('/api/auth/2fa/disable', {
                 method: 'POST', credentials: 'same-origin',
@@ -2081,10 +2081,10 @@ function initAccount() {
         } else {
           // 2FA is OFF — show setup button
           tfaContent.innerHTML = `
-            <div style="font-size:12px;opacity:0.6;margin-bottom:8px;">Add an extra layer of security with an authenticator app (Aegis, Google Authenticator, etc.)</div>
+            <div style="font-size:12px;opacity:0.6;margin-bottom:8px;">Añade una capa adicional de seguridad con una app de autenticación (Aegis, Google Authenticator, etc.)</div>
             <div class="settings-row" style="justify-content:flex-end;">
               <span id="tfa-msg" style="font-size:11px;margin-right:auto;"></span>
-              <button class="admin-btn-add" id="tfa-setup-btn">Set Up 2FA</button>
+              <button class="admin-btn-add" id="tfa-setup-btn">Configurar 2FA</button>
             </div>`;
           el('tfa-setup-btn').addEventListener('click', async () => {
             const msg = el('tfa-msg');
@@ -2099,36 +2099,36 @@ function initAccount() {
                   ${qrCode ? `<img src="${esc(qrCode)}" alt="QR Code" style="border-radius:8px;max-width:200px;">` : ''}
                 </div>
                 <div style="font-size:11px;opacity:0.5;text-align:center;margin-bottom:8px;">
-                  Scan with your authenticator app, or enter manually:
+                  Escanea con tu app de autenticación o introdúcelo manualmente:
                 </div>
                 <div style="font-family:monospace;font-size:12px;text-align:center;padding:6px;background:var(--bg);border:1px solid var(--border);border-radius:4px;margin-bottom:12px;word-break:break-all;user-select:all;cursor:text;">${esc(setup.secret)}</div>
-                <input id="tfa-verify-code" type="text" placeholder="Enter 6-digit code to verify" autocomplete="one-time-code" inputmode="numeric" maxlength="8" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--fg);font-family:inherit;font-size:13px;box-sizing:border-box;text-align:center;letter-spacing:3px;margin-bottom:6px;">
+                <input id="tfa-verify-code" type="text" placeholder="Introduce el código de 6 dígitos para verificar" autocomplete="one-time-code" inputmode="numeric" maxlength="8" style="width:100%;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;color:var(--fg);font-family:inherit;font-size:13px;box-sizing:border-box;text-align:center;letter-spacing:3px;margin-bottom:6px;">
                 <div class="settings-row" style="justify-content:flex-end;">
                   <span id="tfa-msg" style="font-size:11px;margin-right:auto;"></span>
-                  <button class="admin-btn-add" id="tfa-cancel-btn" style="opacity:0.5;">Cancel</button>
-                  <button class="admin-btn-add" id="tfa-verify-btn">Verify & Enable</button>
+                  <button class="admin-btn-add" id="tfa-cancel-btn" style="opacity:0.5;">Cancelar</button>
+                  <button class="admin-btn-add" id="tfa-verify-btn">Verificar y activar</button>
                 </div>`;
               el('tfa-verify-code').focus();
               el('tfa-cancel-btn').addEventListener('click', () => render2FA());
               el('tfa-verify-btn').addEventListener('click', async () => {
                 const code = el('tfa-verify-code').value.trim();
                 const vmsg = el('tfa-msg');
-                if (!code) { vmsg.textContent = 'Enter the code'; vmsg.style.color = 'var(--red)'; return; }
+                if (!code) { vmsg.textContent = 'Introduce el código'; vmsg.style.color = 'var(--red)'; return; }
                 try {
                   const vr = await fetch('/api/auth/2fa/confirm', {
                     method: 'POST', credentials: 'same-origin',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ code })
                   });
-                  if (!vr.ok) { const d = await vr.json(); throw new Error(d.detail || 'Invalid code'); }
+                  if (!vr.ok) { const d = await vr.json(); throw new Error(d.detail || 'Código no válido'); }
                   const result = await vr.json();
                   // Show backup codes
                   const codes = result.backup_codes || [];
                   tfaContent.innerHTML = `
-                    <div style="color:var(--color-save-green, #4caf50);font-size:13px;font-weight:600;margin-bottom:8px;">&#x2713; 2FA Enabled!</div>
-                    <div style="font-size:12px;opacity:0.7;margin-bottom:8px;">Save these backup codes somewhere safe. Each can be used once if you lose your authenticator:</div>
+                    <div style="color:var(--color-save-green, #4caf50);font-size:13px;font-weight:600;margin-bottom:8px;">&#x2713; ¡2FA activada!</div>
+                    <div style="font-size:12px;opacity:0.7;margin-bottom:8px;">Guarda estos códigos de recuperación en un lugar seguro. Cada uno puede usarse una vez si pierdes tu app de autenticación:</div>
                     <div style="font-family:monospace;font-size:12px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:4px;columns:2;column-gap:16px;margin-bottom:8px;">${codes.map(c => '<div style="margin-bottom:2px;">' + c + '</div>').join('')}</div>
-                    <button class="admin-btn-add" id="tfa-done-btn">Done</button>`;
+                    <button class="admin-btn-add" id="tfa-done-btn">Hecho</button>`;
                   el('tfa-done-btn').addEventListener('click', () => render2FA());
                 } catch (e) { vmsg.textContent = e.message; vmsg.style.color = 'var(--red)'; }
               });
@@ -2136,7 +2136,7 @@ function initAccount() {
           });
         }
       } catch (_) {
-        tfaContent.innerHTML = '<div style="font-size:11px;opacity:0.4;">Could not load 2FA status</div>';
+        tfaContent.innerHTML = '<div style="font-size:11px;opacity:0.4;">No se pudo cargar el estado de la 2FA</div>';
       }
     }
     render2FA();
@@ -2230,12 +2230,12 @@ async function initReminderSettings() {
             body: JSON.stringify({ app_public_url: val }),
           });
           if (pubUrlMsg) {
-            pubUrlMsg.textContent = val ? 'Saved' : 'Cleared (deep-links disabled)';
+            pubUrlMsg.textContent = val ? 'Guardado' : 'Borrado (los enlaces directos están desactivados)';
             pubUrlMsg.style.color = 'var(--green,#50fa7b)';
             setTimeout(() => { pubUrlMsg.textContent = ''; }, 2000);
           }
         } catch (_) {
-          if (pubUrlMsg) { pubUrlMsg.textContent = 'Save failed'; pubUrlMsg.style.color = 'var(--red)'; }
+          if (pubUrlMsg) { pubUrlMsg.textContent = 'Error al guardar'; pubUrlMsg.style.color = 'var(--red)'; }
         }
       }, 600);
     });
@@ -2277,7 +2277,7 @@ async function initReminderSettings() {
 
   if (!smtpConfigured && emailOpt) {
     emailOpt.disabled = true;
-    emailOpt.textContent = 'Email (add an account in Integrations)';
+    emailOpt.textContent = 'Email (añade una cuenta en Integraciones)';
   }
 
   // Detect whether ntfy integration exists — try admin endpoint, fall back to
@@ -2303,7 +2303,7 @@ async function initReminderSettings() {
 
   if (!ntfyConfigured && ntfyOpt) {
     ntfyOpt.disabled = true;
-    ntfyOpt.textContent = 'ntfy (add in Integrations first)';
+    ntfyOpt.textContent = 'ntfy (añade primero en Integraciones)';
   }
 
   const emailFromRow = el('set-reminder-email-from-row');
@@ -2325,11 +2325,11 @@ async function initReminderSettings() {
   function applyReminderChannelAvailability() {
     if (emailOpt) {
       emailOpt.disabled = !smtpConfigured;
-      emailOpt.textContent = smtpConfigured ? 'Email' : 'Email (add an account in Integrations)';
+      emailOpt.textContent = smtpConfigured ? 'Email' : 'Email (añade una cuenta en Integraciones)';
     }
     if (ntfyOpt) {
       ntfyOpt.disabled = !ntfyConfigured;
-      ntfyOpt.textContent = ntfyConfigured ? 'ntfy' : 'ntfy (add in Integrations first)';
+      ntfyOpt.textContent = ntfyConfigured ? 'ntfy' : 'ntfy (añade primero en Integraciones)';
     }
   }
 
@@ -2387,9 +2387,9 @@ async function initReminderSettings() {
   // regardless of channel). The hint should make that clear so
   // users don't think they have to choose between channels.
   const CHANNEL_HINTS = {
-    browser: 'Reminders appear as browser notifications inside DarkMind.',
-    email: 'Reminders are emailed AND shown as a browser notification.',
-    ntfy: 'Reminders are pushed via ntfy AND shown as a browser notification.',
+    browser: 'Los recordatorios aparecen como notificaciones del navegador dentro de DarkMind.',
+    email: 'Los recordatorios se envían por correo Y se muestran como notificación del navegador.',
+    ntfy: 'Los recordatorios se envían por ntfy Y se muestran como notificación del navegador.',
   };
 
   applyReminderChannelAvailability();
@@ -2476,7 +2476,7 @@ async function initReminderSettings() {
   if (testBtn) {
     testBtn.addEventListener('click', async () => {
       testBtn.disabled = true;
-      if (testMsg) { testMsg.textContent = 'Sending…'; testMsg.style.color = 'var(--fg)'; }
+      if (testMsg) { testMsg.textContent = 'Enviando…'; testMsg.style.color = 'var(--fg)'; }
       // Whirlpool loader right next to the "Sending…" text while it sends.
       let _testSpin = null;
       try {
@@ -2493,8 +2493,8 @@ async function initReminderSettings() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             note_id: 'test-' + Date.now(),
-            title: 'Test Reminder',
-            body: 'This is a test reminder to verify your settings are working.',
+            title: 'Recordatorio de prueba',
+            body: 'Este es un recordatorio de prueba para verificar que tu configuración funciona correctamente.',
           }),
         });
         const data = await res.json();
@@ -2505,23 +2505,23 @@ async function initReminderSettings() {
         if (channelSel.value === 'ntfy' && !data.ntfy_sent) {
           throw new Error(data.ntfy_error || 'ntfy reminder was not sent');
         }
-        let status = 'Delivered via ' + channelSel.value;
+        let status = 'Entregado por ' + channelSel.value;
         if (data.synthesis) status += ' (AI: "' + data.synthesis.slice(0, 60) + '...")';
-        if (data.email_sent) status += ' — email sent';
-        if (data.ntfy_sent) status += ' — ntfy sent';
+        if (data.email_sent) status += ' — correo enviado';
+        if (data.ntfy_sent) status += ' — ntfy enviado';
         if (testMsg) { testMsg.textContent = status; testMsg.style.color = 'var(--green, #50fa7b)'; }
         // Also fire a browser notification so user can see it
         if ('Notification' in window && Notification.permission === 'granted') {
           try {
-            new Notification('Test Reminder', {
-              body: data.synthesis || 'This is a test reminder.',
+            new Notification('Recordatorio de prueba', {
+              body: data.synthesis || 'Este es un recordatorio de prueba.',
               tag: 'reminder-test',
               icon: '/static/favicon.ico',
             });
           } catch {}
         }
       } catch (e) {
-        if (testMsg) { testMsg.textContent = 'Failed: ' + e.message; testMsg.style.color = 'var(--red)'; }
+        if (testMsg) { testMsg.textContent = 'Error: ' + e.message; testMsg.style.color = 'var(--red)'; }
       } finally {
         _stopTestSpin();
         testBtn.disabled = false;
@@ -2570,7 +2570,7 @@ async function initEmailAccountsSettings() {
     const imap = a.imap_host ? `${a.imap_host}:${a.imap_port}` : '<no IMAP>';
     const badge = a.is_default
       ? '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;padding:1px 6px;border-radius:3px;background:color-mix(in srgb, var(--accent,#50fa7b) 15%, transparent);color:var(--accent,#50fa7b)">Default</span>'
-      : (a.enabled ? '' : '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;padding:1px 6px;border-radius:3px;opacity:0.4">Disabled</span>');
+      : (a.enabled ? '' : '<span style="font-size:9px;text-transform:uppercase;letter-spacing:0.5px;padding:1px 6px;border-radius:3px;opacity:0.4">Desactivado</span>');
     return `<div class="email-account-row" data-acc-id="${esc(a.id)}" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:6px">
       <div style="flex:1;min-width:0">
         <div style="font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px">${esc(a.name)} ${badge}</div>
@@ -2721,7 +2721,7 @@ async function initEmailAccountsSettings() {
       // Name is optional — fall back to the From address so the list view
       // still has a label to render. Only refuse if both are blank.
       if (!body.name) body.name = body.from_address;
-      if (!body.name) { el('eaf-msg').textContent = 'Need at least a Name or Email'; el('eaf-msg').style.color = 'var(--red)'; return; }
+      if (!body.name) { el('eaf-msg').textContent = 'Introduce al menos un nombre o un correo electrónico'; el('eaf-msg').style.color = 'var(--red)'; return; }
 
       try {
         const url = isEdit ? `/api/email/accounts/${a.id}` : '/api/email/accounts';
@@ -2733,11 +2733,11 @@ async function initEmailAccountsSettings() {
         });
         const d = await r.json();
         if (d.ok || d.id) {
-          el('eaf-msg').textContent = 'Saved';
+          el('eaf-msg').textContent = 'Guardado';
           el('eaf-msg').style.color = 'var(--green,#50fa7b)';
           setTimeout(() => { formEl.style.display = 'none'; renderList(); }, 400);
         } else {
-          el('eaf-msg').textContent = d.error || 'Save failed';
+          el('eaf-msg').textContent = d.error || 'Error al guardar';
           el('eaf-msg').style.color = 'var(--red)';
         }
       } catch (e) {
@@ -2789,7 +2789,7 @@ async function initEmailSettings() {
   // Save email config
   el('set-email-save')?.addEventListener('click', async () => {
     const msg = el('set-email-msg');
-    if (msg) msg.textContent = 'Saving...';
+    if (msg) msg.textContent = 'Guardando...';
     const data = {
       imap_host: el('set-email-imap-host').value,
       imap_port: parseInt(el('set-email-imap-port').value) || 0,
@@ -2810,17 +2810,17 @@ async function initEmailSettings() {
         body: JSON.stringify(data),
       });
       const result = await res.json();
-      if (msg) msg.textContent = result.success ? '✓ Saved' : (result.error || 'Failed');
+      if (msg) msg.textContent = result.success ? '✓ Guardado' : (result.error || 'Error al guardar');
       setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
     } catch (e) {
-      if (msg) msg.textContent = 'Failed';
+      if (msg) msg.textContent = 'Error al guardar';
     }
   });
 
   // Save CardDAV config
   el('set-carddav-save')?.addEventListener('click', async () => {
     const msg = el('set-carddav-msg');
-    if (msg) msg.textContent = 'Saving...';
+    if (msg) msg.textContent = 'Guardando...';
     const data = {
       carddav_url: el('set-carddav-url').value,
       carddav_username: el('set-carddav-user').value,
@@ -2834,10 +2834,10 @@ async function initEmailSettings() {
         body: JSON.stringify(data),
       });
       const result = await res.json();
-      if (msg) msg.textContent = result.success ? '✓ Saved' : (result.error || 'Failed');
+      if (msg) msg.textContent = result.success ? '✓ Guardado' : (result.error || 'Error al guardar');
       setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
     } catch (e) {
-      if (msg) msg.textContent = 'Failed';
+      if (msg) msg.textContent = 'Error al guardar';
     }
   });
 
@@ -2860,12 +2860,12 @@ async function initEmailSettings() {
         wrap.style.cssText = 'display:inline-flex;align-items:center;';
         wrap.appendChild(wp.element);
         const txt = document.createElement('span');
-        txt.textContent = 'Analyzing your sent emails…';
+        txt.textContent = 'Analizando tus correos enviados…';
         txt.style.cssText = 'font-size:12px;opacity:0.7;';
         wrap.appendChild(txt);
         msg.appendChild(wrap);
       } catch (_) {
-        msg.textContent = 'Analyzing your sent emails…';
+        msg.textContent = 'Analizando tus correos enviados…';
       }
     }
     try {
@@ -2877,12 +2877,12 @@ async function initEmailSettings() {
       const data = await res.json();
       if (data.success && data.style) {
         if (el('set-email-style')) el('set-email-style').value = data.style;
-        if (msg) msg.textContent = '✓ Style extracted';
+        if (msg) msg.textContent = '✓ Estilo extraído';
       } else {
-        if (msg) msg.textContent = data.error || 'Failed';
+        if (msg) msg.textContent = data.error || 'Error al extraer';
       }
     } catch (e) {
-      if (msg) msg.textContent = 'Failed to extract';
+      if (msg) msg.textContent = 'Error al extraer';
     } finally {
       if (wp && wp.destroy) { try { wp.destroy(); } catch (_) {} }
       btn.disabled = false;
@@ -2893,7 +2893,7 @@ async function initEmailSettings() {
   // Save writing style manually
   el('set-email-style-save')?.addEventListener('click', async () => {
     const msg = el('set-email-style-msg');
-    if (msg) msg.textContent = 'Saving...';
+    if (msg) msg.textContent = 'Guardando...';
     try {
       const res = await fetch('/api/email/style', {
         method: 'PUT',
@@ -2901,10 +2901,10 @@ async function initEmailSettings() {
         body: JSON.stringify({ style: el('set-email-style').value }),
       });
       const result = await res.json();
-      if (msg) msg.textContent = result.success ? '✓ Saved' : 'Failed';
+      if (msg) msg.textContent = result.success ? '✓ Guardado' : 'Error al guardar';
       setTimeout(() => { if (msg) msg.textContent = ''; }, 3000);
     } catch (e) {
-      if (msg) msg.textContent = 'Failed';
+      if (msg) msg.textContent = 'Error al guardar';
     }
   });
 }
@@ -3000,7 +3000,7 @@ async function initIntegrations() {
   // Start editing
   async function startEdit(id) {
     editingId = id;
-    formTitle.textContent = 'Edit Integration';
+    formTitle.textContent = 'Editar integración';
     // Fetch full data (with unmasked key from a dedicated edit fetch — we'll just load what we have)
     try {
       const res = await fetch('/api/auth/integrations', { credentials: 'same-origin' });
@@ -3013,7 +3013,7 @@ async function initIntegrations() {
       authTypeSel.value = item.auth_type || 'none';
       authHeaderIn.value = item.auth_header || '';
       keyIn.value = ''; // masked — user re-enters if changing
-      keyIn.placeholder = item.api_key ? 'Leave blank to keep current' : 'API key or token';
+      keyIn.placeholder = item.api_key ? 'Dejar en blanco para mantener la actual' : 'Clave API o token';
       descIn.value = item.description || '';
       syncAuthRow();
       formCard.style.display = '';
@@ -3023,14 +3023,14 @@ async function initIntegrations() {
   // Show add form
   addBtn.addEventListener('click', () => {
     editingId = null;
-    formTitle.textContent = 'Add Integration';
+    formTitle.textContent = 'Añadir integración';
     presetSel.value = '';
     nameIn.value = '';
     urlIn.value = '';
     authTypeSel.value = 'header';
     authHeaderIn.value = '';
     keyIn.value = '';
-    keyIn.placeholder = 'API key or token';
+    keyIn.placeholder = 'Clave API o token';
     descIn.value = '';
     statusEl.textContent = '';
     syncAuthRow();
@@ -3053,15 +3053,15 @@ async function initIntegrations() {
     };
     if (presetSel.value) payload.preset = presetSel.value;
     if (keyIn.value.trim()) payload.api_key = keyIn.value.trim();
-    if (!payload.name) { statusEl.textContent = 'Name required'; statusEl.style.color = 'var(--red)'; return; }
-    if (!payload.base_url) { statusEl.textContent = 'URL required'; statusEl.style.color = 'var(--red)'; return; }
+    if (!payload.name) { statusEl.textContent = 'Se requiere un nombre'; statusEl.style.color = 'var(--red)'; return; }
+    if (!payload.base_url) { statusEl.textContent = 'Se requiere una URL'; statusEl.style.color = 'var(--red)'; return; }
 
     try {
       const url = editingId ? `/api/auth/integrations/${editingId}` : '/api/auth/integrations';
       const method = editingId ? 'PUT' : 'POST';
       const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), credentials: 'same-origin' });
       if (res.ok) {
-        statusEl.textContent = 'Saved';
+        statusEl.textContent = 'Guardado';
         statusEl.style.color = 'var(--green, #98c379)';
         formCard.style.display = 'none';
         await renderList();
@@ -3072,15 +3072,15 @@ async function initIntegrations() {
         statusEl.style.color = 'var(--red)';
       }
     } catch (e) {
-      statusEl.textContent = 'Error saving';
+      statusEl.textContent = 'Error al guardar';
       statusEl.style.color = 'var(--red)';
     }
   });
 
   // Test
   testBtn.addEventListener('click', async () => {
-    if (!editingId) { statusEl.textContent = 'Save first, then test'; statusEl.style.color = 'var(--fg)'; return; }
-    statusEl.textContent = 'Testing...';
+    if (!editingId) { statusEl.textContent = 'Guarda primero y luego prueba'; statusEl.style.color = 'var(--fg)'; return; }
+    statusEl.textContent = 'Probando...';
     statusEl.style.color = 'var(--fg)';
     try {
       const res = await fetch(`/api/auth/integrations/${editingId}/test`, { method: 'POST', credentials: 'same-origin' });
@@ -3088,7 +3088,7 @@ async function initIntegrations() {
       statusEl.textContent = data.message || (data.ok ? 'OK' : 'Failed');
       statusEl.style.color = data.ok ? 'var(--green, #98c379)' : 'var(--red)';
     } catch (e) {
-      statusEl.textContent = 'Connection failed';
+      statusEl.textContent = 'Error de conexión';
       statusEl.style.color = 'var(--red)';
     }
   });
@@ -3247,7 +3247,7 @@ async function initUnifiedIntegrations() {
     // MCP servers
     const mcpList = Array.isArray(mcpRes) ? mcpRes : (mcpRes.servers || []);
     for (const srv of mcpList) {
-      const statusText = srv.needs_oauth ? 'needs auth' : srv.status === 'connected' ? `${srv.enabled_tool_count}/${srv.tool_count} tools` : srv.status === 'error' ? 'error' : 'disconnected';
+      const statusText = srv.needs_oauth ? 'requiere autenticación' : srv.status === 'connected' ? `${srv.enabled_tool_count}/${srv.tool_count} herramientas` : srv.status === 'error' ? 'error' : 'desconectado';
       items.push({ type: 'mcp', id: srv.id || srv.name, name: srv.name || 'MCP Server', detail: statusText, enabled: srv.is_enabled !== false, data: srv });
     }
     for (const tok of (Array.isArray(tokenRes) ? tokenRes : [])) {
@@ -3488,7 +3488,7 @@ async function initUnifiedIntegrations() {
       if (ntfyHint) {
         ntfyHint.style.display = isNtfy ? 'block' : 'none';
         if (isNtfy) {
-          ntfyHint.innerHTML = 'Enter the ntfy server URL DarkMind can reach. Examples: <code>http://127.0.0.1:8091</code>, <code>http://100.x.y.z:8091</code>, or <code>https://ntfy.example.com</code>.';
+          ntfyHint.innerHTML = 'Introduce la URL del servidor ntfy al que DarkMind puede acceder. Ejemplos: <code>http://127.0.0.1:8091</code>, <code>http://100.x.y.z:8091</code> o <code>https://ntfy.example.com</code>.';
         }
       }
       if (url) {
@@ -3518,13 +3518,13 @@ async function initUnifiedIntegrations() {
         // level would silently miss, leaving Test perpetually stuck on
         // "Save first" until the form was reopened.
         if (!_editId && saved) _editId = saved.integration?.id || saved.id;
-        el('uf-api-msg').textContent = 'Saved'; el('uf-api-msg').style.color = 'var(--green,#50fa7b)';
+        el('uf-api-msg').textContent = 'Guardado'; el('uf-api-msg').style.color = 'var(--green,#50fa7b)';
         await renderList();
         notifyIntegrationsChanged();
-      } catch (_) { el('uf-api-msg').textContent = 'Failed'; el('uf-api-msg').style.color = 'var(--red)'; }
+      } catch (_) { el('uf-api-msg').textContent = 'Error al guardar'; el('uf-api-msg').style.color = 'var(--red)'; }
     });
     el('uf-api-test').addEventListener('click', async () => {
-      if (!_editId) { el('uf-api-msg').textContent = 'Save first'; return; }
+      if (!_editId) { el('uf-api-msg').textContent = 'Guarda primero'; return; }
       try {
         const r = await fetch(`/api/auth/integrations/${_editId}/test`, { method: 'POST', credentials: 'same-origin' });
         const d = await r.json();
@@ -3589,11 +3589,11 @@ async function initUnifiedIntegrations() {
       // Test button uses. If the CalDAV server rejects the creds/URL
       // we won't persist garbage — the user gets the actual error
       // (HTTP 401, "Not found", "Connection refused", etc.) in red.
-      _setCalDavMsg('Testing…', true);
+      _setCalDavMsg('Probando…', true);
       el('uf-caldav-msg').style.color = '';
       const d = await _runCalDavTest();
       if (!d.ok) {
-        _setCalDavMsg(d.error || 'Connection failed — not saved', false);
+        _setCalDavMsg(d.error || 'Conexión fallida — no guardado', false);
         return;
       }
       try {
@@ -3606,19 +3606,19 @@ async function initUnifiedIntegrations() {
             password: el('uf-caldav-pass').value,
           }),
         });
-        _setCalDavMsg('Saved', true);
+        _setCalDavMsg('Guardado', true);
         formEl.style.display = 'none';
         await renderList();
         notifyIntegrationsChanged();
       } catch (_) {
-        _setCalDavMsg('Save failed', false);
+        _setCalDavMsg('Error al guardar', false);
       }
     });
     el('uf-caldav-test').addEventListener('click', async () => {
-      _setCalDavMsg('Testing…', true);
+      _setCalDavMsg('Probando…', true);
       el('uf-caldav-msg').style.color = '';
       const d = await _runCalDavTest();
-      _setCalDavMsg(d.ok ? 'Connected' : (d.error || 'Failed'), d.ok);
+      _setCalDavMsg(d.ok ? 'Conectado' : (d.error || 'Error'), d.ok);
     });
   }
 
@@ -3670,7 +3670,7 @@ async function initUnifiedIntegrations() {
       if (el('uf-carddav-pass').value) body.carddav_password = el('uf-carddav-pass').value;
       try {
         await fetch('/api/contacts/config', { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        el('uf-carddav-msg').textContent = 'Saved';
+        el('uf-carddav-msg').textContent = 'Guardado';
         el('uf-carddav-msg').style.color = 'var(--green, #50fa7b)';
         // Refresh both the sub-panel (contacts manager) AND the
         // outer integrations list so the CardDAV row appears
@@ -3679,7 +3679,7 @@ async function initUnifiedIntegrations() {
         await renderList();
         notifyIntegrationsChanged();
       } catch (_) {
-        el('uf-carddav-msg').textContent = 'Failed';
+        el('uf-carddav-msg').textContent = 'Error al guardar';
         el('uf-carddav-msg').style.color = 'var(--red)';
       }
     });
@@ -3704,7 +3704,7 @@ async function initUnifiedIntegrations() {
     const _downloadContacts = async (format) => {
       const btn = el(format === 'csv' ? 'cm-export-csv-btn' : 'cm-export-vcf-btn');
       const orig = btn ? btn.textContent : '';
-      if (btn) { btn.textContent = 'Exporting...'; btn.disabled = true; }
+      if (btn) { btn.textContent = 'Exportando...'; btn.disabled = true; }
       try {
         const res = await fetch(`/api/contacts/export?format=${encodeURIComponent(format)}`, { credentials: 'same-origin' });
         if (!res.ok) throw new Error('Export failed');
@@ -3735,7 +3735,7 @@ async function initUnifiedIntegrations() {
       if (!files.length) return;
       const btn = el('cm-import-btn');
       const orig = btn ? btn.textContent : '';
-      if (btn) { btn.textContent = 'Importing…'; btn.disabled = true; }
+      if (btn) { btn.textContent = 'Importando…'; btn.disabled = true; }
       try {
         const texts = await Promise.all(files.map(f => f.text()));
         const vcfParts = [];
@@ -4268,7 +4268,7 @@ async function initUnifiedIntegrations() {
         btn.style.borderColor = 'var(--red)';
         btn.style.color = '#fff';
         ico.innerHTML = btn.dataset.origIco;
-        msg.textContent = 'Test error: ' + e.message;
+        msg.textContent = 'Error en la prueba: ' + e.message;
         msg.style.color = 'var(--red)';
       } finally {
         btn.disabled = false;
@@ -4279,7 +4279,7 @@ async function initUnifiedIntegrations() {
       const body = _collectBody();
       // Name is optional — fall back to Email so the list still has a label.
       if (!body.name) body.name = body.from_address;
-      if (!body.name) { el('uf-email-msg').textContent = 'Need at least a Name or Email'; el('uf-email-msg').style.color = 'var(--red)'; return; }
+      if (!body.name) { el('uf-email-msg').textContent = 'Introduce al menos un nombre o un correo electrónico'; el('uf-email-msg').style.color = 'var(--red)'; return; }
       const saveBtn = el('uf-email-save');
       saveBtn.disabled = true;
       const saveIcoEl = saveBtn.querySelector('.uf-email-save-ico');
@@ -4287,7 +4287,7 @@ async function initUnifiedIntegrations() {
       const prevIco = saveIcoEl.innerHTML;
       const prevLbl = saveLblEl.textContent;
       saveIcoEl.innerHTML = _spinner;
-      saveLblEl.textContent = 'Saving…';
+      saveLblEl.textContent = 'Guardando…';
       try {
         const url = isEdit ? `/api/email/accounts/${editId}` : '/api/email/accounts';
         const method = isEdit ? 'PUT' : 'POST';
@@ -4298,13 +4298,13 @@ async function initUnifiedIntegrations() {
         });
         const d = await r.json();
         if (!(d.ok || d.id)) {
-          el('uf-email-msg').textContent = d.error || 'Failed';
+          el('uf-email-msg').textContent = d.error || 'Error al guardar';
           el('uf-email-msg').style.color = 'var(--red)';
           return;
         }
-        el('uf-email-msg').textContent = 'Saved';
+        el('uf-email-msg').textContent = 'Guardado';
         el('uf-email-msg').style.color = 'var(--green,#50fa7b)';
-        integrationNotice = 'Email account saved. For more settings, go to Settings > Email.';
+        integrationNotice = 'Cuenta de correo guardada. Para más ajustes, ve a Configuración > Correo.';
         formEl.style.display = 'none';
         await renderList();
         notifyIntegrationsChanged();
@@ -4324,23 +4324,23 @@ async function initUnifiedIntegrations() {
     formEl.innerHTML = `
       <div class="admin-card" style="margin-top:8px">
         <h2 style="font-size:13px">Vaultwarden (Password Vault)</h2>
-        <div id="uf-vault-status" style="font-size:11px;opacity:0.7;margin-bottom:8px">Loading...</div>
+        <div id="uf-vault-status" style="font-size:11px;opacity:0.7;margin-bottom:8px">Cargando...</div>
         <div class="settings-col">
           <div class="settings-row"><label class="settings-label">Server URL</label><input id="uf-vault-url" class="settings-input" placeholder="https://vault.example.com"></div>
           <div class="settings-row"><label class="settings-label">Email</label><input id="uf-vault-email" class="settings-input" placeholder="you@example.com"></div>
-          <div class="settings-row"><label class="settings-label">Master Password</label><input id="uf-vault-pass" class="settings-input" type="password" placeholder="Only required for Login / Unlock"></div>
+          <div class="settings-row"><label class="settings-label">Contraseña maestra</label><input id="uf-vault-pass" class="settings-input" type="password" placeholder="Solo necesaria para Iniciar sesión / Desbloquear"></div>
           <div class="settings-row" style="margin-top:4px;flex-wrap:wrap;gap:4px">
-            <button class="admin-btn-sm" id="uf-vault-save">Save Config</button>
-            <button class="admin-btn-sm" id="uf-vault-login">Login</button>
-            <button class="admin-btn-sm" id="uf-vault-unlock">Unlock</button>
-            <button class="admin-btn-sm" id="uf-vault-lock" style="opacity:0.7">Lock</button>
-            <button class="admin-btn-sm" id="uf-vault-logout" style="opacity:0.7">Logout</button>
-            <button class="admin-btn-sm" id="uf-vault-cancel" style="opacity:0.7">Cancel</button>
+            <button class="admin-btn-sm" id="uf-vault-save">Guardar configuración</button>
+            <button class="admin-btn-sm" id="uf-vault-login">Iniciar sesión</button>
+            <button class="admin-btn-sm" id="uf-vault-unlock">Desbloquear</button>
+            <button class="admin-btn-sm" id="uf-vault-lock" style="opacity:0.7">Bloquear</button>
+            <button class="admin-btn-sm" id="uf-vault-logout" style="opacity:0.7">Cerrar sesión</button>
+            <button class="admin-btn-sm" id="uf-vault-cancel" style="opacity:0.7">Cancelar</button>
             <span id="uf-vault-msg" style="font-size:11px;margin-left:4px"></span>
           </div>
           <div style="font-size:10px;opacity:0.5;margin-top:6px;line-height:1.4">
-            <strong>Login</strong> registers this device with your Vaultwarden account (once per account).<br>
-            <strong>Unlock</strong> decrypts the vault — required after restart or Lock. Session is saved so the assistant can read passwords.
+            <strong>Iniciar sesión</strong> registra este dispositivo con tu cuenta de Vaultwarden (una vez por cuenta).<br>
+            <strong>Desbloquear</strong> descifra el almacén — necesario tras reiniciar o bloquear. La sesión se guarda para que el asistente pueda leer contraseñas.
           </div>
         </div>
       </div>`;
@@ -4366,7 +4366,7 @@ async function initUnifiedIntegrations() {
         statusEl.textContent = parts.join(' — ');
         statusEl.style.color = !installed ? 'var(--red)' : d.unlocked ? 'var(--green,#50fa7b)' : '';
       } catch (_) {
-        el('uf-vault-status').textContent = 'Failed to load vault status';
+        el('uf-vault-status').textContent = 'Error al cargar el estado del almacén';
       }
     }
     await refreshStatus();
@@ -4374,7 +4374,7 @@ async function initUnifiedIntegrations() {
     el('uf-vault-cancel').addEventListener('click', () => { formEl.style.display = 'none'; });
 
     el('uf-vault-save').addEventListener('click', async () => {
-      msg('Saving...');
+      msg('Guardando...');
       try {
         const r = await fetch('/api/vault/config', {
           method: 'POST', credentials: 'same-origin',
@@ -4382,16 +4382,16 @@ async function initUnifiedIntegrations() {
           body: JSON.stringify({ server_url: el('uf-vault-url').value, email: el('uf-vault-email').value }),
         });
         const d = await r.json();
-        if (d.ok) { msg('Saved', 'var(--green,#50fa7b)'); await refreshStatus(); await renderList(); }
-        else msg(d.error || 'Failed', 'var(--red)');
+        if (d.ok) { msg('Guardado', 'var(--green,#50fa7b)'); await refreshStatus(); await renderList(); }
+        else msg(d.error || 'Error al guardar', 'var(--red)');
       } catch (e) { msg('Error: ' + e.message, 'var(--red)'); }
     });
 
     el('uf-vault-login').addEventListener('click', async () => {
       const email = el('uf-vault-email').value.trim();
       const pass = el('uf-vault-pass').value;
-      if (!email || !pass) { msg('Email + master password required', 'var(--red)'); return; }
-      msg('Logging in...');
+      if (!email || !pass) { msg('Se requieren el correo y la contraseña maestra', 'var(--red)'); return; }
+      msg('Iniciando sesión...');
       try {
         const r = await fetch('/api/vault/login', {
           method: 'POST', credentials: 'same-origin',
@@ -4400,17 +4400,17 @@ async function initUnifiedIntegrations() {
         });
         const d = await r.json();
         if (d.ok) {
-          msg(d.already ? 'Already logged in — use Unlock' : 'Logged in', 'var(--green,#50fa7b)');
+          msg(d.already ? 'Ya has iniciado sesión — usa Desbloquear' : 'Sesión iniciada', 'var(--green,#50fa7b)');
           el('uf-vault-pass').value = '';
           await refreshStatus(); await renderList();
-        } else msg(d.error || 'Login failed', 'var(--red)');
+        } else msg(d.error || 'Error al iniciar sesión', 'var(--red)');
       } catch (e) { msg('Error: ' + e.message, 'var(--red)'); }
     });
 
     el('uf-vault-unlock').addEventListener('click', async () => {
       const pass = el('uf-vault-pass').value;
-      if (!pass) { msg('Master password required', 'var(--red)'); return; }
-      msg('Unlocking...');
+      if (!pass) { msg('Se requiere la contraseña maestra', 'var(--red)'); return; }
+      msg('Desbloqueando...');
       try {
         const r = await fetch('/api/vault/unlock', {
           method: 'POST', credentials: 'same-origin',
@@ -4419,28 +4419,28 @@ async function initUnifiedIntegrations() {
         });
         const d = await r.json();
         if (d.ok) {
-          msg('Vault unlocked', 'var(--green,#50fa7b)');
+          msg('Almacén desbloqueado', 'var(--green,#50fa7b)');
           el('uf-vault-pass').value = '';
           await refreshStatus(); await renderList();
-        } else msg(d.error || 'Unlock failed', 'var(--red)');
+        } else msg(d.error || 'Error al desbloquear', 'var(--red)');
       } catch (e) { msg('Error: ' + e.message, 'var(--red)'); }
     });
 
     el('uf-vault-lock').addEventListener('click', async () => {
-      msg('Locking...');
+      msg('Bloqueando...');
       try {
         await fetch('/api/vault/lock', { method: 'POST', credentials: 'same-origin' });
-        msg('Locked', 'var(--green,#50fa7b)');
+        msg('Bloqueado', 'var(--green,#50fa7b)');
         await refreshStatus(); await renderList();
       } catch (e) { msg('Error: ' + e.message, 'var(--red)'); }
     });
 
     el('uf-vault-logout').addEventListener('click', async () => {
-      if (!await window.styledConfirm('Log out of Bitwarden CLI? You\'ll need to re-enter your master password to log back in.', { confirmText: 'Log out' })) return;
-      msg('Logging out...');
+      if (!await window.styledConfirm('¿Cerrar sesión de Bitwarden CLI? Tendrás que volver a introducir tu contraseña maestra para acceder de nuevo.', { confirmText: 'Cerrar sesión' })) return;
+      msg('Cerrando sesión...');
       try {
         await fetch('/api/vault/logout', { method: 'POST', credentials: 'same-origin' });
-        msg('Logged out', 'var(--green,#50fa7b)');
+        msg('Sesión cerrada', 'var(--green,#50fa7b)');
         await refreshStatus(); await renderList();
       } catch (e) { msg('Error: ' + e.message, 'var(--red)'); }
     });
@@ -4460,19 +4460,19 @@ async function initUnifiedIntegrations() {
       const msg = el('uf-mcp-msg'); if (!msg) return;
       if (el('uf-mcp-pasteback')) return;  // already shown
       msg.innerHTML =
-        'Authorize in the opened tab. If the redirect fails (remote access), paste the resulting URL here: ' +
+        'Autoriza en la pestaña abierta. Si la redirección falla (acceso remoto), pega aquí la URL resultante: ' +
         '<input id="uf-mcp-pasteback" class="settings-input" placeholder="http://localhost:7000/api/mcp/oauth/callback?code=..." style="margin-top:4px">' +
-        '<button class="admin-btn-sm" id="uf-mcp-paste-go" style="margin-top:4px">Submit</button>';
+        '<button class="admin-btn-sm" id="uf-mcp-paste-go" style="margin-top:4px">Enviar</button>';
       const pasteGo = el('uf-mcp-paste-go');
       if (pasteGo) pasteGo.addEventListener('click', async () => {
         const cb = el('uf-mcp-pasteback').value.trim();
         if (!cb) return;
         const pf = new FormData(); pf.append('callback_url', cb);
-        _setBtnLoading(pasteGo, true, 'Submitting…');
+        _setBtnLoading(pasteGo, true, 'Enviando…');
         try {
           await fetch(`/api/mcp/oauth/exchange/${id}`, { method: 'POST', credentials: 'same-origin', body: pf });
         } finally {
-          _setBtnLoading(pasteGo, false, 'Submit');
+          _setBtnLoading(pasteGo, false, 'Enviar');
         }
       });
     }
@@ -4508,20 +4508,20 @@ async function initUnifiedIntegrations() {
           if (++fails >= 5 && msg) msg.textContent = `Status check failing (${e.message || 'network error'}) — still retrying…`;
         }
       }
-      if (msg) msg.textContent = 'Authorization timed out. Reconnect from the server list to retry.';
+      if (msg) msg.textContent = 'La autorización ha caducado. Reconéctate desde la lista de servidores para reintentar.';
     }
     if (editId && editId !== 'new') {
       // Show management view for existing server
-      formEl.innerHTML = '<div class="admin-card" style="margin-top:8px"><span style="opacity:0.5;font-size:11px">Loading...</span></div>';
+      formEl.innerHTML = '<div class="admin-card" style="margin-top:8px"><span style="opacity:0.5;font-size:11px">Cargando...</span></div>';
       try {
         const res = await fetch('/api/mcp/servers', { credentials: 'same-origin' });
         const servers = await res.json();
         const srv = servers.find(s => (s.id || s.name) === editId);
-        if (!srv) { formEl.innerHTML = '<div class="admin-card" style="margin-top:8px">Server not found</div>'; return; }
+        if (!srv) { formEl.innerHTML = '<div class="admin-card" style="margin-top:8px">Servidor no encontrado</div>'; return; }
         const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
         const statusColor = srv.needs_oauth ? '#e5a33a' : srv.status === 'connected' ? 'var(--green,#50fa7b)' : srv.status === 'error' ? 'var(--red)' : 'var(--fg)';
-        const toolInfo = srv.status === 'connected' ? `${srv.enabled_tool_count}/${srv.tool_count} tools` : '';
-        const statusText = srv.needs_oauth ? 'Needs authorization' : srv.status === 'connected' ? `Connected (${toolInfo})` : srv.status === 'error' ? `Error: ${esc(srv.error || 'unknown')}` : 'Disconnected';
+        const toolInfo = srv.status === 'connected' ? `${srv.enabled_tool_count}/${srv.tool_count} herramientas` : '';
+        const statusText = srv.needs_oauth ? 'Requiere autorización' : srv.status === 'connected' ? `Conectado (${toolInfo})` : srv.status === 'error' ? `Error: ${esc(srv.error || 'unknown')}` : 'Desconectado';
         formEl.innerHTML = `
           <div class="admin-card" style="margin-top:8px">
             <h2 style="font-size:13px">${esc(srv.name)}</h2>
@@ -4530,24 +4530,24 @@ async function initUnifiedIntegrations() {
               <span style="font-size:11px;opacity:0.7">${statusText}</span>
             </div>
             <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
-              ${srv.needs_oauth ? `<a href="/api/mcp/oauth/authorize/${srv.id}" target="_blank" class="admin-btn-sm" style="background:var(--red);color:#fff;text-decoration:none">Authorize</a>` : ''}
-              <button class="admin-btn-sm" id="uf-mcp-reconnect">Reconnect</button>
-              <button class="admin-btn-sm" id="uf-mcp-toggle">${srv.is_enabled ? 'Disable' : 'Enable'}</button>
-              <button class="admin-btn-sm" id="uf-mcp-cancel" style="opacity:0.7">Close</button>
+              ${srv.needs_oauth ? `<a href="/api/mcp/oauth/authorize/${srv.id}" target="_blank" class="admin-btn-sm" style="background:var(--red);color:#fff;text-decoration:none">Autorizar</a>` : ''}
+              <button class="admin-btn-sm" id="uf-mcp-reconnect">Reconectar</button>
+              <button class="admin-btn-sm" id="uf-mcp-toggle">${srv.is_enabled ? 'Desactivar' : 'Activar'}</button>
+              <button class="admin-btn-sm" id="uf-mcp-cancel" style="opacity:0.7">Cerrar</button>
               <span id="uf-mcp-msg" style="font-size:11px"></span>
             </div>
             <div id="uf-mcp-tools-panel"></div>
           </div>`;
         // Reconnect
         el('uf-mcp-reconnect').addEventListener('click', async () => {
-          const msg = el('uf-mcp-msg'); msg.textContent = 'Reconnecting...';
+          const msg = el('uf-mcp-msg'); msg.textContent = 'Reconectando...';
           try {
             const r = await fetch(`/api/mcp/servers/${srv.id}/reconnect`, { method: 'POST', credentials: 'same-origin' });
             const d = await r.json();
-            msg.textContent = d.connected ? `Connected (${d.tool_count} tools)` : `Failed: ${d.error || 'unknown'}`;
+            msg.textContent = d.connected ? `Conectado (${d.tool_count} herramientas)` : `Error: ${d.error || 'desconocido'}`;
             await renderList();
             showMcpForm(editId); // refresh this view
-          } catch (e) { msg.textContent = 'Failed'; }
+          } catch (e) { msg.textContent = 'Error'; }
         });
         // Toggle enable/disable
         el('uf-mcp-toggle').addEventListener('click', async () => {
@@ -4565,38 +4565,38 @@ async function initUnifiedIntegrations() {
             const tools = await tr.json();
             if (tools.length) {
               const disabled = new Set(tools.filter(t => t.is_disabled).map(t => t.name));
-              panel.innerHTML = `<div class="mcp-tools-header"><span>Tools</span><span style="display:flex;gap:8px;align-items:center"><span class="mcp-tools-count">${tools.length - disabled.size}/${tools.length} enabled</span><a href="#" id="uf-mcp-all">All</a> <a href="#" id="uf-mcp-none">None</a></span></div><div class="mcp-tools-list">${tools.map(t => `<label title="${esc(t.description)}"><input type="checkbox" data-mcp-tool-name="${esc(t.name)}" ${!t.is_disabled ? 'checked' : ''}><span><strong>${esc(t.name)}</strong> <span style="opacity:0.5">— ${esc((t.description||'').slice(0,80))}</span></span></label>`).join('')}</div>`;
+              panel.innerHTML = `<div class="mcp-tools-header"><span>Herramientas</span><span style="display:flex;gap:8px;align-items:center"><span class="mcp-tools-count">${tools.length - disabled.size}/${tools.length} enabled</span><a href="#" id="uf-mcp-all">All</a> <a href="#" id="uf-mcp-none">None</a></span></div><div class="mcp-tools-list">${tools.map(t => `<label title="${esc(t.description)}"><input type="checkbox" data-mcp-tool-name="${esc(t.name)}" ${!t.is_disabled ? 'checked' : ''}><span><strong>${esc(t.name)}</strong> <span style="opacity:0.5">— ${esc((t.description||'').slice(0,80))}</span></span></label>`).join('')}</div>`;
               const saveFn = async () => {
                 const dis = [];
                 panel.querySelectorAll('input[type=checkbox]').forEach(cb => { if (!cb.checked) dis.push(cb.dataset.mcpToolName); });
                 await fetch(`/api/mcp/servers/${srv.id}/tools`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin', body: JSON.stringify({ disabled: dis }) });
                 const cnt = panel.querySelector('.mcp-tools-count');
-                if (cnt) cnt.textContent = `${tools.length - dis.length}/${tools.length} enabled`;
+                if (cnt) cnt.textContent = `${tools.length - dis.length}/${tools.length} activadas`;
               };
               panel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.addEventListener('change', saveFn));
               el('uf-mcp-all')?.addEventListener('click', (e) => { e.preventDefault(); panel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true); saveFn(); });
               el('uf-mcp-none')?.addEventListener('click', (e) => { e.preventDefault(); panel.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false); saveFn(); });
             }
-          } catch (_) { panel.innerHTML = '<span style="opacity:0.5;font-size:11px">Failed to load tools</span>'; }
+          } catch (_) { panel.innerHTML = '<span style="opacity:0.5;font-size:11px">Error al cargar herramientas</span>'; }
         }
-      } catch (_) { formEl.innerHTML = '<div class="admin-card" style="margin-top:8px">Failed to load server</div>'; }
+      } catch (_) { formEl.innerHTML = '<div class="admin-card" style="margin-top:8px">Error al cargar el servidor</div>'; }
     } else {
       // Add new MCP server form
       formEl.innerHTML = `
         <div class="admin-card" style="margin-top:8px">
-          <h2 style="font-size:13px">Add MCP Server</h2>
+          <h2 style="font-size:13px">Añadir servidor MCP</h2>
           <div class="settings-col">
-            <div class="settings-row"><label class="settings-label">Name</label><input id="uf-mcp-name" class="settings-input" placeholder="Server name"></div>
-            <div class="settings-row"><label class="settings-label">Transport</label><select id="uf-mcp-transport" class="settings-input"><option value="stdio">stdio</option><option value="sse">SSE</option><option value="http">Streamable HTTP</option></select></div>
+            <div class="settings-row"><label class="settings-label">Nombre</label><input id="uf-mcp-name" class="settings-input" placeholder="Nombre del servidor"></div>
+            <div class="settings-row"><label class="settings-label">Transporte</label><select id="uf-mcp-transport" class="settings-input"><option value="stdio">stdio</option><option value="sse">SSE</option><option value="http">Streamable HTTP</option></select></div>
             <div id="uf-mcp-stdio-fields" style="display:flex;flex-direction:column;gap:6px;">
-              <div class="settings-row"><label class="settings-label">Command</label><input id="uf-mcp-cmd" class="settings-input" placeholder="npx"></div>
+              <div class="settings-row"><label class="settings-label">Comando</label><input id="uf-mcp-cmd" class="settings-input" placeholder="npx"></div>
               <div class="settings-row"><label class="settings-label">Args</label><input id="uf-mcp-args" class="settings-input" placeholder='["-y", "@modelcontextprotocol/server-filesystem"]'></div>
               <div class="settings-row"><label class="settings-label">Env</label><input id="uf-mcp-env" class="settings-input" placeholder='{"KEY": "value"}'></div>
             </div>
             <div id="uf-mcp-sse-fields" style="display:none;flex-direction:column;gap:6px;">
               <div class="settings-row"><label class="settings-label">URL</label><input id="uf-mcp-url" class="settings-input" placeholder="http://localhost:3001/sse"></div>
             </div>
-            <div class="settings-row" style="margin-top:4px"><button class="admin-btn-sm" id="uf-mcp-save">Save</button><button class="admin-btn-sm" id="uf-mcp-cancel" style="opacity:0.7">Cancel</button><span id="uf-mcp-msg" style="font-size:11px"></span></div>
+            <div class="settings-row" style="margin-top:4px"><button class="admin-btn-sm" id="uf-mcp-save">Guardar</button><button class="admin-btn-sm" id="uf-mcp-cancel" style="opacity:0.7">Cancelar</button><span id="uf-mcp-msg" style="font-size:11px"></span></div>
           </div>
         </div>`;
       el('uf-mcp-transport').addEventListener('change', () => {
@@ -4636,7 +4636,7 @@ async function initUnifiedIntegrations() {
             el('uf-mcp-msg').textContent = `Connected (${data.tool_count || 0} tools)`;
             formEl.style.display = 'none'; await renderList();
           } else if (r.ok) {
-            el('uf-mcp-msg').textContent = 'Saved'; formEl.style.display = 'none'; await renderList();
+            el('uf-mcp-msg').textContent = 'Guardado'; formEl.style.display = 'none'; await renderList();
           } else {
             el('uf-mcp-msg').textContent = `Failed (${r.status})`;
           }
@@ -4764,7 +4764,7 @@ async function initUnifiedIntegrations() {
     el('uf-codex-cancel')?.addEventListener('click', () => { formEl.style.display = 'none'; });
     el('uf-codex-save')?.addEventListener('click', () => {
       const msg = el('uf-codex-msg');
-      if (msg) { msg.textContent = 'Saved'; msg.style.color = 'var(--green, #50fa7b)'; }
+      if (msg) { msg.textContent = 'Guardado'; msg.style.color = 'var(--green, #50fa7b)'; }
       setTimeout(() => { formEl.style.display = 'none'; }, 350);
     });
 
@@ -4948,7 +4948,7 @@ async function initUnifiedIntegrations() {
             });
             const d = await r.json().catch(() => ({}));
             if (!r.ok) throw new Error(d.detail || 'Failed');
-            if (msg) { msg.textContent = 'Saved'; msg.style.color = 'var(--green, #50fa7b)'; }
+            if (msg) { msg.textContent = 'Guardado'; msg.style.color = 'var(--green, #50fa7b)'; }
             await renderList();
           } catch (err) {
             cb.checked = !cb.checked;

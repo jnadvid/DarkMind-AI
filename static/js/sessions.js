@@ -324,7 +324,7 @@ function createSessionItem(s) {
   // Favorite bookmark replaces session-icon when important
   if (s.is_important && !isOpenClaw) {
     icon.className = 'session-icon session-fav';
-    icon.title = 'Unfavorite';
+    icon.title = 'Quitar de favoritos';
     icon.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
     icon.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -332,7 +332,7 @@ function createSessionItem(s) {
       fd.append('important', false);
       await fetch(`${API_BASE}/api/session/${s.id}/important`, { method: 'POST', body: fd });
       s.is_important = false;
-      uiModule.showToast('Unfavorited');
+      uiModule.showToast('Quitado de favoritos');
       renderSessionList();
     });
   }
@@ -370,7 +370,7 @@ function createSessionItem(s) {
           fd.append('name', newName);
           await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'PATCH', body: fd });
           s.name = newName;
-          uiModule.showToast('Renamed');
+          uiModule.showToast('Renombrado');
         }
         _forceSidebarOpen();
         renderSessionList();
@@ -444,7 +444,7 @@ function createSessionItem(s) {
   // Create a dropdown menu button
   const menuBtn = document.createElement('button');
   menuBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
-  menuBtn.title = 'Session actions';
+  menuBtn.title = 'Acciones de sesión';
   menuBtn.className = 'hamburger session-menu-btn';
 
   // Create dropdown menu
@@ -460,15 +460,15 @@ function createSessionItem(s) {
 
   const renameItem = document.createElement('div');
   renameItem.className = 'dropdown-item-compact';
-  renameItem.innerHTML = _icon(_renameIcon) + '<span>Rename</span>';
+  renameItem.innerHTML = _icon(_renameIcon) + '<span>Renombrar</span>';
 
   const archiveItem = document.createElement('div');
   archiveItem.className = 'dropdown-item-compact';
-  archiveItem.innerHTML = _icon(_archiveIcon) + '<span>Archive</span>';
+  archiveItem.innerHTML = _icon(_archiveIcon) + '<span>Archivar</span>';
 
   const deleteItem = document.createElement('div');
   deleteItem.className = 'dropdown-item-compact dropdown-item-danger';
-  deleteItem.innerHTML = _icon(_deleteIcon) + '<span>Delete</span><span class="dropdown-shortcut">' + _mod + '+Alt+D</span>';
+  deleteItem.innerHTML = _icon(_deleteIcon) + '<span>Eliminar</span><span class="dropdown-shortcut">' + _mod + '+Alt+D</span>';
 
 
 
@@ -481,7 +481,7 @@ function createSessionItem(s) {
       : '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
     const starItem = document.createElement('div');
     starItem.className = 'dropdown-item-compact';
-    starItem.innerHTML = _icon(_favIcon) + '<span>' + (s.is_important ? 'Unfavorite' : 'Favorite') + '</span><span class="dropdown-shortcut">' + _mod + '+Alt+F</span>';
+    starItem.innerHTML = _icon(_favIcon) + '<span>' + (s.is_important ? 'Quitar favorito' : 'Favorito') + '</span><span class="dropdown-shortcut">' + _mod + '+Alt+F</span>';
     starItem.addEventListener('click', async (e) => {
       e.stopPropagation();
       const newVal = !s.is_important;
@@ -497,7 +497,7 @@ function createSessionItem(s) {
 
   const copyItem = document.createElement('div');
   copyItem.className = 'dropdown-item-compact';
-  copyItem.innerHTML = _icon(_copyIcon) + '<span>Copy Chat</span>';
+  copyItem.innerHTML = _icon(_copyIcon) + '<span>Copiar chat</span>';
   copyItem.addEventListener('click', async (e) => {
     e.stopPropagation();
     dropdown.style.display = 'none';
@@ -505,7 +505,7 @@ function createSessionItem(s) {
       const res = await fetch(`${API_BASE}/api/history/${s.id}`);
       const data = await res.json();
       const msgs = data.history || [];
-      if (!msgs.length) { uiModule.showToast('No messages to copy'); return; }
+      if (!msgs.length) { uiModule.showToast('No hay mensajes que copiar'); return; }
       const lines = msgs
         .filter(m => m.role === 'user' || m.role === 'assistant')
         .map(m => {
@@ -526,10 +526,10 @@ function createSessionItem(s) {
         document.execCommand('copy');
         ta.remove();
       }
-      uiModule.showToast('Chat copied to clipboard');
+      uiModule.showToast('Chat copiado al portapapeles');
     } catch (e) {
       console.error('Copy chat failed:', e);
-      uiModule.showError('Failed to copy chat');
+      uiModule.showError('Error al copiar el chat');
     }
   });
 
@@ -539,7 +539,7 @@ function createSessionItem(s) {
   if (!isOpenClaw) {
     const selectMoreItem = document.createElement('div');
     selectMoreItem.className = 'dropdown-item-compact';
-    selectMoreItem.innerHTML = _icon('<span style="font-size:16px;line-height:1;">●</span>') + '<span>Select</span>';
+    selectMoreItem.innerHTML = _icon('<span style="font-size:16px;line-height:1;">●</span>') + '<span>Seleccionar</span>';
     selectMoreItem.addEventListener('click', (e) => {
       e.stopPropagation();
       dropdown.style.display = 'none';
@@ -574,7 +574,7 @@ function createSessionItem(s) {
   const _cancelIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
   const cancelItem = document.createElement('div');
   cancelItem.className = 'dropdown-item-compact dropdown-cancel-mobile';
-  cancelItem.innerHTML = _icon(_cancelIcon) + '<span>Cancel</span>';
+  cancelItem.innerHTML = _icon(_cancelIcon) + '<span>Cancelar</span>';
   cancelItem.addEventListener('click', (e) => {
     e.stopPropagation();
     dropdown.style.display = 'none';
@@ -647,12 +647,12 @@ function createSessionItem(s) {
 
   deleteItem.addEventListener('click', async () => {
     if (s.is_important) {
-      uiModule.showToast('Unfavorite before deleting');
+      uiModule.showToast('Quita de favoritos antes de eliminar');
       dropdown.style.display = 'none';
       return;
     }
     dropdown.style.display = 'none';
-    if (!await uiModule.styledConfirm('Delete this session?', { confirmText: 'Delete', danger: true })) {
+    if (!await uiModule.styledConfirm('¿Eliminar esta sesión?', { confirmText: 'Eliminar', danger: true })) {
       _forceSidebarOpen();
       return;
     }
@@ -697,13 +697,13 @@ function createSessionItem(s) {
         _forceSidebarOpen();
         await loadSessions();
         dropdown.style.display = 'none';
-        uiModule.showToast('Session archived');
+        uiModule.showToast('Sesión archivada');
       } else {
         throw new Error('Failed to archive session');
       }
     } catch (error) {
       console.error('Error archiving session:', error);
-      uiModule.showError('Failed to archive session');
+      uiModule.showError('Error al archivar la sesión');
     }
   });
 
@@ -816,7 +816,7 @@ function _renderSessionListImpl() {
       const remaining = allFlat.length - SIDEBAR_MAX_VISIBLE;
       const toggleBtn = document.createElement('button');
       toggleBtn.className = 'session-show-more-btn';
-      toggleBtn.textContent = _showAllSessions ? 'Show less' : `Show ${remaining} more`;
+      toggleBtn.textContent = _showAllSessions ? 'Mostrar menos' : `Mostrar ${remaining} más`;
       toggleBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         _showAllSessions = !_showAllSessions;
@@ -880,7 +880,7 @@ function _renderSessionListImpl() {
     const dragHandle = document.createElement('span');
     dragHandle.className = 'folder-drag-handle';
     dragHandle.textContent = '\u2630';
-    dragHandle.title = 'Drag to reorder folder';
+    dragHandle.title = 'Arrastra para reordenar carpeta';
     header.appendChild(dragHandle);
 
     const toggle = document.createElement('span');
@@ -902,11 +902,11 @@ function _renderSessionListImpl() {
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'folder-delete-btn';
     deleteBtn.textContent = '\u00d7';
-    deleteBtn.title = 'Delete folder and all sessions';
+    deleteBtn.title = 'Eliminar carpeta y todas las sesiones';
     deleteBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
       const count = folders[folderName].length;
-      if (!await uiModule.styledConfirm(`Delete folder "${folderName}" and all ${count} session(s) inside it?`, { confirmText: 'Delete', danger: true })) return;
+      if (!await uiModule.styledConfirm(`¿Eliminar la carpeta "${folderName}" y las ${count} sesión(es) dentro de ella?`, { confirmText: 'Eliminar', danger: true })) return;
       for (const s of folders[folderName]) {
         try {
           await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' });
@@ -937,10 +937,10 @@ function _renderSessionListImpl() {
     header.addEventListener('dblclick', async (e) => {
       e.stopPropagation();
       if (e.target.closest('.folder-delete-btn')) return;
-      const newName = await styledPrompt('Rename folder:', {
-        title: 'Rename folder',
+      const newName = await styledPrompt('Renombrar carpeta:', {
+        title: 'Renombrar carpeta',
         defaultValue: folderName,
-        confirmText: 'Rename',
+        confirmText: 'Renombrar',
       });
       if (!newName || !newName.trim() || newName.trim() === folderName) return;
       const promises = folders[folderName].map(s => moveToFolder(s.id, newName.trim()));
@@ -971,7 +971,7 @@ function _renderSessionListImpl() {
         const rem = folderSessions.length - FOLDER_MAX_VISIBLE;
         const moreBtn = document.createElement('button');
         moreBtn.className = 'session-show-more-btn';
-        moreBtn.textContent = folderExpanded ? 'Show less' : `Show ${rem} more`;
+        moreBtn.textContent = folderExpanded ? 'Mostrar menos' : `Mostrar ${rem} más`;
         moreBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           _expandedFolders[folderName] = !folderExpanded;
@@ -1009,7 +1009,7 @@ function _renderSessionListImpl() {
     const dragHandle = document.createElement('span');
     dragHandle.className = 'folder-drag-handle';
     dragHandle.textContent = '\u2630';
-    dragHandle.title = 'Drag to reorder folder';
+    dragHandle.title = 'Arrastra para reordenar carpeta';
     unsortedHeader.appendChild(dragHandle);
 
     const toggle = document.createElement('span');
@@ -1018,7 +1018,7 @@ function _renderSessionListImpl() {
     unsortedHeader.appendChild(toggle);
     const nameSpan = document.createElement('span');
     nameSpan.className = 'folder-name';
-    nameSpan.textContent = 'Unsorted';
+    nameSpan.textContent = 'Sin ordenar';
     unsortedHeader.appendChild(nameSpan);
     const countSpan = document.createElement('span');
     countSpan.className = 'folder-count';
@@ -1028,10 +1028,10 @@ function _renderSessionListImpl() {
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'folder-delete-btn';
     deleteBtn.textContent = '\u00d7';
-    deleteBtn.title = 'Delete all unsorted sessions';
+    deleteBtn.title = 'Eliminar todas las sesiones sin clasificar';
     deleteBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
-      if (!await uiModule.styledConfirm(`Delete all ${unfiled.length} unsorted session(s)?`, { confirmText: 'Delete', danger: true })) return;
+      if (!await uiModule.styledConfirm(`¿Eliminar las ${unfiled.length} sesión(es) sin clasificar?`, { confirmText: 'Eliminar', danger: true })) return;
       for (const s of unfiled) {
         try {
           await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' });
@@ -1129,7 +1129,7 @@ function _showSwipeHint(list) {
       localStorage.setItem('ody-swipe-hint-shown', '1');
       const hint = document.createElement('div');
       hint.className = 'swipe-hint';
-      hint.innerHTML = '<span class="swipe-hint-arrow">\u2190</span> swipe to delete';
+      hint.innerHTML = '<span class="swipe-hint-arrow">\u2190</span> desliza para eliminar';
       firstItem.style.position = 'relative';
       firstItem.appendChild(hint);
       setTimeout(() => { hint.style.opacity = '0'; }, 3000);
@@ -1293,7 +1293,7 @@ function _initBulkSelect() {
     archiveBtn.addEventListener('click', async () => {
       if (_selectedIds.size === 0) return;
       const count = _selectedIds.size;
-      if (!await uiModule.styledConfirm(`Archive ${count} session(s)?`, { confirmText: 'Archive' })) return;
+      if (!await uiModule.styledConfirm(`¿Archivar ${count} sesión(es)?`, { confirmText: 'Archivar' })) return;
       for (const sid of _selectedIds) {
         try {
           await fetch(`${API_BASE}/api/session/${sid}/archive`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
@@ -1302,7 +1302,7 @@ function _initBulkSelect() {
       _exitSelectMode();
       if (window._suppressSidebarClose !== undefined) { window._suppressSidebarClose = true; setTimeout(() => { window._suppressSidebarClose = false; }, 1500); }
       await loadSessions();
-      uiModule.showToast(`${count} session(s) archived`);
+      uiModule.showToast(`${count} sesión(es) archivada(s)`);
     });
   }
 
@@ -1311,7 +1311,7 @@ function _initBulkSelect() {
     deleteBtn.addEventListener('click', async () => {
       if (_selectedIds.size === 0) return;
       const count = _selectedIds.size;
-      if (!await uiModule.styledConfirm(`Delete ${count} session(s)? This cannot be undone.`, { confirmText: 'Delete', danger: true })) return;
+      if (!await uiModule.styledConfirm(`¿Eliminar ${count} sesión(es)? Esta acción no se puede deshacer.`, { confirmText: 'Eliminar', danger: true })) return;
       const deletedIds = [];
       for (const sid of _selectedIds) {
         try {
@@ -1323,7 +1323,7 @@ function _initBulkSelect() {
       _exitSelectMode();
       if (window._suppressSidebarClose !== undefined) { window._suppressSidebarClose = true; setTimeout(() => { window._suppressSidebarClose = false; }, 1500); }
       await loadSessions();
-      uiModule.showToast(`${deletedIds.length} session(s) deleted`);
+      uiModule.showToast(`${deletedIds.length} sesión(es) eliminada(s)`);
     });
   }
 }
@@ -1484,7 +1484,7 @@ export async function loadSessions() {
     }
   } catch (error) {
     console.error('Error in loadSessions:', error);
-    uiModule.showError('Failed to load sessions: ' + error.message);
+    uiModule.showError('Error al cargar las sesiones: ' + error.message);
   }
 }
 
@@ -1740,7 +1740,7 @@ export async function selectSession(id, { keepSidebar = false } = {}) {
 
   } catch (error) {
     console.error('Error in selectSession:', error);
-    uiModule.showError('Failed to load session: ' + error.message);
+    uiModule.showError('Error al cargar la sesión: ' + error.message);
   } finally {
     // Ensure memories are loaded after session selection
     if (window.memoryModule && window.memoryModule.loadMemories) {
@@ -1809,7 +1809,7 @@ export function createDirectChat(url, modelId, endpointId) {
   // Update current-meta header
   const metaEl = document.getElementById('current-meta');
   if (metaEl) {
-    metaEl.textContent = 'New Chat';
+    metaEl.textContent = 'Nuevo chat';
   }
 
   // Enable input
@@ -1843,7 +1843,7 @@ export async function materializePendingSession() {
   try {
     res = await fetch(`${API_BASE}/api/session`, { method: 'POST', body: fd });
   } catch (e) {
-    uiModule.showError('Failed to reach backend: ' + e);
+    uiModule.showError('No se pudo conectar con el servidor: ' + e);
     return false;
   }
 
@@ -1943,10 +1943,10 @@ async function _onSessionListKeydown(e) {
     const s = sessions.find(x => x.id === sid);
     if (!s) return;
     if (s.is_important) {
-      uiModule.showToast('Unfavorite before deleting');
+      uiModule.showToast('Quita de favoritos antes de eliminar');
       return;
     }
-    const ok = await uiModule.styledConfirm('Delete this session?', { confirmText: 'Delete', danger: true });
+    const ok = await uiModule.styledConfirm('¿Eliminar esta sesión?', { confirmText: 'Eliminar', danger: true });
     if (!ok) return;
     _sessionListFocused = true;
     (async () => {
@@ -2367,7 +2367,7 @@ async function _arcPeekOpen(sid) {
     if (window.uiModule) window.uiModule.scrollHistory();
   } catch (e) {
     console.error('Peek open failed:', e);
-    uiModule.showError('Failed to open archived session');
+    uiModule.showError('No se pudo abrir la sesión archivada');
   }
 }
 
@@ -2384,21 +2384,21 @@ async function _arcRestore(sid) {
     if (!res.ok) throw new Error('Failed');
     _arcRemove(sid);
     _arcRefreshUI();
-    uiModule.showToast('Session restored');
+    uiModule.showToast('Sesión restaurada');
     loadSessions();
-  } catch { uiModule.showError('Failed to restore session'); }
+  } catch { uiModule.showError('Error al restaurar la sesión'); }
 }
 
 async function _arcDelete(sid) {
-  if (!await window.styledConfirm('Delete this session permanently?', { confirmText: 'Delete', danger: true })) return;
+  if (!await window.styledConfirm('¿Eliminar esta sesión permanentemente?', { confirmText: 'Eliminar', danger: true })) return;
   try {
     const res = await fetch(`${API_BASE}/api/session/${sid}`, { method: 'DELETE' });
     if (!res.ok) throw new Error('Failed');
     await _animateSessionRowsRemoving([sid], '#archive-grid .archive-row[data-session-id]');
     _arcRemove(sid);
     _arcRefreshUI();
-    uiModule.showToast('Session deleted');
-  } catch { uiModule.showError('Failed to delete session'); }
+    uiModule.showToast('Sesión eliminada');
+  } catch { uiModule.showError('Error al eliminar la sesión'); }
 }
 
 function _arcRemove(sid) {
@@ -2418,14 +2418,14 @@ async function _arcBulkRestore() {
   }
   _arc.selected.clear();
   _arcRefreshUI();
-  uiModule.showToast(`${ids.length} session${ids.length > 1 ? 's' : ''} restored`);
+  uiModule.showToast(`${ids.length} sesión${ids.length > 1 ? 'es' : ''} restaurada${ids.length > 1 ? 's' : ''}`);
   loadSessions();
 }
 
 async function _arcBulkDelete() {
   const ids = [..._arc.selected];
   if (!ids.length) return;
-  const ok = await uiModule.styledConfirm(`Delete ${ids.length} session${ids.length > 1 ? 's' : ''} permanently?`, { confirmText: 'Delete', danger: true });
+  const ok = await uiModule.styledConfirm(`¿Eliminar ${ids.length} sesión${ids.length > 1 ? 'es' : ''} permanentemente?`, { confirmText: 'Eliminar', danger: true });
   if (!ok) return;
   const deletedIds = [];
   for (const sid of ids) {
@@ -2440,7 +2440,7 @@ async function _arcBulkDelete() {
   await _animateSessionRowsRemoving(deletedIds, '#archive-grid .archive-row[data-session-id]');
   _arc.selected.clear();
   _arcRefreshUI();
-  uiModule.showToast(`${deletedIds.length} session${deletedIds.length > 1 ? 's' : ''} deleted`);
+  uiModule.showToast(`${deletedIds.length} sesión${deletedIds.length > 1 ? 'es' : ''} eliminada${deletedIds.length > 1 ? 's' : ''}`);
 }
 
 function _arcToggleSelectMode() {
@@ -2454,9 +2454,9 @@ function _arcUpdateBulkBar() {
   const count = document.getElementById('archive-selected-count');
   const selectBtn = document.getElementById('archive-select-btn');
   if (bar) bar.classList.toggle('hidden', !_arc.selectMode);
-  if (count) count.textContent = `${_arc.selected.size} selected`;
+  if (count) count.textContent = `${_arc.selected.size} seleccionada(s)`;
   if (selectBtn) {
-    selectBtn.textContent = _arc.selectMode ? 'Cancel' : 'Select';
+    selectBtn.textContent = _arc.selectMode ? 'Cancelar' : 'Seleccionar';
     selectBtn.classList.toggle('active', _arc.selectMode);
   }
 }
@@ -2682,17 +2682,17 @@ export function openLibrary(defaultTab) {
       document.getElementById('lib-bulk-bar').classList.add('hidden');
       // Update bulk action button label based on tab
       const action1 = document.getElementById('lib-bulk-action1');
-      if (_lib.tab === 'archive') { action1.textContent = 'Restore'; }
-      else if (_lib.tab === 'chats') { action1.textContent = 'Archive'; }
-      else if (_lib.tab === 'research') { action1.textContent = 'Open Report'; }
-      else { action1.textContent = 'Export'; }
+      if (_lib.tab === 'archive') { action1.textContent = 'Restaurar'; }
+      else if (_lib.tab === 'chats') { action1.textContent = 'Archivar'; }
+      else if (_lib.tab === 'research') { action1.textContent = 'Ver informe'; }
+      else { action1.textContent = 'Exportar'; }
       _renderLibGrid();
     });
   });
 
   // Set initial bulk action label
   const _initAction = document.getElementById('lib-bulk-action1');
-  if (_initAction) _initAction.textContent = _lib.tab === 'archive' ? 'Restore' : _lib.tab === 'documents' ? 'Export' : 'Archive';
+  if (_initAction) _initAction.textContent = _lib.tab === 'archive' ? 'Restaurar' : _lib.tab === 'documents' ? 'Exportar' : 'Archivar';
 
   document.getElementById('lib-sort').addEventListener('change', () => { _lib.sort = document.getElementById('lib-sort').value; _renderLibGrid(); });
   document.getElementById('lib-search').addEventListener('input', (e) => {
@@ -2721,10 +2721,10 @@ export function openLibrary(defaultTab) {
   document.getElementById('lib-bulk-action1').addEventListener('click', async () => {
     if (_lib.tab === 'chats') {
       for (const sid of _lib.selected) await fetch(`${API_BASE}/api/session/${sid}/archive`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
-      uiModule.showToast(`Archived ${_lib.selected.size} sessions`);
+      uiModule.showToast(`${_lib.selected.size} sesiones archivadas`);
     } else if (_lib.tab === 'archive') {
       for (const sid of _lib.selected) await fetch(`${API_BASE}/api/session/${sid}/restore`, { method: 'POST' });
-      uiModule.showToast(`Restored ${_lib.selected.size} sessions`);
+      uiModule.showToast(`${_lib.selected.size} sesiones restauradas`);
     }
     _lib.selected.clear();
     _lib.selectMode = false;
@@ -2735,7 +2735,7 @@ export function openLibrary(defaultTab) {
 
   // Bulk delete
   document.getElementById('lib-bulk-delete').addEventListener('click', async () => {
-    if (!await uiModule.styledConfirm(`Delete ${_lib.selected.size} items?`, { confirmText: 'Delete', danger: true })) return;
+    if (!await uiModule.styledConfirm(`¿Eliminar ${_lib.selected.size} elemento(s)?`, { confirmText: 'Eliminar', danger: true })) return;
     if (_lib.tab === 'chats' || _lib.tab === 'archive') {
       for (const sid of _lib.selected) await fetch(`${API_BASE}/api/session/${sid}`, { method: 'DELETE' });
     } else if (_lib.tab === 'documents') {
@@ -2798,9 +2798,9 @@ function _renderLibChats(grid) {
     card.querySelector('.archive-menu-btn').addEventListener('click', (e) => {
       e.stopPropagation();
       _showDropdown(e.currentTarget, [
-        { label: 'Open', action: () => { closeLibrary(); selectSession(s.id); } },
-        { label: 'Archive', action: async () => { await fetch(`${API_BASE}/api/session/${s.id}/archive`, { method: 'POST', headers: { 'Content-Type': 'application/json' } }); await loadSessions(); _renderLibGrid(); } },
-        { label: 'Delete', action: async () => { if (!await uiModule.styledConfirm('Delete?', { confirmText: 'Delete', danger: true })) return; await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' }); await loadSessions(); _renderLibGrid(); }, danger: true },
+        { label: 'Abrir', action: () => { closeLibrary(); selectSession(s.id); } },
+        { label: 'Archivar', action: async () => { await fetch(`${API_BASE}/api/session/${s.id}/archive`, { method: 'POST', headers: { 'Content-Type': 'application/json' } }); await loadSessions(); _renderLibGrid(); } },
+        { label: 'Eliminar', action: async () => { if (!await uiModule.styledConfirm('¿Eliminar?', { confirmText: 'Eliminar', danger: true })) return; await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' }); await loadSessions(); _renderLibGrid(); }, danger: true },
       ]);
     });
     grid.appendChild(card);
@@ -2818,7 +2818,7 @@ async function _renderLibArchive(grid) {
     const items = data.sessions || [];
     const stats = document.getElementById('lib-stats');
     if (stats) stats.textContent = `(${data.total || items.length})`;
-    if (!items.length) { grid.innerHTML = '<div class="doclib-empty">No archived sessions</div>'; return; }
+    if (!items.length) { grid.innerHTML = '<div class="doclib-empty">No hay sesiones archivadas</div>'; return; }
     grid.innerHTML = '';
     for (const s of items) {
       const card = _buildLibCard(s.id, s.name || 'Untitled', s.message_count || 0, (s.model || '').split('/').pop(), s.updated_at);
@@ -2829,13 +2829,13 @@ async function _renderLibArchive(grid) {
       card.querySelector('.archive-menu-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         _showDropdown(e.currentTarget, [
-          { label: 'Restore', action: async () => { await fetch(`${API_BASE}/api/session/${s.id}/restore`, { method: 'POST' }); await loadSessions(); _renderLibGrid(); } },
-          { label: 'Delete', action: async () => { if (!await uiModule.styledConfirm('Delete?', { confirmText: 'Delete', danger: true })) return; await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' }); _renderLibGrid(); }, danger: true },
+          { label: 'Restaurar', action: async () => { await fetch(`${API_BASE}/api/session/${s.id}/restore`, { method: 'POST' }); await loadSessions(); _renderLibGrid(); } },
+          { label: 'Eliminar', action: async () => { if (!await uiModule.styledConfirm('¿Eliminar?', { confirmText: 'Eliminar', danger: true })) return; await fetch(`${API_BASE}/api/session/${s.id}`, { method: 'DELETE' }); _renderLibGrid(); }, danger: true },
         ]);
       });
       grid.appendChild(card);
     }
-  } catch (e) { console.error('Library archive error:', e); grid.innerHTML = '<div class="doclib-empty">Failed to load archive</div>'; }
+  } catch (e) { console.error('Library archive error:', e); grid.innerHTML = '<div class="doclib-empty">Error al cargar el archivo</div>'; }
 }
 
 async function _renderLibDocuments(grid) {
@@ -2849,7 +2849,7 @@ async function _renderLibDocuments(grid) {
     const docs = data.documents || [];
     const stats = document.getElementById('lib-stats');
     if (stats) stats.textContent = `(${data.total || docs.length})`;
-    if (!docs.length) { grid.innerHTML = '<div class="doclib-empty">No documents found</div>'; return; }
+    if (!docs.length) { grid.innerHTML = '<div class="doclib-empty">No se encontraron documentos</div>'; return; }
     grid.innerHTML = '';
     for (const d of docs) {
       const card = _buildLibCard(d.id, d.title || 'Untitled', d.version_count || 1, d.language || 'text', d.updated_at, false, true);
@@ -2867,18 +2867,18 @@ async function _renderLibDocuments(grid) {
       card.querySelector('.archive-menu-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         _showDropdown(e.currentTarget, [
-          { label: 'Open', action: () => { if (d.session_id) { closeLibrary(); selectSession(d.session_id); } } },
-          { label: 'Delete', action: async () => { if (!await uiModule.styledConfirm('Delete?', { confirmText: 'Delete', danger: true })) return; await fetch(`${API_BASE}/api/document/${d.id}`, { method: 'DELETE' }); _renderLibGrid(); }, danger: true },
+          { label: 'Abrir', action: () => { if (d.session_id) { closeLibrary(); selectSession(d.session_id); } } },
+          { label: 'Eliminar', action: async () => { if (!await uiModule.styledConfirm('¿Eliminar?', { confirmText: 'Eliminar', danger: true })) return; await fetch(`${API_BASE}/api/document/${d.id}`, { method: 'DELETE' }); _renderLibGrid(); }, danger: true },
         ]);
       });
       grid.appendChild(card);
     }
-  } catch (e) { console.error('Library documents error:', e); grid.innerHTML = '<div class="doclib-empty">Failed to load documents</div>'; }
+  } catch (e) { console.error('Library documents error:', e); grid.innerHTML = '<div class="doclib-empty">Error al cargar los documentos</div>'; }
 }
 
 async function _renderLibResearch(grid) {
   grid.innerHTML = '';
-  grid.appendChild(spinnerModule.createLoadingRow('Loading research…'));
+  grid.appendChild(spinnerModule.createLoadingRow('Cargando investigaciones…'));
   try {
     const params = new URLSearchParams({ limit: '50', sort: _lib.sort });
     if (_lib.search) params.set('search', _lib.search);
@@ -2890,7 +2890,7 @@ async function _renderLibResearch(grid) {
     if (statsEl) statsEl.textContent = `${data.total || 0} research`;
     grid.innerHTML = '';
     if (!items.length) {
-      grid.innerHTML = '<div class="doclib-empty">No research found</div>';
+      grid.innerHTML = '<div class="doclib-empty">No se encontraron investigaciones</div>';
       return;
     }
     for (const item of items) {
@@ -2914,16 +2914,16 @@ async function _renderLibResearch(grid) {
         menuBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           _showDropdown(e.currentTarget, [
-            { label: 'Open Report', action: () => window.open(`${API_BASE}/api/research/report/${item.id}`, '_blank') },
-            { label: 'Re-run', action: () => {
+            { label: 'Ver informe', action: () => window.open(`${API_BASE}/api/research/report/${item.id}`, '_blank') },
+            { label: 'Volver a ejecutar', action: () => {
               const modal = document.getElementById('library-modal');
               if (modal) modal.style.display = 'none';
               const msgInput = document.getElementById('message');
               if (msgInput) { msgInput.value = item.query; msgInput.focus(); }
-              uiModule.showToast('Toggle Research and send to re-run');
+              uiModule.showToast('Activa Investigación y envía para relanzar');
             }},
             { label: 'Delete', danger: true, action: async () => {
-              if (!await window.styledConfirm('Delete this research?', { confirmText: 'Delete', danger: true })) return;
+              if (!await window.styledConfirm('¿Eliminar esta investigación?', { confirmText: 'Delete', danger: true })) return;
               await fetch(`${API_BASE}/api/research/${item.id}`, { method: 'DELETE' });
               _renderLibGrid();
             }},
@@ -2932,7 +2932,7 @@ async function _renderLibResearch(grid) {
       }
       grid.appendChild(card);
     }
-  } catch (e) { console.error('Library research error:', e); grid.innerHTML = '<div class="doclib-empty">Failed to load research</div>'; }
+  } catch (e) { console.error('Library research error:', e); grid.innerHTML = '<div class="doclib-empty">Error al cargar las investigaciones</div>'; }
 }
 
 function _buildLibCard(id, title, count, meta, time, isActive, isDoc) {

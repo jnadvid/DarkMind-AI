@@ -50,7 +50,7 @@ export function wireTopbarMenus({
   // can call it.
   function applyResize(newW, newH) {
     if (!newW || !newH || newW < 1 || newH < 1) {
-      uiModule.showToast('Invalid size');
+      uiModule.showToast('Tamaño no válido');
       return;
     }
     saveState('Resize canvas');
@@ -74,13 +74,13 @@ export function wireTopbarMenus({
     if (sizeLabel) sizeLabel.textContent = `${newW}×${newH}`;
     fitZoom();
     composite();
-    uiModule.showToast(`Canvas resized to ${newW}×${newH}`);
+    uiModule.showToast(`Lienzo redimensionado a ${newW}×${newH}`);
   }
 
   async function resizeCustomPrompt() {
     const result = await promptCanvasSize({
-      title: 'Canvas size',
-      okLabel: 'Apply',
+      title: 'Tamaño del lienzo',
+      okLabel: 'Aplicar',
       initialW: state.imgWidth,
       initialH: state.imgHeight,
     });

@@ -13,10 +13,11 @@ import { computeProgressSignal } from './cookbookProgressSignal.js';
 // the word "error" in the sidebar — a server the user stopped or one that
 // quit cleanly reads as "stopped", not "error".
 function _statusLabel(status, type) {
-  if (status === 'running' && type === 'download') return 'downloading';
-  if (status === 'done' && type === 'download') return 'finished';
-  if (status === 'error') return 'stopped';
-  return status || '';
+  if (status === 'running' && type === 'download') return 'descargando';
+  if (status === 'done' && type === 'download') return 'finalizado';
+  if (status === 'error') return 'detenido';
+  const _labels = { running: 'ejecutando', done: 'listo', stopped: 'detenido', queued: 'en cola', crashed: 'caído', error: 'error', failed: 'fallido', ready: 'listo', unreachable: 'inalcanzable' };
+  return _labels[status] || status || '';
 }
 
 // Single source of truth for what a task's status badge shows + its style class.
@@ -26,7 +27,7 @@ function _statusLabel(status, type) {
 // every re-render. Returns { text, cls } where cls is appended after
 // "cookbook-task-status" ('' = the neutral loading style).
 function _taskBadge(task) {
-  if (task._unreachable && task.status === 'running') return { text: 'unreachable', cls: 'cookbook-task-error' };
+  if (task._unreachable && task.status === 'running') return { text: 'inalcanzable', cls: 'cookbook-task-error' };
   if (task.type === 'serve' && task.status === 'running' && task.progress) {
     // Same green "running" pill — just with dynamic phase text, so it doesn't
     // read as a different status while the server is coming up.
@@ -62,8 +63,8 @@ function _canClearTask(task) {
 }
 
 function _clearPillLabel(task) {
-  if (_downloadOutputLooksActive(task)) return 'reconnect';
-  return 'clear';
+  if (_downloadOutputLooksActive(task)) return 'reconectar';
+  return 'limpiar';
 }
 
 // A pip dependency/driver install (payload._dep) reports success with the
@@ -978,7 +979,7 @@ function _autoSaveWorkingConfig(task) {
   });
   _savePresets(presets);
   task._autoSaved = true;
-  uiModule.showToast('Saved working config');
+  uiModule.showToast('Configuración funcionando guardada');
 }
 
 // ── Cross-device sync ──
@@ -1103,7 +1104,7 @@ async function _retryTask(el, task) {
       _removeTask(task.sessionId);
       _launchServeTask(task.name, task.payload.repo_id, task.payload._cmd, task.payload._fields, task.remoteHost || '');
     } else {
-      uiModule.showToast('Retrying download — progress may look reset while HuggingFace checks cached files, then it should resume.', 7000);
+      uiModule.showToast('Reintentando descarga — el progreso puede parecer que se ha reiniciado mientras HuggingFace comprueba los archivos en caché; luego debería reanudarse.', 7000);
       _updateTask(task.sessionId, {
         status: 'running',
         output: `${task.output || ''}\n\n[darkmind] Retrying download. Progress may briefly look like a fresh download while HuggingFace checks cached/incomplete files; cached partial files will be reused when available.`.trim(),
@@ -1126,13 +1127,13 @@ async function _retryDownload(name, payload, replaceSessionId = '') {
       body: JSON.stringify(_payload),
     });
     if (!res.ok) {
-      uiModule.showToast('Download failed: HTTP ' + res.status);
+      uiModule.showToast('Descarga fallida: HTTP ' + res.status);
       if (replaceSessionId) _updateTask(replaceSessionId, { status: 'crashed', _retrying: false });
       return;
     }
     const data = await res.json();
     if (!data.ok) {
-      uiModule.showToast('Download failed: ' + (data.error || ''));
+      uiModule.showToast('Descarga fallida: ' + (data.error || ''));
       if (replaceSessionId) _updateTask(replaceSessionId, { status: 'crashed', _retrying: false });
       return;
     }
@@ -1157,9 +1158,9 @@ async function _retryDownload(name, payload, replaceSessionId = '') {
     } else {
       _addTask(data.session_id, name, 'download', _payload);
     }
-    uiModule.showToast(`Downloading ${name}...`);
+    uiModule.showToast(`Descargando ${name}...`);
   } catch (e) {
-    uiModule.showToast('Download failed: ' + e.message);
+    uiModule.showToast('Descarga fallida: ' + e.message);
     if (replaceSessionId) _updateTask(replaceSessionId, { status: 'crashed', _retrying: false });
   }
 }
@@ -1208,7 +1209,7 @@ export async function _serveAutoFix(panel, envVar) {
   const origHost = _envState.remoteHost;
   if (task.remoteHost) _envState.remoteHost = task.remoteHost;
   try {
-    uiModule.showToast(`Retrying with ${envVar}...`);
+    uiModule.showToast(`Reintentando con ${envVar}...`);
     await _launchServeTask(task.name, task.payload.repo_id, newCmd);
   } finally {
     // Always restore — otherwise a thrown launch leaves the global host stuck
@@ -1223,7 +1224,7 @@ export async function _serveAutoFix(panel, envVar) {
 // adjusted setting, instead of blindly relaunching).
 async function _openServeEditForTask(task, cmdOverride, fieldOverrides = null) {
   const repo = task.payload?.repo_id;
-  if (!repo) { uiModule.showToast('No model info on this task'); return; }
+  if (!repo) { uiModule.showToast('Sin información del modelo en esta tarea'); return; }
   const cmd = cmdOverride || task.payload?._cmd;
   // A modified cmd must be re-parsed; otherwise prefer the exact launch fields.
   let fields = cmdOverride
@@ -1247,7 +1248,7 @@ async function _openServeEditForTask(task, cmdOverride, fieldOverrides = null) {
     await openServePanelForRepo(repo, fields);
   } catch (err) {
     console.error('[cookbook] open serve panel failed', err);
-    uiModule.showToast('Could not open serve panel');
+    uiModule.showToast('No se pudo abrir el panel de servicio');
   }
 }
 
@@ -1281,7 +1282,7 @@ export async function _serveAutoRetryReplace(panel, flag, value) {
   const origHost = _envState.remoteHost;
   if (task.remoteHost) _envState.remoteHost = task.remoteHost;
   try {
-    uiModule.showToast(`Retrying with ${flag} ${value}...`);
+    uiModule.showToast(`Reintentando con ${flag} ${value}...`);
     await _launchServeTask(task.name, task.payload.repo_id, newCmd);
   } finally {
     _envState.remoteHost = origHost;
@@ -1314,7 +1315,7 @@ export async function _serveAutoRetryRemove(panel, flag) {
   const origHost = _envState.remoteHost;
   if (task.remoteHost) _envState.remoteHost = task.remoteHost;
   try {
-    uiModule.showToast(`Retrying without ${flag}...`);
+    uiModule.showToast(`Reintentando sin ${flag}...`);
     await _launchServeTask(task.name, task.payload.repo_id, newCmd);
   } finally {
     _envState.remoteHost = origHost;
@@ -1348,7 +1349,7 @@ export async function _serveAutoRetry(panel, flag) {
   const origHost = _envState.remoteHost;
   if (task.remoteHost) _envState.remoteHost = task.remoteHost;
   try {
-    uiModule.showToast(`Retrying with ${flag}...`);
+    uiModule.showToast(`Reintentando con ${flag}...`);
     await _launchServeTask(task.name, task.payload.repo_id, newCmd);
   } finally {
     _envState.remoteHost = origHost;
@@ -1364,11 +1365,11 @@ function _promptEditServeCmd(currentCmd) {
     overlay.className = 'cookbook-edit-overlay';
     overlay.innerHTML = `
       <div class="cookbook-edit-modal">
-        <div class="cookbook-edit-title">Edit serve command</div>
+        <div class="cookbook-edit-title">Editar comando de servicio</div>
         <textarea class="cookbook-edit-textarea" spellcheck="false"></textarea>
         <div class="cookbook-edit-actions">
-          <button class="cookbook-edit-cancel memory-toolbar-btn">Cancel</button>
-          <button class="cookbook-edit-save memory-toolbar-btn">Save &amp; relaunch</button>
+          <button class="cookbook-edit-cancel memory-toolbar-btn">Cancelar</button>
+          <button class="cookbook-edit-save memory-toolbar-btn">Guardar y relanzar</button>
         </div>
       </div>`;
     const ta = overlay.querySelector('.cookbook-edit-textarea');
@@ -1521,7 +1522,7 @@ export async function _launchServeTask(shortName, repo, cmd, fields, hostOverrid
       // + log full payload so the user can copy the error.
       const err = data.error || data.detail || res.statusText || 'unknown';
       console.error('[cookbook] /api/model/serve failed', { status: res.status, body: data });
-      uiModule.showToast('Failed to start: ' + String(err).slice(0, 200), 9000);
+      uiModule.showToast('Error al iniciar: ' + String(err).slice(0, 200), 9000);
       return;
     }
 
@@ -1531,9 +1532,9 @@ export async function _launchServeTask(shortName, repo, cmd, fields, hostOverrid
     // with these precise settings (not just the last-used-for-repo state).
     const payload = { repo_id: repo, remote_host: _host || undefined, ssh_port: _sp || undefined, _cmd: cmd, _fields: fields || undefined, _env: _usedEnv, _envPath: _usedEnvPath, _gpus: _usedGpus };
     _addTask(data.session_id, shortName, 'serve', payload);
-    uiModule.showToast(`Serving ${shortName}...`);
+    uiModule.showToast(`Sirviendo ${shortName}...`);
   } catch (e) {
-    uiModule.showToast('Failed: ' + e.message);
+    uiModule.showToast('Error: ' + e.message);
   }
 }
 
@@ -1606,7 +1607,7 @@ export function _renderRunningTab() {
     runTab.className = 'cookbook-tab';
     runTab.dataset.backend = 'Running';
     const _errCount = tasks.filter(t => t.status === 'error' || t.status === 'crashed').length;
-    runTab.innerHTML = `Running${activeCountHtml}${_errCount ? `<span class="cookbook-tab-error-dot"></span>` : ''}`;
+    runTab.innerHTML = `En ejecución${activeCountHtml}${_errCount ? `<span class="cookbook-tab-error-dot"></span>` : ''}`;
     tabBar.insertBefore(runTab, tabBar.firstChild);
     runTab.addEventListener('click', () => {
       tabBar.querySelectorAll('.cookbook-tab').forEach(t => t.classList.remove('active'));
@@ -1617,7 +1618,7 @@ export function _renderRunningTab() {
     });
   } else if (runTab) {
     const _errCount2 = tasks.filter(t => t.status === 'error' || t.status === 'crashed').length;
-    runTab.innerHTML = tasks.length ? `Running${activeCountHtml}${_errCount2 ? '<span class="cookbook-tab-error-dot"></span>' : ''}` : 'Running';
+    runTab.innerHTML = tasks.length ? `En ejecución${activeCountHtml}${_errCount2 ? '<span class="cookbook-tab-error-dot"></span>' : ''}` : 'En ejecución';
     if (!hasContent) {
       if (runTab.classList.contains('active')) {
         const wfTab = tabBar.querySelector('.cookbook-tab[data-backend="Search"]');
@@ -1634,9 +1635,9 @@ export function _renderRunningTab() {
     group.dataset.backendGroup = 'Running';
     group.innerHTML = '<div class="admin-card" style="flex:1;display:flex;flex-direction:column;overflow:hidden;">' +
       '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;">' +
-      '<h2 style="margin:0;padding:0;line-height:1;">Running <span id="running-count" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal">' + activeCount + '</span></h2>' +
+      '<h2 style="margin:0;padding:0;line-height:1;">En ejecución <span id="running-count" class="memory-count" style="font-size:0.6em;opacity:0.6;font-weight:normal">' + activeCount + '</span></h2>' +
       '</div>' +
-      '<p class="memory-desc doclib-desc" style="margin-top:6px;">Active downloads and serving processes.</p>' +
+      '<p class="memory-desc doclib-desc" style="margin-top:6px;">Descargas activas y procesos de servicio.</p>' +
       '</div>';
     const firstGroup = body.querySelector('.cookbook-group');
     if (firstGroup) body.insertBefore(group, firstGroup);
@@ -1712,8 +1713,8 @@ export function _renderRunningTab() {
       // Glowy status dot next to the server name (like the Settings server card):
       // green when reachable, red if any serve task on it is crashed/unreachable.
       const _secDot = (key && allTasks.some(_serveTaskFailed)) ? 'fail' : 'ok';
-      const _dotTitle = key ? (_secDot === 'fail' ? 'Server not responding' : 'Reachable') : 'Local (this machine)';
-      sec.insertAdjacentHTML('afterbegin', `<div class="cookbook-section-header" data-collapse="${bodyId}"><svg class="cookbook-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="cookbook-srv-status ${_secDot}" title="${_dotTitle}" style="flex-shrink:0;position:relative;top:0px;"></span><span class="cookbook-section-title" style="margin:0;">${esc(sg.name)}</span><button class="cookbook-btn cookbook-stop-all-btn" data-stop-server="${esc(key)}">Stop all</button><button class="cookbook-btn cookbook-clear-btn" data-clear-server="${esc(key)}">Clear finished</button></div><div id="${bodyId}" class="cookbook-section-body"></div>`);
+      const _dotTitle = key ? (_secDot === 'fail' ? 'El servidor no responde' : 'Accesible') : 'Local (esta máquina)';
+      sec.insertAdjacentHTML('afterbegin', `<div class="cookbook-section-header" data-collapse="${bodyId}"><svg class="cookbook-section-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="cookbook-srv-status ${_secDot}" title="${_dotTitle}" style="flex-shrink:0;position:relative;top:0px;"></span><span class="cookbook-section-title" style="margin:0;">${esc(sg.name)}</span><button class="cookbook-btn cookbook-stop-all-btn" data-stop-server="${esc(key)}">Detener todo</button><button class="cookbook-btn cookbook-clear-btn" data-clear-server="${esc(key)}">Limpiar finalizados</button></div><div id="${bodyId}" class="cookbook-section-body"></div>`);
     }
   }
 
@@ -1724,7 +1725,7 @@ export function _renderRunningTab() {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();  // don't toggle the section collapse (was an inline onclick, blocked by CSP)
       const host = btn.dataset.clearServer;
-      if (!await window.styledConfirm(`Clear finished tasks on ${_serverName(host)}?`, { confirmText: 'Clear' })) return;
+      if (!await window.styledConfirm(`¿Limpiar las tareas finalizadas en ${_serverName(host)}?`, { confirmText: 'Limpiar' })) return;
       const allTasks = _loadTasks();
       const toRemove = allTasks.filter(t => (t.remoteHost || '') === host && _canClearTask(t));
       const remaining = allTasks.filter(t => (t.remoteHost || '') !== host || !_canClearTask(t));
@@ -1762,8 +1763,8 @@ export function _renderRunningTab() {
       e.stopPropagation();  // don't toggle the section collapse
       const host = btn.dataset.stopServer;
       const running = _loadTasks().filter(t => (t.remoteHost || '') === host && t.status === 'running');
-      if (!running.length) { uiModule.showToast(`Nothing running on ${_serverName(host)}`); return; }
-      if (!await window.styledConfirm(`Stop ${running.length} running task${running.length > 1 ? 's' : ''} on ${_serverName(host)}?`, { confirmText: 'Stop all' })) return;
+      if (!running.length) { uiModule.showToast(`Nada en ejecución en ${_serverName(host)}`); return; }
+      if (!await window.styledConfirm(`¿Detener ${running.length} tarea${running.length > 1 ? 's' : ''} en ejecución en ${_serverName(host)}?`, { confirmText: 'Detener todo' })) return;
       // Mark every task as user-stopped BEFORE firing the kills so that the
       // download auto-retry logic never restarts a task the user just stopped.
       running.forEach(t => _updateTask(t.sessionId, { _userStopped: true }));
@@ -1773,7 +1774,7 @@ export function _renderRunningTab() {
         const el = document.querySelector(`.cookbook-task[data-task-id="${t.sessionId}"]`);
         el?.querySelector('.cookbook-task-action-stop')?.click();
       });
-      uiModule.showToast(`Stopped ${running.length} task${running.length > 1 ? 's' : ''} on ${_serverName(host)}`);
+      uiModule.showToast(`Detenida${running.length > 1 ? 's' : ''} ${running.length} tarea${running.length > 1 ? 's' : ''} en ${_serverName(host)}`);
     });
   });
 
@@ -1853,17 +1854,17 @@ export function _renderRunningTab() {
     el.dataset.type = task.type || '';
 
     const _bdg = _taskBadge(task);
-    const _bdgTitle = (task._unreachable && task.status === 'running') ? ' title="Server not responding — it may have crashed"' : '';
+    const _bdgTitle = (task._unreachable && task.status === 'running') ? ' title="El servidor no responde — puede que se haya caído"' : '';
     el.innerHTML = `
       <div class="cookbook-task-header">
-        <span class="cookbook-task-type${(task.status === 'done' && task.type === 'download') ? ' cookbook-task-type-done' : ''}" data-type="${esc(task.type)}">${esc((task.status === 'done' && task.type === 'download') ? 'finished' : task.type)}</span>
+        <span class="cookbook-task-type${(task.status === 'done' && task.type === 'download') ? ' cookbook-task-type-done' : ''}" data-type="${esc(task.type)}">${esc((task.status === 'done' && task.type === 'download') ? 'finalizado' : task.type)}</span>
         <span class="cookbook-task-name">${modelLogo(task.name)}${esc(task.name)}</span>
-        <span class="cookbook-task-indicator"><span class="cookbook-task-wave" style="display:${task.status === 'running' ? '' : 'none'}"></span><span class="cookbook-task-check" title="Clear" style="display:${_canClearTask(task) ? '' : 'none'}"><svg class="cookbook-task-check-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#50fa7b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><svg class="cookbook-task-clear-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="cookbook-task-done-label">${esc(_clearPillLabel(task))}</span><span class="cookbook-task-clear-label">clear</span></span></span>
-        <button type="button" class="cookbook-task-start-now" title="Start this queued download now" style="display:${(task.type === 'download' && task.status === 'queued') ? '' : 'none'}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="8 5 19 12 8 19 8 5"/></svg><span>start now</span></button>
+        <span class="cookbook-task-indicator"><span class="cookbook-task-wave" style="display:${task.status === 'running' ? '' : 'none'}"></span><span class="cookbook-task-check" title="Limpiar" style="display:${_canClearTask(task) ? '' : 'none'}"><svg class="cookbook-task-check-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#50fa7b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><svg class="cookbook-task-clear-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span class="cookbook-task-done-label">${esc(_clearPillLabel(task))}</span><span class="cookbook-task-clear-label">limpiar</span></span></span>
+        <button type="button" class="cookbook-task-start-now" title="Iniciar esta descarga en cola ahora" style="display:${(task.type === 'download' && task.status === 'queued') ? '' : 'none'}"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="8 5 19 12 8 19 8 5"/></svg><span>iniciar ahora</span></button>
         <span class="cookbook-task-status ${_bdg.cls}"${_bdgTitle}>${esc(_bdg.text)}</span>
-        <button class="cookbook-task-menu-btn" title="Actions">&#8942;</button>
+        <button class="cookbook-task-menu-btn" title="Acciones">&#8942;</button>
       </div>
-      <div class="cookbook-task-sub"><span class="cookbook-task-session">${esc(task.sessionId)}</span><span class="cookbook-task-uptime" style="display:${((task.type === 'serve' || task.type === 'download') && task.status === 'running') ? '' : 'none'}"></span>${(task.type === 'download') ? `<span class="cookbook-task-dldir" title="Download destination" style="font-size:9px;color:var(--fg-muted);font-family:'Fira Code',monospace;opacity:0.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch;">Dir: ${esc(task.payload?.local_dir || '~/.cache/huggingface/hub')}</span>` : ''}</div>
+      <div class="cookbook-task-sub"><span class="cookbook-task-session">${esc(task.sessionId)}</span><span class="cookbook-task-uptime" style="display:${((task.type === 'serve' || task.type === 'download') && task.status === 'running') ? '' : 'none'}"></span>${(task.type === 'download') ? `<span class="cookbook-task-dldir" title="Destino de descarga" style="font-size:9px;color:var(--fg-muted);font-family:'Fira Code',monospace;opacity:0.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40ch;">Dir: ${esc(task.payload?.local_dir || '~/.cache/huggingface/hub')}</span>` : ''}</div>
       <div class="cookbook-output-wrap cookbook-task-collapsible${_mobileCollapseDefault ? ' cookbook-task-collapsed' : ''}"><pre class="cookbook-output-pre">${esc(task.output || '')}</pre><button type="button" class="copy-code cookbook-output-copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
     `;
 
@@ -1876,7 +1877,7 @@ export function _renderRunningTab() {
     const _uptimeEl = el.querySelector('.cookbook-task-uptime');
     if (_uptimeEl && (task.type === 'serve' || task.type === 'download') && task.status === 'running') {
       const _startedAt = task.ts || Date.now();
-      const _prefix = task.type === 'download' ? 'downloading' : 'uptime';
+      const _prefix = task.type === 'download' ? 'descargando' : 'activo';
       el._uptimeInterval = setInterval(() => {
         const secs = Math.floor((Date.now() - _startedAt) / 1000);
         const h = Math.floor(secs / 3600);
@@ -1926,7 +1927,7 @@ export function _renderRunningTab() {
         _serveBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
           const repo = task.payload?.repo_id || task.name;
-          if (!repo) { uiModule.showToast('No model info on this task'); return; }
+          if (!repo) { uiModule.showToast('Sin información del modelo en esta tarea'); return; }
           // Point the active server at the one it downloaded to.
           const _tHost = task.remoteHost || '';
           _envState.remoteHost = _tHost;
@@ -2051,35 +2052,35 @@ export function _renderRunningTab() {
         // Queued download: let the user jump the queue and start it immediately
         // (downloads otherwise run one-at-a-time per server).
         if (task.type === 'download' && task.status === 'queued') {
-          items.push({ label: 'Start now', action: 'start-now', custom: () => {
+          items.push({ label: 'Iniciar ahora', action: 'start-now', custom: () => {
             _startQueuedDownload(task);
             _renderRunningTab();
           }});
         }
         if (task.status !== 'running' && task.status !== 'queued') {
-          items.push({ label: 'Reconnect', action: 'reconnect' });
+          items.push({ label: 'Reconectar', action: 'reconnect' });
         }
         if (task.status === 'running') {
-          items.push({ label: 'Stop', action: 'stop', danger: true });
+          items.push({ label: 'Detener', action: 'stop', danger: true });
         }
-        items.push({ label: 'Restart', action: 'retry' });
+        items.push({ label: 'Reiniciar', action: 'retry' });
         // Edit serve — open the full serve panel (same as the edit icon),
         // switching to this task's server first so the model is found.
         if (task.type === 'serve' && task.payload?.repo_id) {
-          items.push({ label: 'Edit serve', action: 'edit-panel', custom: () => _openEdit() });
+          items.push({ label: 'Editar servicio', action: 'edit-panel', custom: () => _openEdit() });
         }
         // Save serve — save current launch config as a preset.
         if (task.type === 'serve' && task.payload?._cmd) {
-          items.push({ label: 'Save serve', action: 'save', custom: () => {
-            if (!_saveTaskAsPreset(task)) { uiModule.showToast('Already saved'); return; }
-            uiModule.showToast('Saved to presets');
+          items.push({ label: 'Guardar servicio', action: 'save', custom: () => {
+            if (!_saveTaskAsPreset(task)) { uiModule.showToast('Ya guardado'); return; }
+            uiModule.showToast('Guardado en preajustes');
             _renderRunningTab();
           }});
         }
         // Edit command — only meaningful for serve tasks that aren't running.
         // Lets the user tweak flags after a crash/error and relaunch.
         if (task.type === 'serve' && task.status !== 'running' && task.payload?._cmd) {
-          items.push({ label: 'Edit command', action: 'edit', custom: async () => {
+          items.push({ label: 'Editar comando', action: 'edit', custom: async () => {
             const newCmd = await _promptEditServeCmd(task.payload._cmd);
             if (newCmd == null) return; // cancelled
             try {
@@ -2098,7 +2099,7 @@ export function _renderRunningTab() {
         // (e.g. probe timeout on a remote that's slow). Forces adding this
         // serve to the model-endpoints list regardless of prior flag state.
         if (task.type === 'serve' && task.payload?._cmd) {
-          items.push({ label: 'Register endpoint', action: 'register-endpoint', custom: async () => {
+          items.push({ label: 'Registrar endpoint', action: 'register-endpoint', custom: async () => {
             const host = _connectHostFromRemote(task.remoteHost);
             const portMatch = task.payload?._cmd?.match(/--port\s+(\d+)/);
             const port = portMatch ? portMatch[1] : '8000';
@@ -2108,7 +2109,7 @@ export function _renderRunningTab() {
               const eps = await (await fetch('/api/model-endpoints', { credentials: 'same-origin' })).json();
               const existing = eps.find(e => e.base_url === baseUrl);
               if (existing) {
-                uiModule.showToast(`Already registered as "${existing.name}"`);
+                uiModule.showToast(`Ya registrado como "${existing.name}"`);
                 task._endpointAdded = true;
                 _updateTask(task.sessionId, { _endpointAdded: true });
                 _refreshModelsAfterEndpointChange();
@@ -2128,7 +2129,7 @@ export function _renderRunningTab() {
               if (res.ok) {
                 task._endpointAdded = true;
                 _updateTask(task.sessionId, { _endpointAdded: true });
-                uiModule.showToast(`Endpoint registered: ${host}:${port}`);
+                uiModule.showToast(`Endpoint registrado: ${host}:${port}`);
                 _refreshModelsAfterEndpointChange();
                 // Added with skip_probe → probe until the (possibly still
                 // warming) server answers, so it flips online on its own.
@@ -2149,35 +2150,35 @@ export function _renderRunningTab() {
           const logCmd = host
             ? `ssh ${_sshPrefix(_getPort(task))}${host} "powershell -Command \\"Get-Content '${sd}\\${task.sessionId}.log' -Wait\\""`
             : `powershell -Command "Get-Content (Join-Path $env:TEMP 'darkmind-tmux\\${task.sessionId}.log') -Wait"`;
-          items.push({ label: 'Copy log cmd', action: 'copy-tmux', custom: () => {
+          items.push({ label: 'Copiar cmd de log', action: 'copy-tmux', custom: () => {
             _copyText(logCmd);
           }});
         } else {
           // Just the tmux command itself — no ssh wrapper.
           const tmuxAttach = `tmux attach -t ${task.sessionId}`;
-          items.push({ label: 'Copy tmux', action: 'copy-tmux', custom: () => {
+          items.push({ label: 'Copiar tmux', action: 'copy-tmux', custom: () => {
             _copyText(tmuxAttach);
           }});
         }
         if (_shouldOfferCrashReport(task)) {
-          items.push({ label: 'Copy crash report', action: 'copy-crash-report', custom: () => {
+          items.push({ label: 'Copiar informe de error', action: 'copy-crash-report', custom: () => {
             const out = (el.querySelector('.cookbook-output-pre')?.textContent || task.output || '');
             _copyText(_buildCrashReport(task, out));
-            uiModule.showToast('Copied crash report');
+            uiModule.showToast('Informe de error copiado');
           }});
         }
         // Copy the last 50 lines of the task's output/log.
-        items.push({ label: 'Copy last 50 lines', action: 'copy-log', custom: () => {
+        items.push({ label: 'Copiar últimas 50 líneas', action: 'copy-log', custom: () => {
           const out = (el.querySelector('.cookbook-output-pre')?.textContent || task.output || '');
           const last = out.split('\n').slice(-50).join('\n');
           _copyText(last);
-          uiModule.showToast('Copied last 50 lines');
+          uiModule.showToast('Últimas 50 líneas copiadas');
         }});
-        items.push({ label: 'Remove', action: 'kill', danger: true });
+        items.push({ label: 'Eliminar', action: 'kill', danger: true });
         // Cancel = mobile-only dismiss item. Same pattern as the email kebab:
         // the `dropdown-cancel-mobile` class is hidden on desktop and styled
         // as a separated bottom row on mobile (border-top + extra padding).
-        items.push({ label: 'Cancel', action: 'cancel', mobileOnly: true, custom: () => {} });
+        items.push({ label: 'Cancelar', action: 'cancel', mobileOnly: true, custom: () => {} });
 
         const _MENU_ICONS = {
           'start-now': '<polygon points="6 4 20 12 6 20 6 4"/>',

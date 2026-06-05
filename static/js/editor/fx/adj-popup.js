@@ -134,10 +134,10 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
     menu.style.zIndex = '10002';
     menu.style.pointerEvents = 'auto';
     const items = [
-      { type: 'brightness-contrast', label: 'Brightness / Contrast' },
-      { type: 'hue-saturation',      label: 'Hue / Saturation' },
-      { type: 'levels',              label: 'Levels' },
-      { type: 'color-balance',       label: 'Color Balance' },
+      { type: 'brightness-contrast', label: 'Brillo / Contraste' },
+      { type: 'hue-saturation',      label: 'Tono / Saturación' },
+      { type: 'levels',              label: 'Niveles' },
+      { type: 'color-balance',       label: 'Balance de color' },
     ];
     menu.innerHTML = items.map(i =>
       `<button class="ge-fx-menu-item" data-fx-type="${i.type}"><span class="ge-fx-menu-icon">${ADJ_ICONS[i.type] || ''}</span><span>${i.label}</span></button>`
@@ -300,13 +300,13 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
       <span class="ge-adj-icon">${ADJ_ICONS[type] || ''}</span>
       <span class="ge-adj-title">${adjLayerLabel(type)}</span>
       <span class="ge-head-btns">
-        <button class="ge-adj-min" type="button" title="Minimise">&minus;</button>
+        <button class="ge-adj-min" type="button" title="Minimizar">&minus;</button>
       </span>
     </div>
     <div class="ge-adj-body" data-adj-body></div>
     <div class="ge-adj-foot">
-      <button class="ge-btn ge-btn-sm ge-adj-cancel-btn" data-adj-action="cancel">Cancel</button>
-      <button class="ge-btn ge-btn-sm ge-btn-primary ge-adj-apply-btn" data-adj-action="ok">Apply</button>
+      <button class="ge-btn ge-btn-sm ge-adj-cancel-btn" data-adj-action="cancel">Cancelar</button>
+      <button class="ge-btn ge-btn-sm ge-btn-primary ge-adj-apply-btn" data-adj-action="ok">Aplicar</button>
     </div>
     `;
     document.body.appendChild(pop);
@@ -439,22 +439,22 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
         <label>${label}</label>
         <input type="range" min="${min}" max="${max}" value="${value}" data-key="${key}" />
         <span class="ge-adj-value">${value}${suffix || ''}</span>
-        <button class="ge-adj-revert" type="button" title="Reset this slider" data-revert-key="${key}">${revertIcon}</button>
+        <button class="ge-adj-revert" type="button" title="Restablecer este control" data-revert-key="${key}">${revertIcon}</button>
       </div>
     `;
     if (type === 'brightness-contrast') {
       const bSlider = Math.round((p.brightness - 1) * 100);
       const cSlider = Math.round((p.contrast - 1) * 100);
       body.innerHTML = `
-      ${sliderRow('brightness', 'Brightness', -100, 100, bSlider, '')}
-      ${sliderRow('contrast',   'Contrast',   -100, 100, cSlider, '')}
+      ${sliderRow('brightness', 'Brillo',    -100, 100, bSlider, '')}
+      ${sliderRow('contrast',   'Contraste', -100, 100, cSlider, '')}
     `;
     } else if (type === 'hue-saturation') {
       const hSlider = Math.round(p.hue);
       const sSlider = Math.round((p.saturation - 1) * 100);
       body.innerHTML = `
-      ${sliderRow('hue',        'Hue',        -180, 180, hSlider, ' °')}
-      ${sliderRow('saturation', 'Saturation', -100, 100, sSlider, '')}
+      ${sliderRow('hue',        'Tono',       -180, 180, hSlider, ' °')}
+      ${sliderRow('saturation', 'Saturación', -100, 100, sSlider, '')}
     `;
     } else if (type === 'levels') {
       // Histogram canvas + sliders. Histogram is computed from the
@@ -465,21 +465,21 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
       const isMobile = window.matchMedia('(max-width: 820px)').matches;
       body.innerHTML = `
       <details class="ge-adj-hist-details"${isMobile ? '' : ' open'}>
-        <summary>Histogram</summary>
+        <summary>Histograma</summary>
         <div class="ge-adj-hist-wrap">
           <canvas class="ge-adj-histogram" width="280" height="80"></canvas>
           <div class="ge-adj-hist-handles">
-            <div class="ge-adj-hist-handle hist-h-black"  data-handle="inBlack"  title="Input black — drag"></div>
-            <div class="ge-adj-hist-handle hist-h-gamma"  data-handle="gamma"    title="Gamma — drag"></div>
-            <div class="ge-adj-hist-handle hist-h-white"  data-handle="inWhite"  title="Input white — drag"></div>
+            <div class="ge-adj-hist-handle hist-h-black"  data-handle="inBlack"  title="Negro de entrada — arrastra"></div>
+            <div class="ge-adj-hist-handle hist-h-gamma"  data-handle="gamma"    title="Gamma — arrastra"></div>
+            <div class="ge-adj-hist-handle hist-h-white"  data-handle="inWhite"  title="Blanco de entrada — arrastra"></div>
           </div>
         </div>
       </details>
-      ${sliderRow('inBlack',  'Input black',  0, 254, p.inBlack, '')}
-      ${sliderRow('inWhite',  'Input white',  1, 255, p.inWhite, '')}
-      ${sliderRow('gamma',    'Gamma',        10, 990, Math.round((p.gamma || 1) * 100), 'γ')}
-      ${sliderRow('outBlack', 'Output black', 0, 255, p.outBlack, '')}
-      ${sliderRow('outWhite', 'Output white', 0, 255, p.outWhite, '')}
+      ${sliderRow('inBlack',  'Negro entrada',  0, 254, p.inBlack, '')}
+      ${sliderRow('inWhite',  'Blanco entrada', 1, 255, p.inWhite, '')}
+      ${sliderRow('gamma',    'Gamma',          10, 990, Math.round((p.gamma || 1) * 100), 'γ')}
+      ${sliderRow('outBlack', 'Negro salida',   0, 255, p.outBlack, '')}
+      ${sliderRow('outWhite', 'Blanco salida',  0, 255, p.outWhite, '')}
     `;
       const hist = body.querySelector('.ge-adj-histogram');
       drawHistogram(hist, layer);
@@ -497,7 +497,7 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
         <input type="range" min="-100" max="100" value="${value}" data-key="${key}" />
         <span class="ge-adj-cb-dot" style="background:${rightCol}"></span>
         <span class="ge-adj-value">${value}</span>
-        <button class="ge-adj-revert" type="button" title="Reset this slider" data-revert-key="${key}">${revertIcon}</button>
+        <button class="ge-adj-revert" type="button" title="Restablecer este control" data-revert-key="${key}">${revertIcon}</button>
       </div>
     `;
       // Tone picker: one tone group visible at a time. Remember the
@@ -506,16 +506,16 @@ export function createAdjPopupSystem({ composite, saveState, renderLayerPanel })
       const tone = popEl._cbTone || 'shadows';
       popEl._cbTone = tone;
       const toneSliders = (t) => `
-      ${cbRow(`${t}-r`, '#00d2d2', '#ff5555', 'Cyan ↔ Red',      p[t].r)}
-      ${cbRow(`${t}-g`, '#d855d8', '#55d855', 'Magenta ↔ Green', p[t].g)}
-      ${cbRow(`${t}-b`, '#e6e64a', '#4a78ff', 'Yellow ↔ Blue',   p[t].b)}
+      ${cbRow(`${t}-r`, '#00d2d2', '#ff5555', 'Cian ↔ Rojo',       p[t].r)}
+      ${cbRow(`${t}-g`, '#d855d8', '#55d855', 'Magenta ↔ Verde',   p[t].g)}
+      ${cbRow(`${t}-b`, '#e6e64a', '#4a78ff', 'Amarillo ↔ Azul',  p[t].b)}
     `;
       body.innerHTML = `
       <div class="ge-adj-cb-tone-picker">
         <select class="ge-adj-cb-tone-select">
-          <option value="shadows"${tone === 'shadows' ? ' selected' : ''}>Shadows</option>
-          <option value="midtones"${tone === 'midtones' ? ' selected' : ''}>Midtones</option>
-          <option value="highlights"${tone === 'highlights' ? ' selected' : ''}>Highlights</option>
+          <option value="shadows"${tone === 'shadows' ? ' selected' : ''}>Sombras</option>
+          <option value="midtones"${tone === 'midtones' ? ' selected' : ''}>Medios tonos</option>
+          <option value="highlights"${tone === 'highlights' ? ' selected' : ''}>Iluminaciones</option>
         </select>
       </div>
       <div class="ge-adj-cb-sliders" data-cb-tone="${tone}">

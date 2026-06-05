@@ -753,11 +753,11 @@ function initializeEventListeners() {
     if (active) {
       if (welcomeName) {
         if (!welcomeName.dataset.researchOrigHtml) welcomeName.dataset.researchOrigHtml = welcomeName.innerHTML;
-        welcomeName.innerHTML = _resIco + 'Deep Research';
+        welcomeName.innerHTML = _resIco + 'Investigación Profunda';
       }
       if (welcomeSub) {
         if (!welcomeSub.dataset.researchOrigText) welcomeSub.dataset.researchOrigText = welcomeSub.textContent;
-        welcomeSub.textContent = 'Deep multi-step research with source gathering and synthesis.';
+        welcomeSub.textContent = 'Investigación profunda en múltiples pasos con recopilación de fuentes y síntesis.';
       }
       if (tipEl) {
         if (!tipEl.dataset.researchOrigTip) tipEl.dataset.researchOrigTip = tipEl.textContent;
@@ -1073,7 +1073,7 @@ function initializeEventListeners() {
         if (documentModule && documentModule.newDocument) await documentModule.newDocument();
       } catch (err) {
         console.error('New document from Library failed:', err);
-        if (uiModule && uiModule.showError) uiModule.showError('Could not create document');
+        if (uiModule && uiModule.showError) uiModule.showError('No se pudo crear el documento');
       }
     });
   }
@@ -1276,7 +1276,7 @@ function initializeEventListeners() {
           }
           if (sessionModule) await sessionModule.loadSessions();
         } else {
-          uiModule.showToast(data.reason || 'Nothing to sort');
+          uiModule.showToast(data.reason || 'Nada que ordenar');
         }
       } catch (e) {
         uiModule.showError('Auto-sort: ' + e.message);
@@ -1318,7 +1318,7 @@ function initializeEventListeners() {
         Storage.set('darkmind-model-sort', mode);
         if (modelsModule) modelsModule.refreshModels();
         modelSortDropdown.style.display = 'none';
-        uiModule.showToast('Models sorted: ' + opt.textContent.trim().toLowerCase());
+        uiModule.showToast('Ordenado: ' + opt.textContent.trim().toLowerCase());
       });
     });
   }
@@ -1408,7 +1408,7 @@ function initializeEventListeners() {
       const newName = aiNameInput.value.trim();
       
       if (!newName) {
-        uiModule.showError('Please enter a name for the AI');
+        uiModule.showError('Introduce un nombre para la IA');
         return;
       }
       
@@ -1421,12 +1421,12 @@ function initializeEventListeners() {
         
         const result = await response.json();
         if (result.success) {
-          uiModule.showToast(`AI renamed to ${newName}`);
+          uiModule.showToast(`IA renombrada a ${newName}`);
           renameAiModal.classList.add('hidden');
           aiNameInput.value = '';
         }
       } catch (e) {
-        uiModule.showError('Failed to rename AI: ' + e.message);
+        uiModule.showError('Error al renombrar la IA: ' + e.message);
       }
     });
   }
@@ -1468,7 +1468,7 @@ function initializeEventListeners() {
       const newName = sessionNameInput.value.trim();
       
       if (!newName) {
-        uiModule.showError('Please enter a name for the session');
+        uiModule.showError('Introduce un nombre para la sesión');
         return;
       }
       
@@ -1481,7 +1481,7 @@ function initializeEventListeners() {
         
         const result = await response.json();
         if (response.ok) {
-          uiModule.showToast(`Session renamed to ${newName}`);
+          uiModule.showToast(`Sesión renombrada a ${newName}`);
           renameSessionModal.classList.add('hidden');
           sessionNameInput.value = '';
           // Update the current session name in the UI
@@ -1489,7 +1489,7 @@ function initializeEventListeners() {
           if (meta) {
             meta.name = newName;
             const ver = window._appVersion ? ` v${window._appVersion}` : '';
-            el('current-meta').textContent = `Session: ${meta.name}${meta.model ? ' ' + meta.model.split('/').pop() : ''}${meta.rag ? ' [RAG]' : ''}${ver}`;
+            el('current-meta').textContent = `Sesión: ${meta.name}${meta.model ? ' ' + meta.model.split('/').pop() : ''}${meta.rag ? ' [RAG]' : ''}${ver}`;
           }
           // Refresh the sessions list
         await sessionModule.loadSessions();
@@ -1497,7 +1497,7 @@ function initializeEventListeners() {
           throw new Error(result.detail || 'Failed to rename session');
         }
       } catch (e) {
-        uiModule.showError('Failed to rename session: ' + e.message);
+        uiModule.showError('Error al renombrar la sesión: ' + e.message);
       }
     });
   }
@@ -1573,14 +1573,14 @@ function initializeEventListeners() {
   }
 
   const TOOL_TOGGLE_TOAST_LABELS = {
-    web: 'Web search',
+    web: 'Búsqueda web',
     bash: 'Shell',
   };
 
   function showToolToggleToast(stateKey, active) {
     const label = TOOL_TOGGLE_TOAST_LABELS[stateKey];
     if (!label || !uiModule?.showToast) return;
-    uiModule.showToast(`${label} ${active ? 'on' : 'off'}`, 1800);
+    uiModule.showToast(`${label} ${active ? 'activada' : 'desactivada'}`, 1800);
   }
 
   function applyModeToToggles(mode) {
@@ -2234,7 +2234,7 @@ function initializeEventListeners() {
         // Re-hide picker after everything settles
         const _mpw = el('model-picker-wrap');
         if (_mpw) _mpw.style.display = 'none';
-        uiModule.showToast(`Group chat ready — ${picked.length} models`);
+        uiModule.showToast(`Chat grupal listo — ${picked.length} modelos`);
       } else {
         _syncGroupIndicator(false);
         groupModule.stopGroup();
@@ -2279,7 +2279,7 @@ function initializeEventListeners() {
       chk.checked = !chk.checked;
       incognitoBtn.classList.toggle('active', chk.checked);
       const tipEl = el('welcome-tip');
-      incognitoBtn.title = chk.checked ? 'Disable Nobody mode' : 'Enable Nobody mode — no memory, no history saved';
+      incognitoBtn.title = chk.checked ? 'Desactivar modo Nadie' : 'Activar modo Nadie — sin memoria, sin historial guardado';
       const welcomeName = document.querySelector('.welcome-name');
       if (chk.checked) {
         incognitoBtn.innerHTML = INCOGNITO_EYE_CLOSED + '<span class="incognito-label">Nobody</span>';
@@ -2295,10 +2295,10 @@ function initializeEventListeners() {
         const welcomeSub = el('welcome-sub');
         if (welcomeSub) {
           if (!welcomeSub.dataset.originalText) welcomeSub.dataset.originalText = welcomeSub.textContent;
-          welcomeSub.textContent = "Who am I? I'm nobody.";
+          welcomeSub.textContent = "¿Quién soy? Nadie.";
           welcomeSub.style.display = '';
         }
-        if (tipEl) { tipEl.dataset.originalTip = tipEl.textContent; tipEl.textContent = 'Temporary session \u2014 won\u2019t be saved and no memory activation.'; tipEl.style.opacity = '0.5'; tipEl.style.marginTop = '8px'; }
+        if (tipEl) { tipEl.dataset.originalTip = tipEl.textContent; tipEl.textContent = 'Sesión temporal \u2014 no se guardará y no se activará la memoria.'; tipEl.style.opacity = '0.5'; tipEl.style.marginTop = '8px'; }
         // Default to plain chat: disable tools visually, switch to chat mode.
         // IMPORTANT: don't overwrite the user's persisted per-mode tool prefs
         // (`web_agent`, `bash_agent`, `web_chat`, `bash_chat`). Nobody mode is
@@ -2469,7 +2469,7 @@ function initializeEventListeners() {
       saveUIVis(state);
       applyUIVis(state);
       syncRearrangeChecks();
-      uiModule.showToast(!wasOn ? 'Rearrange enabled' : 'Rearrange disabled');
+      uiModule.showToast(!wasOn ? 'Reordenación activada' : 'Reordenación desactivada');
       // Close the dropdown the toggle lives in — the sort dropdown's own
       // click-stopPropagation means it won't close on its own.
       const dd = toggle.closest('[id$="-sort-dropdown"]');
@@ -2490,7 +2490,7 @@ function initializeEventListeners() {
     saveUIVis(state);
     applyUIVis(state);
     syncRearrangeChecks();
-    uiModule.showToast('Rearrange disabled');
+    uiModule.showToast('Reordenación desactivada');
   }, true);
   // Sync checkmarks when dropdowns open
   const _sessionSortBtn = el('session-sort-btn');
@@ -2821,7 +2821,7 @@ function initializeEventListeners() {
       const closeX = document.createElement('button');
       closeX.className = 'modal-dock-close';
       closeX.textContent = '×';
-      closeX.title = 'Close';
+      closeX.title = 'Cerrar';
       closeX.addEventListener('click', (e) => {
         e.stopPropagation();
         modal.classList.remove('minimized');
@@ -2854,7 +2854,7 @@ function initializeEventListeners() {
       const minBtn = document.createElement('button');
       minBtn.className = 'minimize-btn';
       minBtn.type = 'button';
-      minBtn.title = 'Minimize';
+      minBtn.title = 'Minimizar';
       minBtn.textContent = '_';
       minBtn.addEventListener('mousedown', (e) => e.stopPropagation()); // don't start drag
       minBtn.addEventListener('click', (e) => {
@@ -3092,7 +3092,7 @@ function initializeEventListeners() {
       const sessions = sessionModule.getSessions();
       const current = sessions.find(s => s.id === currentId);
       const name = current ? current.name : 'this session';
-      if (!await uiModule.styledConfirm(`Delete "${name}"?`, { confirmText: 'Delete', danger: true })) return;
+      if (!await uiModule.styledConfirm(`¿Eliminar "${name}"?`, { confirmText: 'Eliminar', danger: true })) return;
       try {
         // Find the next session below the current one before deleting
         const idx = sessions.findIndex(s => s.id === currentId);
@@ -3104,12 +3104,12 @@ function initializeEventListeners() {
           if (nextSession) {
             await sessionModule.selectSession(nextSession.id);
           }
-          uiModule.showToast('Session deleted');
+          uiModule.showToast('Sesión eliminada');
         } else {
-          uiModule.showError('Failed to delete session');
+          uiModule.showError('Error al eliminar la sesión');
         }
       } catch (e) {
-        uiModule.showError('Failed to delete session: ' + e);
+        uiModule.showError('Error al eliminar la sesión: ' + e);
       }
     });
   }
@@ -3571,7 +3571,7 @@ function startDarkMindApp() {
     if (!hasText && !hasFiles && _isSttEnabled()) {
       clearTimeout(sendBtn._collapseTimer);
       sendBtn.innerHTML = _micIcon;
-      sendBtn.title = 'Record voice';
+      sendBtn.title = 'Grabar voz';
       newMode = 'mic';
       sendBtn.classList.add('mic-mode');
       sendBtn.classList.remove('newchat-mode', 'newchat-expanded');
@@ -3580,7 +3580,7 @@ function startDarkMindApp() {
       // Group chat: always show send button, never newchat mode
       if (groupModule && groupModule.isActive()) {
         sendBtn.innerHTML = _sendIcon;
-        sendBtn.title = 'Send to group';
+        sendBtn.title = 'Enviar al grupo';
         newMode = 'idle';
         sendBtn.classList.remove('mic-mode', 'newchat-mode', 'newchat-expanded');
       } else {
@@ -3589,14 +3589,14 @@ function startDarkMindApp() {
       if (isEmptySession) {
         // Already on new chat — show arrow in muted style (ready to type)
         sendBtn.innerHTML = _sendIcon;
-        sendBtn.title = 'Send message';
+        sendBtn.title = 'Enviar mensaje';
         newMode = 'idle';
         sendBtn.classList.add('newchat-mode'); // muted gray style
         sendBtn.classList.remove('mic-mode', 'newchat-expanded');
         clearTimeout(sendBtn._expandTimer);
       } else {
         sendBtn.innerHTML = _newChatIcon + '<span class="send-btn-label">+ New</span>';
-        sendBtn.title = 'New chat';
+        sendBtn.title = 'Nuevo chat';
         newMode = 'newchat';
         sendBtn.classList.add('newchat-mode');
         sendBtn.classList.remove('mic-mode');
@@ -3619,14 +3619,14 @@ function startDarkMindApp() {
         setTimeout(() => {
           if (sendBtn.dataset.mode !== 'send') return;
           sendBtn.innerHTML = _sendIcon;
-          sendBtn.title = 'Send message';
+          sendBtn.title = 'Enviar mensaje';
           sendBtn.classList.remove('mic-mode', 'newchat-mode', 'anim-spin-swap');
           sendBtn.classList.add('anim-spin');
           sendBtn.addEventListener('animationend', () => sendBtn.classList.remove('anim-spin'), { once: true });
         }, delay);
       } else {
         sendBtn.innerHTML = _sendIcon;
-        sendBtn.title = 'Send message';
+        sendBtn.title = 'Enviar mensaje';
         sendBtn.classList.remove('mic-mode', 'newchat-mode', 'newchat-expanded', 'anim-spin', 'anim-launch', 'anim-land');
       }
     }
@@ -3679,7 +3679,7 @@ function startDarkMindApp() {
       // If input is empty and STT is enabled, start recording
       if (!hasText && !hasFiles && _isSttEnabled()) {
         sendBtn.innerHTML = _stopIcon;
-        sendBtn.title = 'Stop recording';
+        sendBtn.title = 'Detener grabación';
         sendBtn.dataset.mode = 'recording';
         sendBtn.classList.add('recording');
         voiceRecorderModule.startRecording(
@@ -3791,7 +3791,7 @@ function startDarkMindApp() {
     if (files.length === 0) return;
     fileHandlerModule.addFiles(files);
     fileHandlerModule.renderAttachStrip();
-    uiModule.showToast(`Added ${files.length} file${files.length > 1 ? 's' : ''} to chat`);
+    uiModule.showToast(`${files.length} archivo${files.length > 1 ? 's' : ''} añadido${files.length > 1 ? 's' : ''} al chat`);
   });
 
   chatContainer.addEventListener('dragleave', (e) => {
@@ -3814,7 +3814,7 @@ function startDarkMindApp() {
     const files = Array.from(e.dataTransfer.files);
     if (files.length === 0) return;
 
-    uiModule.showToast(`Added ${files.length} file${files.length > 1 ? 's' : ''} to chat`);
+    uiModule.showToast(`${files.length} archivo${files.length > 1 ? 's' : ''} añadido${files.length > 1 ? 's' : ''} al chat`);
 
   });
   
@@ -3858,7 +3858,7 @@ function startDarkMindApp() {
       _box.style.cssText = 'pointer-events:none;border:2px dashed rgba(255,255,255,0.9);' +
         'border-radius:14px;padding:20px 28px;background:rgba(0,0,0,0.4);' +
         'font:600 16px/1.4 system-ui,sans-serif;color:#fff;';
-      _box.textContent = 'Drop files to attach';
+      _box.textContent = 'Suelta archivos para adjuntar';
       _cmpDropShield.appendChild(_box);
       document.body.appendChild(_cmpDropShield);
     }
@@ -3888,7 +3888,7 @@ function startDarkMindApp() {
     if (!files.length) return;
     fileHandlerModule.addFiles(files);
     fileHandlerModule.renderAttachStrip();
-    uiModule.showToast(`Added ${files.length} file${files.length > 1 ? 's' : ''} to attach`);
+    uiModule.showToast(`${files.length} archivo${files.length > 1 ? 's' : ''} añadido${files.length > 1 ? 's' : ''} como adjunto`);
   }, true);
 
   // Load initial data
@@ -3928,7 +3928,7 @@ function startDarkMindApp() {
     const hasModels = modelsBox && modelsBox.querySelector('.models-row');
     if (!hasModels) {
       const tip = document.getElementById('welcome-tip');
-      if (tip) tip.textContent = 'Add an AI endpoint from Settings in the sidebar, or paste an endpoint/API key into the chat.';
+      if (tip) tip.textContent = 'Añade un endpoint de IA desde los Ajustes de la barra lateral, o pega un endpoint/clave API en el chat.';
     }
   }).catch(() => {});
   modelsModule.refreshProviders();

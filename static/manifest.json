@@ -1,7 +1,7 @@
 {
   "name": "DarkMind-AI",
   "short_name": "DarkMind-AI",
-  "description": "Self-hosted AI chat with memory, documents, and tools",
+  "description": "Chat de IA autoalojado con memoria, documentos y herramientas",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

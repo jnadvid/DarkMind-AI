@@ -82,7 +82,7 @@ function _startChat(url, mid, endpointId) {
   if (sessionModule) {
     sessionModule.createDirectChat(url, mid, endpointId);
   } else if (uiModule) {
-    uiModule.showError('Session module not loaded');
+    uiModule.showError('Módulo de sesión no cargado');
   }
 }
 
@@ -95,7 +95,7 @@ function _buildModelRow(mid, url, displayName, endpointId, offline, modelType) {
   const handle = document.createElement('span');
   handle.className = 'item-drag-handle';
   handle.textContent = '\u22EE\u22EE';
-  handle.title = 'Drag to reorder';
+  handle.title = 'Arrastra para reordenar';
   row.appendChild(handle);
 
   // Favorite indicator — provider logo or colored dot
@@ -109,12 +109,12 @@ function _buildModelRow(mid, url, displayName, endpointId, offline, modelType) {
   } else {
     fav.className = 'model-fav-btn' + (_isFavorite(mid) ? ' active' : '');
   }
-  fav.title = 'Toggle favorite';
+  fav.title = 'Alternar favorito';
   fav.addEventListener('click', (e) => {
     e.stopPropagation();
     const nowFav = _toggleFavorite(mid);
     fav.classList.toggle('active', nowFav);
-    uiModule.showToast(nowFav ? 'Favorited' : 'Unfavorited');
+    uiModule.showToast(nowFav ? 'Añadido a favoritos' : 'Quitado de favoritos');
     refreshModels();
   });
   const span = document.createElement('span');
@@ -124,14 +124,14 @@ function _buildModelRow(mid, url, displayName, endpointId, offline, modelType) {
     const badge = document.createElement('span');
     badge.className = 'model-type-badge';
     badge.textContent = 'IMG';
-    badge.title = 'Image generation model';
+    badge.title = 'Modelo de generación de imágenes';
     badge.style.cssText = 'font-size:0.65em;padding:1px 4px;border-radius:3px;background:var(--accent,#7c3aed);color:#fff;margin-left:6px;vertical-align:middle;';
     span.appendChild(badge);
   }
 
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.textContent = offline ? 'Offline' : (modelType === 'image' ? '+ Image' : '+ Chat');
+  btn.textContent = offline ? 'Sin conexión' : (modelType === 'image' ? '+ Imagen' : '+ Chat');
   btn.className = 'model-chat-btn';
   btn.style.transition = 'all 0.2s ease';
   if (offline) {
@@ -377,7 +377,7 @@ export async function refreshModels(force = false) {
           if (isOfflineEndpoint) {
             const badge = document.createElement('span');
             badge.className = 'endpoint-offline-badge';
-            badge.textContent = '(offline)';
+            badge.textContent = '(sin conexión)';
             sub.appendChild(badge);
           }
 
@@ -435,7 +435,7 @@ export async function refreshModels(force = false) {
           const showMoreBtn = document.createElement('div');
           showMoreBtn.className = 'models-show-all-btn';
           showMoreBtn.style.cssText = 'text-align:center;padding:6px;opacity:0.5;cursor:pointer;font-size:0.82em;';
-          showMoreBtn.textContent = `Show ${allHidden.length} more model${allHidden.length === 1 ? '' : 's'}`;
+          showMoreBtn.textContent = `Mostrar ${allHidden.length} modelo${allHidden.length === 1 ? '' : 's'} más`;
           showMoreBtn._target = target;
           showMoreBtn.addEventListener('click', () => {
             showMoreBtn.remove();
@@ -498,7 +498,7 @@ export async function refreshModels(force = false) {
     if (totalModelCount >= 10) {
       const searchBox = document.createElement('input');
       searchBox.type = 'text';
-      searchBox.placeholder = 'Search models...';
+      searchBox.placeholder = 'Buscar modelos...';
       searchBox.className = 'model-search-input';
       searchBox.addEventListener('click', (e) => e.stopPropagation());
       searchBox.addEventListener('touchstart', (e) => e.stopPropagation());
@@ -541,7 +541,7 @@ export async function refreshModels(force = false) {
         if (searchResults.children.length === 0) {
           const empty = document.createElement('div');
           empty.style.cssText = 'text-align:center;padding:12px;opacity:0.4;';
-          empty.textContent = 'No models match "' + searchBox.value.trim() + '"';
+          empty.textContent = 'Ningún modelo coincide con "' + searchBox.value.trim() + '"';
           searchResults.appendChild(empty);
         }
       });
@@ -552,45 +552,45 @@ export async function refreshModels(force = false) {
       const noModels = document.createElement('div');
       noModels.className = 'models-empty-state';
       if (window._isAdmin) {
-        noModels.innerHTML = '<span class="muted">No models found</span><br>'
-          + '<a href="#" onclick="document.getElementById(\'user-bar-admin\')?.click();return false;" class="accent-link">Open Admin to add endpoints</a>'
-          + '<br><span class="muted-sm">Type /setup for Local models or API setup.</span>';
+        noModels.innerHTML = '<span class="muted">No se encontraron modelos</span><br>'
+          + '<a href="#" onclick="document.getElementById(\'user-bar-admin\')?.click();return false;" class="accent-link">Abre el Panel de Administración para añadir endpoints</a>'
+          + '<br><span class="muted-sm">Escribe /setup para modelos locales o configuración API.</span>';
       } else {
-        noModels.innerHTML = '<span class="muted">No models available</span><br>'
-          + '<span class="muted-sm">Ask an admin to configure model endpoints</span>';
+        noModels.innerHTML = '<span class="muted">No hay modelos disponibles</span><br>'
+          + '<span class="muted-sm">Pide a un administrador que configure los endpoints de modelos</span>';
       }
       box.appendChild(noModels);
       // No endpoints yet: keep the welcome screen focused on first setup.
       const welcomeSub = document.getElementById('welcome-sub');
-      if (welcomeSub) welcomeSub.innerHTML = 'Type <span class="setup-trigger-link" style="color:var(--accent,var(--red));font-weight:600;cursor:pointer;text-decoration:underline;" title="Click to launch setup">/setup</span> to get started.';
+      if (welcomeSub) welcomeSub.innerHTML = 'Escribe <span class="setup-trigger-link" style="color:var(--accent,var(--red));font-weight:600;cursor:pointer;text-decoration:underline;" title="Clic para iniciar la configuración">/setup</span> para empezar.';
       const welcomeTip = document.getElementById('welcome-tip');
-      if (welcomeTip) welcomeTip.textContent = 'Type /setup, then choose Local models or API.';
+      if (welcomeTip) welcomeTip.textContent = 'Escribe /setup y elige modelos locales o API.';
     } else {
       // Configured installs should feel ready, not stuck in onboarding.
       const welcomeSub = document.getElementById('welcome-sub');
-      if (welcomeSub) welcomeSub.textContent = 'Yours for the voyage.';
+      if (welcomeSub) welcomeSub.textContent = 'Lista para navegar.';
       const welcomeTip = document.getElementById('welcome-tip');
       if (welcomeTip) {
         const tips = window.innerWidth <= 768
           ? [
-              'Tip: Long-press a session for rename, delete, and memory options.',
-              'Tip: Tap the eye icon for Nobody mode - no history saved.',
-              'Tip: Switch to Agent mode when you want tools.',
-              'Tip: Attach images or files using the + button next to the input.',
+              'Consejo: Mantén pulsada una sesión para renombrar, eliminar y opciones de memoria.',
+              'Consejo: Toca el icono del ojo para el modo Nadie: sin historial guardado.',
+              'Consejo: Cambia al modo Agente cuando quieras usar herramientas.',
+              'Consejo: Adjunta imágenes o archivos con el botón + junto al campo de texto.',
             ]
           : [
-              'Tip: Press Ctrl+K to search across all your conversations.',
-              'Tip: Press Ctrl+B to quickly toggle the sidebar.',
-              'Tip: Shift-click the sidebar toggle to swap it to the other side.',
-              'Tip: Drag and drop files onto the chat to attach them.',
-              'Tip: Right-click a session for rename, delete, and memory options.',
+              'Consejo: Pulsa Ctrl+K para buscar en todas tus conversaciones.',
+              'Consejo: Pulsa Ctrl+B para mostrar/ocultar la barra lateral.',
+              'Consejo: Shift+clic en el toggle de la barra lateral para moverla al otro lado.',
+              'Consejo: Arrastra y suelta archivos sobre el chat para adjuntarlos.',
+              'Consejo: Clic derecho en una sesión para renombrar, eliminar y opciones de memoria.',
             ];
         welcomeTip.textContent = tips[Math.floor(Math.random() * tips.length)];
       }
     }
   } catch (e) {
     console.error(e);
-    box.textContent = '(render failed: ' + e.message + ')';
+    box.textContent = '(error de renderizado: ' + e.message + ')';
   }
 }
 
@@ -601,7 +601,7 @@ export async function refreshProviders() {
   const sel = document.getElementById('openai-model');
   if (!sel) return; // Exit if element doesn't exist
 
-  sel.innerHTML = '<option disabled>Loading providers…</option>';
+  sel.innerHTML = '<option disabled>Cargando proveedores…</option>';
 
   try {
     const res = await fetch(`${API_BASE}/api/providers`);

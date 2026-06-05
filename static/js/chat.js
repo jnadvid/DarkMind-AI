@@ -201,7 +201,7 @@ import createResearchSynapse from './researchSynapse.js';
         submitBtn.classList.add('anim-land');
         submitBtn.addEventListener('animationend', () => submitBtn.classList.remove('anim-land'), { once: true });
       }, 300);
-      submitBtn.title = 'Stop generation';
+      submitBtn.title = 'Detener generación';
       submitBtn.dataset.mode = 'streaming';
       submitBtn.dataset.phase = 'processing';
       isStreaming = true;
@@ -218,7 +218,7 @@ import createResearchSynapse from './researchSynapse.js';
       } else {
         var icons = window._darkmindBtnIcons;
         submitBtn.innerHTML = icons ? icons.send : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>';
-        submitBtn.title = 'Send message';
+        submitBtn.title = 'Enviar mensaje';
         submitBtn.classList.remove('mic-mode', 'newchat-mode');
       }
     }
@@ -280,7 +280,7 @@ import createResearchSynapse from './researchSynapse.js';
           if (header) {
             const s = document.createElement('span');
             s.className = 'agent-thread-status';
-            s.textContent = 'stopped';
+            s.textContent = 'detenido';
             header.appendChild(s);
           }
         }
@@ -329,11 +329,11 @@ import createResearchSynapse from './researchSynapse.js';
         const stoppedIndicator = document.createElement('div');
         stoppedIndicator.className = 'stopped-indicator';
         const stoppedLabel = document.createElement('span');
-        stoppedLabel.textContent = '[Message interrupted]';
+        stoppedLabel.textContent = '[Mensaje interrumpido]';
         stoppedIndicator.appendChild(stoppedLabel);
         const continueBtn = document.createElement('button');
         continueBtn.className = 'continue-btn';
-        continueBtn.title = 'Continue';
+        continueBtn.title = 'Continuar';
         continueBtn.textContent = '\u25B8';
         const _stoppedHolder = currentHolder; // capture before it gets cleared
         continueBtn.addEventListener('click', () => {
@@ -462,10 +462,10 @@ import createResearchSynapse from './researchSynapse.js';
           el('message').value = '';
           if (uiModule.autoResize) uiModule.autoResize(el('message'));
           addMessage('assistant',
-            'No chat session active. You can:\n\n' +
-            '- Open the model picker in the chat box and pick a model\n' +
-            '- Use the `+` button in the model picker to add a model endpoint\n' +
-            '- Use `/help` to see all available commands');
+            'No hay sesión de chat activa. Puedes:\n\n' +
+            '- Abrir el selector de modelos en el chat y elegir un modelo\n' +
+            '- Usar el botón `+` del selector de modelos para añadir un endpoint\n' +
+            '- Usar `/help` para ver todos los comandos disponibles');
           _releaseSendFlag();
           return;
         }
@@ -473,10 +473,10 @@ import createResearchSynapse from './researchSynapse.js';
         el('message').value = '';
         if (uiModule.autoResize) uiModule.autoResize(el('message'));
         addMessage('assistant',
-          'No chat session active. You can:\n\n' +
-          '- Open the model picker in the chat box and pick a model\n' +
-          '- Use the `+` button in the model picker to add a model endpoint\n' +
-          '- Use `/help` to see all available commands');
+          'No hay sesión de chat activa. Puedes:\n\n' +
+          '- Abrir el selector de modelos en el chat y elegir un modelo\n' +
+          '- Usar el botón `+` del selector de modelos para añadir un endpoint\n' +
+          '- Usar `/help` para ver todos los comandos disponibles');
         _releaseSendFlag();
         return;
       }
@@ -484,7 +484,7 @@ import createResearchSynapse from './researchSynapse.js';
 
     // --- API key guard: warn if message looks like an API key ---
     if (API_KEY_RE.test(msg.trim())) {
-      if (!await window.styledConfirm('This looks like an API key. Sending it to the AI could expose it.\n\nDid you mean to use /setup instead?', { confirmText: 'Send anyway', danger: true })) {
+      if (!await window.styledConfirm('Parece una clave API. Enviarla a la IA podría exponerla.\n\n¿Querías usar /setup en su lugar?', { confirmText: 'Enviar igualmente', danger: true })) {
         _releaseSendFlag();
         return;
       }
@@ -671,16 +671,16 @@ import createResearchSynapse from './researchSynapse.js';
         banner.id = 'import-prompt-banner';
         banner.className = 'import-prompt-banner';
         const label = _importableFiles.length === 1
-          ? `Import "${_importableFiles[0].info.name}" to document library?`
-          : `Import ${_importableFiles.length} files to document library?`;
+          ? `¿Importar "${_importableFiles[0].info.name}" a la biblioteca de documentos?`
+          : `¿Importar ${_importableFiles.length} archivos a la biblioteca de documentos?`;
         const textEl = document.createElement('span');
         textEl.textContent = label;
         banner.appendChild(textEl);
         const importBtn = document.createElement('button');
-        importBtn.textContent = 'Import';
+        importBtn.textContent = 'Importar';
         importBtn.addEventListener('click', async () => {
           importBtn.disabled = true;
-          importBtn.textContent = 'Importing…';
+          importBtn.textContent = 'Importando…';
           const EXT_LANG = {'.py':'python','.js':'javascript','.ts':'typescript','.html':'html','.css':'css','.md':'markdown','.json':'json','.yml':'yaml','.yaml':'yaml','.sh':'bash','.sql':'sql','.rs':'rust','.go':'go','.java':'java','.c':'c','.cpp':'cpp','.rb':'ruby','.php':'php','.xml':'xml','.jsx':'javascript','.tsx':'typescript'};
           let imported = 0;
           for (const { info, file } of _importableFiles) {
@@ -697,7 +697,7 @@ import createResearchSynapse from './researchSynapse.js';
               imported++;
             } catch (e) { console.error('Import failed:', info.name, e); }
           }
-          banner.textContent = `Imported ${imported} file${imported !== 1 ? 's' : ''}`;
+          banner.textContent = `${imported} archivo${imported !== 1 ? 's' : ''} importado${imported !== 1 ? 's' : ''}`;
           setTimeout(() => banner.remove(), 2000);
         });
         banner.appendChild(importBtn);
@@ -861,10 +861,10 @@ import createResearchSynapse from './researchSynapse.js';
       
       // Update spinner message based on mode
       if (el('web-toggle').checked && !_isAgent) {
-        spinner.updateMessage('Searching web with ' + (searchModule ? searchModule.getProviderLabel() : 'SearXNG'));
+        spinner.updateMessage('Buscando en la web con ' + (searchModule ? searchModule.getProviderLabel() : 'SearXNG'));
         setTimeout(() => spinner.updateMessage('Processing results'), 1500);
       } else if (el('research-toggle').checked) {
-        spinner.updateMessage('Researching');
+        spinner.updateMessage('Investigando');
         setTimeout(() => spinner.updateMessage('Analyzing sources'), 1500);
       } else {
         spinner.updateMessage('Processing request');
@@ -1046,29 +1046,29 @@ import createResearchSynapse from './researchSynapse.js';
       let _lastToolName = '';
       const _searchIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:-2px;margin-right:4px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>';
       const _toolLabels = {
-        'web_search': _searchIcon + 'Searching',
-        'bash': 'Running',
-        'python': 'Running',
-        'create_document': 'Writing',
-        'update_document': 'Writing',
-        'read_document': 'Reading',
-        'edit_file': 'Editing',
-        'read_file': 'Reading',
-        'write_file': 'Writing',
-        'list_files': 'Browsing',
-        'image_gen': 'Generating',
-        'generate_image': 'Generating',
-        'manage_memory': 'Remembering',
-        'save_memory': 'Remembering',
-        'search_memory': 'Recalling',
-        'manage_session': 'Organizing',
-        'deep_research': 'Researching',
-        'list_models': 'Browsing',
-        'ui_control': 'Adjusting',
+        'web_search': _searchIcon + 'Buscando',
+        'bash': 'Ejecutando',
+        'python': 'Ejecutando',
+        'create_document': 'Escribiendo',
+        'update_document': 'Escribiendo',
+        'read_document': 'Leyendo',
+        'edit_file': 'Editando',
+        'read_file': 'Leyendo',
+        'write_file': 'Escribiendo',
+        'list_files': 'Explorando',
+        'image_gen': 'Generando',
+        'generate_image': 'Generando',
+        'manage_memory': 'Recordando',
+        'save_memory': 'Recordando',
+        'search_memory': 'Recordando',
+        'manage_session': 'Organizando',
+        'deep_research': 'Investigando',
+        'list_models': 'Explorando',
+        'ui_control': 'Ajustando',
       };
       function _thinkingLabel() {
         if (!_lastToolName) {
-          return 'Thinking';
+          return 'Pensando';
         }
         // Check exact match first, then prefix match
         const lower = _lastToolName.toLowerCase();
@@ -1076,7 +1076,7 @@ import createResearchSynapse from './researchSynapse.js';
         for (const [key, label] of Object.entries(_toolLabels)) {
           if (lower.includes(key) || key.includes(lower)) return label;
         }
-        return 'Thinking';
+        return 'Pensando';
       }
 
       function _showThinkingSpinner(label) {
@@ -1085,7 +1085,7 @@ import createResearchSynapse from './researchSynapse.js';
         _thinkMsg.className = 'msg msg-ai agent-thinking-dots';
         const _thinkBody = document.createElement('div');
         _thinkBody.className = 'body';
-        const _ts = spinnerModule.create(label || 'Thinking', 'right', 'wave');
+        const _ts = spinnerModule.create(label || 'Pensando', 'right', 'wave');
         _thinkBody.appendChild(_ts.createElement());
         _ts.start(120);
         _thinkMsg._spinner = _ts;
@@ -1201,8 +1201,8 @@ import createResearchSynapse from './researchSynapse.js';
           // Don't show beforeThink text during streaming — it'll appear in the final render
           // This prevents the "split into two" duplication
           contentEl.innerHTML =
-            '<div class="thinking-section"><div class="thinking-header"><div class="thinking-header-left">Thinking' +
-            (lines > 1 ? ` (${lines} lines)` : '') + '</div></div></div>';
+            '<div class="thinking-section"><div class="thinking-header"><div class="thinking-header-left">Pensando' +
+            (lines > 1 ? ` (${lines} líneas)` : '') + '</div></div></div>';
           contentEl._prevTextLen = 0;
           uiModule.scrollHistory();
           return;
@@ -1342,7 +1342,7 @@ import createResearchSynapse from './researchSynapse.js';
                   accumulated = accumulated.replace(/<think>/i, '<think time="' + _elapsedDone + '">');
                   roundText = roundText.replace(/<think>/i, '<think time="' + _elapsedDone + '">');
                 }
-                if (_liveThinkHeader) _liveThinkHeader.textContent = 'View thinking process';
+                if (_liveThinkHeader) _liveThinkHeader.textContent = 'Ver proceso de pensamiento';
                 if (_liveThinkSpinnerSlot) _liveThinkSpinnerSlot.remove();
                 if (_liveThinkTimerEl && _elapsedDone) {
                   _liveThinkTimerEl.textContent = _elapsedDone + 's';
@@ -1520,7 +1520,7 @@ import createResearchSynapse from './researchSynapse.js';
                   thinkContent.innerHTML = `
                     <div class="thinking-section">
                       <div class="thinking-header" data-thinking-id="${_liveThinkDomId}">
-                        <div class="thinking-header-left"><span class="live-think-header-text">Thinking\u2026</span></div>
+                        <div class="thinking-header-left"><span class="live-think-header-text">Pensando\u2026</span></div>
                         <span class="live-think-spinner-slot" style="flex-shrink:0;margin-left:auto;"></span>
                         <span class="live-think-timer" style="font-size:11px;opacity:0.4;font-variant-numeric:tabular-nums;margin-left:6px;margin-right:5px;"></span>
                         <span class="thinking-toggle live-think-toggle" id="${_liveThinkDomId}-toggle"></span>
@@ -1603,7 +1603,7 @@ import createResearchSynapse from './researchSynapse.js';
                     accumulated = accumulated.replace(/<think>/i, '<think time="' + elapsed + '">');
                     roundText = roundText.replace(/<think>/i, '<think time="' + elapsed + '">');
                   }
-                  if (_liveThinkHeader) _liveThinkHeader.textContent = 'View thinking process';
+                  if (_liveThinkHeader) _liveThinkHeader.textContent = 'Ver proceso de pensamiento';
                   if (_liveThinkSpinnerSlot) _liveThinkSpinnerSlot.remove();
                   // Move timer to right side of header
                   if (_liveThinkTimerEl && elapsed) {
@@ -1790,7 +1790,7 @@ import createResearchSynapse from './researchSynapse.js';
                 // Model went offline — switched to fallback
                 var _fbData = json.data || {};
                 uiModule.showToast(
-                  `Model ${_fbData.old_model || '?'} offline — switched to ${_fbData.new_model || '?'}`,
+                  `Modelo ${_fbData.old_model || '?'} fuera de línea — cambiado a ${_fbData.new_model || '?'}`,
                   5000
                 );
                 // Update the model picker to reflect the new model
@@ -1827,14 +1827,14 @@ import createResearchSynapse from './researchSynapse.js';
                 if (!_isBg) {
                   var _selM = _shortModel(json.selected_model || '');
                   var _ansM = _shortModel(json.answered_by || '');
-                  uiModule.showToast('⚠ ' + _selM + ' failed — answered by ' + _ansM, 6000);
+                  uiModule.showToast('⚠ ' + _selM + ' falló — respondido por ' + _ansM, 6000);
                   if (holder) {
                     var _rEl = holder.querySelector('.role');
                     if (_rEl) {
                       var _tsS = _rEl.querySelector('.role-timestamp');
-                      _rEl.textContent = _ansM + ' (fallback) ';
-                      _rEl.title = (json.selected_model || '') + ' failed' +
-                        (json.reason ? ': ' + json.reason : '') + ' — answered by ' + (json.answered_by || '');
+                      _rEl.textContent = _ansM + ' (alternativo) ';
+                      _rEl.title = (json.selected_model || '') + ' falló' +
+                        (json.reason ? ': ' + json.reason : '') + ' — respondido por ' + (json.answered_by || '');
                       _applyModelColor(_rEl, json.answered_by);
                       if (_tsS) _rEl.appendChild(_tsS);
                     }
@@ -1856,12 +1856,12 @@ import createResearchSynapse from './researchSynapse.js';
                   note.className = 'stopped-indicator rounds-exhausted';
                   const label = document.createElement('span');
                   label.className = 'rounds-exhausted-label';
-                  label.textContent = `Reached the ${json.rounds || ''}-step limit — not finished.`;
+                  label.textContent = `Límite de ${json.rounds || ''} pasos alcanzado — tarea sin completar.`;
                   note.appendChild(label);
                   const contBtn = document.createElement('button');
                   contBtn.className = 'continue-btn';
-                  contBtn.title = 'Continue the task';
-                  contBtn.textContent = 'Continue ▸';
+                  contBtn.title = 'Continuar la tarea';
+                  contBtn.textContent = 'Continuar ▸';
                   const _holder = currentHolder;
                   contBtn.addEventListener('click', () => {
                     note.remove();
@@ -1951,7 +1951,7 @@ import createResearchSynapse from './researchSynapse.js';
                 holder._memoriesUsed = json.data;
               } else if (json.type === 'compacted') {
                 if (!_isBg) {
-                  uiModule.showToast('Context compacted — older messages summarized');
+                  uiModule.showToast('Contexto comprimido: mensajes anteriores resumidos');
                 }
               } else if (json.type === 'metrics') {
                 metrics = json.data;
@@ -1976,7 +1976,7 @@ import createResearchSynapse from './researchSynapse.js';
                   isThinking = false;
                   cancelAnimationFrame(_thinkTimerRAF);
                   var _elapsed2 = thinkingStartTime ? ((Date.now() - thinkingStartTime) / 1000).toFixed(1) : null;
-                  if (_liveThinkHeader) _liveThinkHeader.textContent = 'View thinking process';
+                  if (_liveThinkHeader) _liveThinkHeader.textContent = 'Ver proceso de pensamiento';
                   if (_liveThinkTimerEl) _liveThinkTimerEl.textContent = _elapsed2 ? _elapsed2 + 's' : '';
                   if (_liveThinkSpinnerSlot) _liveThinkSpinnerSlot.remove();
                   // Assign stable IDs
@@ -2157,7 +2157,7 @@ import createResearchSynapse from './researchSynapse.js';
                   // bottom of file) so no per-node listener needed.
                   const _wasOpen = currentToolBubble.classList.contains('open');
                   currentToolBubble.className = 'agent-thread-node' + (ok ? '' : ' error') + (_wasOpen ? ' open' : '');
-                  currentToolBubble.innerHTML = `<div class="agent-thread-dot"></div><div class="agent-thread-header"><span class="agent-thread-icon">${ok ? '\u2713' : '\u2717'}</span><span class="agent-thread-tool">${esc(json.tool)}</span><span class="agent-thread-status">${ok ? 'done' : 'failed'}</span><span class="agent-thread-chevron">\u25B6</span></div><div class="agent-thread-content">${cmdHtml2}${outHtml}${diffHtml}</div>`;
+                  currentToolBubble.innerHTML = `<div class="agent-thread-dot"></div><div class="agent-thread-header"><span class="agent-thread-icon">${ok ? '\u2713' : '\u2717'}</span><span class="agent-thread-tool">${esc(json.tool)}</span><span class="agent-thread-status">${ok ? 'listo' : 'error'}</span><span class="agent-thread-chevron">\u25B6</span></div><div class="agent-thread-content">${cmdHtml2}${outHtml}${diffHtml}</div>`;
                   // Reset so thinking spinner between tools says "Thinking" not the old tool's label
                   _lastToolName = '';
                   uiModule.scrollHistory();
@@ -2179,7 +2179,7 @@ import createResearchSynapse from './researchSynapse.js';
                       const details = document.createElement('details');
                       details.className = 'agent-tool-output';
                       const summary = document.createElement('summary');
-                      summary.textContent = 'Screenshot';
+                      summary.textContent = 'Captura de pantalla';
                       const img = document.createElement('img');
                       img.src = screenshotSrc;
                       img.style.cssText = 'max-width:100%;border-radius:6px;margin-top:6px;border:1px solid var(--border)';
@@ -2297,7 +2297,7 @@ import createResearchSynapse from './researchSynapse.js';
                 if (spinner && spinner.element) spinner.destroy();
                 // Show spinner while waiting for text (skip for research — has its own progress)
                 if (!_researchingStreamIds.has(streamSessionId)) {
-                  spinner = spinnerModule.create('Generating response', 'right', 'wave');
+                  spinner = spinnerModule.create('Generando respuesta', 'right', 'wave');
                   newBody.appendChild(spinner.createElement());
                   spinner.start();
                 }
@@ -2419,11 +2419,11 @@ import createResearchSynapse from './researchSynapse.js';
             _stall.className = 'stopped-indicator';
             const _lbl = document.createElement('span');
             _lbl.style.cssText = 'font-style:italic;opacity:0.7;';
-            _lbl.textContent = 'Paused mid-task';
+            _lbl.textContent = 'Pausado a mitad de la tarea';
             _stall.appendChild(_lbl);
             const _cont = document.createElement('button');
             _cont.className = 'continue-btn agent-continue-btn';
-            _cont.title = 'Continue — pick up where it left off';
+            _cont.title = 'Continuar — reanudar donde lo dejó';
             _cont.textContent = '▸';
             _cont.addEventListener('click', () => {
               _stall.remove();
@@ -2580,7 +2580,7 @@ import createResearchSynapse from './researchSynapse.js';
               ttsBtn.innerHTML = ICON_PLAY_TTS;
               ttsBtn.classList.remove('playing', 'loading');
               ttsBtn.style.color = '#6b7280';
-              ttsBtn.title = 'Read aloud';
+              ttsBtn.title = 'Leer en voz alta';
             };
             if (streamingTTS) {
               // Flush remaining partial sentence and attach the real button
@@ -2591,7 +2591,7 @@ import createResearchSynapse from './researchSynapse.js';
                 ttsBtn.innerHTML = ICON_STOP_TTS;
                 ttsBtn.classList.add('playing');
                 ttsBtn.style.color = '#ccc';
-                ttsBtn.title = 'Stop';
+                ttsBtn.title = 'Detener';
               }
             } else {
               // Non-streaming fallback (autoPlay toggled mid-stream, etc.)
@@ -2750,11 +2750,11 @@ import createResearchSynapse from './researchSynapse.js';
             const stoppedIndicator = document.createElement('div');
             stoppedIndicator.className = 'stopped-indicator';
             const stoppedLabel = document.createElement('span');
-            stoppedLabel.textContent = '[Message interrupted]';
+            stoppedLabel.textContent = '[Mensaje interrumpido]';
             stoppedIndicator.appendChild(stoppedLabel);
             const continueBtn = document.createElement('button');
             continueBtn.className = 'continue-btn';
-            continueBtn.title = 'Continue';
+            continueBtn.title = 'Continuar';
             continueBtn.textContent = '\u25B8';
             continueBtn.addEventListener('click', () => {
               stoppedIndicator.remove();
@@ -3008,11 +3008,11 @@ import createResearchSynapse from './researchSynapse.js';
     bar.className = 'stall-banner';
     const mins = Math.floor(secs / 60);
     const label = mins >= 1 ? `${mins}m` : `${secs}s`;
-    bar.innerHTML = `<span class="stall-banner-txt">Quiet for ${label} — still working?</span>`;
+    bar.innerHTML = `<span class="stall-banner-txt">Sin actividad hace ${label} — ¿sigue trabajando?</span>`;
     const cont = document.createElement('button');
     cont.className = 'stall-banner-btn';
-    cont.textContent = 'Nudge it';
-    cont.title = 'Stop the stalled stream and ask it to continue';
+    cont.textContent = 'Avisar';
+    cont.title = 'Detener el flujo parado y pedir que continúe';
     cont.addEventListener('click', () => {
       _removeStallBanner();
       const mi = uiModule.el('message');
@@ -3024,7 +3024,7 @@ import createResearchSynapse from './researchSynapse.js';
     });
     const stop = document.createElement('button');
     stop.className = 'stall-banner-btn stall-banner-stop';
-    stop.textContent = 'Stop';
+    stop.textContent = 'Detener';
     stop.addEventListener('click', () => { _removeStallBanner(); abortCurrentRequest(true); });
     bar.appendChild(cont);
     bar.appendChild(stop);
@@ -3173,7 +3173,7 @@ import createResearchSynapse from './researchSynapse.js';
     const contentDiv = holder.querySelector('.stream-content');
     box.appendChild(holder);
 
-    const spinner = spinnerModule.create('Generating response...', 'right');
+    const spinner = spinnerModule.create('Generando respuesta...', 'right');
     holder.querySelector('.body').appendChild(spinner.createElement());
     spinner.start();
     uiModule.scrollHistory();
@@ -3462,7 +3462,7 @@ import createResearchSynapse from './researchSynapse.js';
         if (runBtn) runBtn.setAttribute('data-code', newCode);
         // Swap icon back to pencil
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
-        btn.title = 'Edit';
+        btn.title = 'Editar';
         btn.classList.remove('active');
       } else {
         // Enter edit mode. Firefox (especially on mobile) historically lacks
@@ -3480,7 +3480,7 @@ import createResearchSynapse from './researchSynapse.js';
         try { codeEl.focus({ preventScroll: true }); } catch (_) { codeEl.focus(); }
         // Swap icon to checkmark
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-        btn.title = 'Done editing';
+        btn.title = 'Terminar edición';
         btn.classList.add('active');
       }
     });
@@ -3628,10 +3628,10 @@ import createResearchSynapse from './researchSynapse.js';
 
     const saveBtn = document.createElement('button');
     saveBtn.className = 'edit-save-btn';
-    saveBtn.textContent = 'Send';
+    saveBtn.textContent = 'Enviar';
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'edit-cancel-btn';
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = 'Cancelar';
     btnRow.appendChild(saveBtn);
     btnRow.appendChild(cancelBtn);
 
@@ -3674,7 +3674,7 @@ import createResearchSynapse from './researchSynapse.js';
         if (submitBtn) submitBtn.click();
       } catch (err) {
         console.error('Edit failed:', err);
-        if (uiModule) uiModule.showError('Edit failed: ' + err.message);
+        if (uiModule) uiModule.showError('Error al editar: ' + err.message);
         bodyEl.innerHTML = originalHTML;
       }
     });
@@ -3730,7 +3730,7 @@ import createResearchSynapse from './researchSynapse.js';
     // The common case is a regen during a pre-upload race where the bubble
     // never had an `[data-file-id]` to scrape.
     if (!text && !_ids.length) {
-      if (uiModule?.showError) uiModule.showError('Nothing to resend — message has no text and no attachments yet (try again after the upload finishes).');
+      if (uiModule?.showError) uiModule.showError('Nada que reenviar: el mensaje no tiene texto ni adjuntos aún (inténtalo de nuevo cuando termine la subida).');
       return;
     }
 
@@ -3765,7 +3765,7 @@ import createResearchSynapse from './researchSynapse.js';
       if (submitBtn) submitBtn.click();
     } catch (err) {
       console.error('Resend failed:', err);
-      if (uiModule) uiModule.showError('Resend failed: ' + err.message);
+      if (uiModule) uiModule.showError('Error al reenviar: ' + err.message);
     }
   }
 
@@ -3795,7 +3795,7 @@ import createResearchSynapse from './researchSynapse.js';
     }
 
     if (userIndex < 0) {
-      if (uiModule) uiModule.showError('Could not find the user message to regenerate');
+      if (uiModule) uiModule.showError('No se encontró el mensaje del usuario para regenerar');
       return;
     }
 
@@ -3835,7 +3835,7 @@ import createResearchSynapse from './researchSynapse.js';
     // because the attachments themselves are the message. Bail only if there
     // is no text AND no attachments to send.
     if (!userText && !_pendingRegenAttachments.length) {
-      if (uiModule) uiModule.showError('Nothing to regenerate — the user message has no text and no attachments');
+      if (uiModule) uiModule.showError('Nada que regenerar: el mensaje del usuario no tiene texto ni adjuntos');
       return;
     }
 
@@ -3879,7 +3879,7 @@ import createResearchSynapse from './researchSynapse.js';
 
     } catch (err) {
       console.error('Regenerate failed:', err);
-      if (uiModule) uiModule.showError('Regenerate failed: ' + err.message);
+      if (uiModule) uiModule.showError('Error al regenerar: ' + err.message);
     }
   }
 
@@ -4041,10 +4041,10 @@ import createResearchSynapse from './researchSynapse.js';
 
       await sessionModule.loadSessions();
       await sessionModule.selectSession(data.id);
-      if (uiModule) uiModule.showToast(`Forked → ${data.name}`);
+      if (uiModule) uiModule.showToast(`Bifurcado → ${data.name}`);
     } catch (err) {
       console.error('Fork failed:', err);
-      if (uiModule) uiModule.showError('Fork failed: ' + err.message);
+      if (uiModule) uiModule.showError('Error al bifurcar: ' + err.message);
     }
   }
 
@@ -4379,7 +4379,7 @@ import createResearchSynapse from './researchSynapse.js';
       // error output shown before a model was selected, #1428). Just remove the
       // DOM so the "x" works regardless.
       domToRemove.forEach(el => el.remove());
-      if (uiModule) uiModule.showToast('Message deleted');
+      if (uiModule) uiModule.showToast('Mensaje eliminado');
       return;
     }
 
@@ -4391,10 +4391,10 @@ import createResearchSynapse from './researchSynapse.js';
       });
       if (!res.ok) throw new Error('Server error ' + res.status);
       domToRemove.forEach(el => el.remove());
-      if (uiModule) uiModule.showToast('Message deleted');
+      if (uiModule) uiModule.showToast('Mensaje eliminado');
     } catch (err) {
       console.error('Delete failed:', err);
-      if (uiModule) uiModule.showError('Delete failed: ' + err.message);
+      if (uiModule) uiModule.showError('Error al eliminar: ' + err.message);
     }
   }
 
@@ -4425,10 +4425,10 @@ import createResearchSynapse from './researchSynapse.js';
     bar.className = 'msg-edit-bar';
     const saveBtn = document.createElement('button');
     saveBtn.className = 'msg-edit-save';
-    saveBtn.textContent = 'Save';
+    saveBtn.textContent = 'Guardar';
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'msg-edit-cancel';
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = 'Cancelar';
     bar.appendChild(saveBtn);
     bar.appendChild(cancelBtn);
     textarea.parentNode.insertBefore(bar, textarea.nextSibling);
@@ -4450,7 +4450,7 @@ import createResearchSynapse from './researchSynapse.js';
       if (newContent === originalRaw) { cleanup(); return; }
 
       const msgId = msgElement.dataset.dbId;
-      if (!msgId) { if (uiModule) uiModule.showError('Cannot edit: message ID not found'); cleanup(); return; }
+      if (!msgId) { if (uiModule) uiModule.showError('No se puede editar: ID de mensaje no encontrado'); cleanup(); return; }
 
       const sessionId = sessionModule.getCurrentSessionId();
       if (!sessionId) { cleanup(); return; }
@@ -4471,15 +4471,15 @@ import createResearchSynapse from './researchSynapse.js';
         if (!msgElement.querySelector('.edited-indicator')) {
           const indicator = document.createElement('div');
           indicator.className = 'edited-indicator';
-          indicator.textContent = '[Message edited]';
+          indicator.textContent = '[Mensaje editado]';
           body.parentNode.insertBefore(indicator, body.nextSibling);
         }
 
         cleanup();
-        if (uiModule) uiModule.showToast('Message edited');
+        if (uiModule) uiModule.showToast('Mensaje editado');
       } catch (err) {
         console.error('Edit failed:', err);
-        if (uiModule) uiModule.showError('Edit failed: ' + err.message);
+        if (uiModule) uiModule.showError('Error al editar: ' + err.message);
       }
     });
   }
@@ -4498,7 +4498,7 @@ import createResearchSynapse from './researchSynapse.js';
     const oldHtml = aiMsgElement.querySelector('.body')?.innerHTML || '';
 
     if (!oldRaw.trim()) {
-      if (uiModule) uiModule.showError('No text to rewrite');
+      if (uiModule) uiModule.showError('No hay texto para reescribir');
       return;
     }
 
@@ -4640,7 +4640,7 @@ import createResearchSynapse from './researchSynapse.js';
       _killRwSpin();
       // Restore original content on failure
       if (bodyEl) bodyEl.innerHTML = oldHtml;
-      if (uiModule) uiModule.showError('Rewrite failed: ' + err.message);
+      if (uiModule) uiModule.showError('Error al reescribir: ' + err.message);
     }
   }
 
@@ -4745,7 +4745,7 @@ import createResearchSynapse from './researchSynapse.js';
       }
     } catch (e) {
       console.error('open attachment as document failed', e);
-      import('./ui.js').then(m => m.showError && m.showError('Could not open attachment')).catch(() => {});
+      import('./ui.js').then(m => m.showError && m.showError('No se pudo abrir el adjunto')).catch(() => {});
       window.open(url, '_blank');  // fallback so the file is still reachable
     }
   }

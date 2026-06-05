@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-visual">
@@ -257,39 +257,39 @@
   <div class="error" id="error" role="alert" aria-live="assertive"></div>
 
   <form id="authForm" autocomplete="on">
-    <label for="username">Username</label>
+    <label for="username">Nombre de usuario</label>
     <div class="pw-wrapper">
       <input id="username" name="username" type="text" required autofocus autocomplete="username">
-      <label class="remember-toggle" id="rememberToggle" title="Remember me">
-        <input type="checkbox" class="remember-check" id="remember" checked aria-label="Remember me">
+      <label class="remember-toggle" id="rememberToggle" title="Recordarme">
+        <input type="checkbox" class="remember-check" id="remember" checked aria-label="Recordarme">
         <span class="remember-dot" aria-hidden="true"></span>
       </label>
     </div>
 
-    <label for="password">Password</label>
+    <label for="password">Contraseña</label>
     <div class="pw-wrapper">
       <input id="password" name="password" type="password" required autocomplete="current-password">
-      <button type="button" class="pw-toggle" id="pwToggle" tabindex="-1" aria-label="Show password">
+      <button type="button" class="pw-toggle" id="pwToggle" tabindex="-1" aria-label="Mostrar contraseña">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><line x1="8" y1="16" x2="16" y2="8"/><line x1="8" y1="8" x2="16" y2="16"/></svg>
       </button>
     </div>
 
     <div id="confirmGroup" style="display:none">
-      <label for="confirmPassword">Confirm Password</label>
+      <label for="confirmPassword">Confirmar contraseña</label>
       <div class="pw-wrapper">
         <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password">
-        <button type="button" class="pw-toggle" id="pwToggleConfirm" tabindex="-1" aria-label="Show password">
+        <button type="button" class="pw-toggle" id="pwToggleConfirm" tabindex="-1" aria-label="Mostrar contraseña">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><line x1="8" y1="16" x2="16" y2="8"/><line x1="8" y1="8" x2="16" y2="16"/></svg>
         </button>
       </div>
     </div>
 
-    <button type="submit" id="submitBtn">Sign In</button>
+    <button type="submit" id="submitBtn">Iniciar sesión</button>
   </form>
 
   <div class="toggle" id="toggleArea" style="display:none">
-    <span id="toggleText">Don't have an account? </span>
-    <a id="toggleLink" href="#">Sign up</a>
+    <span id="toggleText">¿No tienes cuenta? </span>
+    <a id="toggleLink" href="#">Regístrate</a>
   </div>
 </main>
 
@@ -332,27 +332,27 @@
     mode = m;
     errEl.style.display = 'none';
     if (m === 'setup') {
-      setupNote.textContent = 'First-time setup — create your admin account';
+      setupNote.textContent = 'Configuración inicial — crea tu cuenta de administrador';
       setupNote.style.display = 'block';
       confirmGroup.style.display = 'block';
-      submitBtn.textContent = 'Create Admin Account';
+      submitBtn.textContent = 'Crear cuenta de administrador';
       toggleArea.style.display = 'none';
       rememberToggle.style.display = 'none';
     } else if (m === 'signup') {
       setupNote.style.display = 'none';
       confirmGroup.style.display = 'block';
-      submitBtn.innerHTML = '<span style="position:relative;top:1px;">Create Account</span>';
+      submitBtn.innerHTML = '<span style="position:relative;top:1px;">Crear cuenta</span>';
       toggleArea.style.display = 'block';
-      toggleText.textContent = 'Already have an account? ';
-      toggleLink.textContent = 'Sign in';
+      toggleText.textContent = '¿Ya tienes cuenta? ';
+      toggleLink.textContent = 'Inicia sesión';
       rememberToggle.style.display = 'none';
     } else {
       setupNote.style.display = 'none';
       confirmGroup.style.display = 'none';
-      submitBtn.textContent = 'Sign In';
+      submitBtn.textContent = 'Iniciar sesión';
       toggleArea.style.display = signupAllowed ? 'block' : 'none';
-      toggleText.textContent = "Don't have an account? ";
-      toggleLink.textContent = 'Sign up';
+      toggleText.textContent = '¿No tienes cuenta? ';
+      toggleLink.textContent = 'Regístrate';
       rememberToggle.style.display = '';
     }
   }
@@ -402,8 +402,8 @@
           body: JSON.stringify({ username, password, remember, totp_code: code })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Invalid code');
-        if (!data.ok) throw new Error('Login failed');
+        if (!res.ok) throw new Error(data.detail || 'Código no válido');
+        if (!data.ok) throw new Error('Error al iniciar sesión');
         form._totpMode = false;
         finishLogin();
       } catch (err) {
@@ -418,13 +418,13 @@
     if (mode === 'setup' || mode === 'signup') {
       const confirm = document.getElementById('confirmPassword').value;
       if (password !== confirm) {
-        errEl.textContent = 'Passwords do not match';
+        errEl.textContent = 'Las contraseñas no coinciden';
         errEl.style.display = 'block';
         submitBtn.disabled = false;
         return;
       }
       if (password.length < 8) {
-        errEl.textContent = 'Password must be at least 8 characters';
+        errEl.textContent = 'La contraseña debe tener al menos 8 caracteres';
         errEl.style.display = 'block';
         submitBtn.disabled = false;
         return;
@@ -442,7 +442,7 @@
           body: JSON.stringify({ username, password })
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Account creation failed');
+        if (!res.ok) throw new Error(data.detail || 'Error al crear la cuenta');
       } catch (err) {
         errEl.textContent = err.message;
         errEl.style.display = 'block';
@@ -480,7 +480,7 @@
         body: JSON.stringify(loginBody)
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Login failed');
+      if (!res.ok) throw new Error(data.detail || 'Error al iniciar sesión');
       return data;
     }
     try {
@@ -493,12 +493,12 @@
         form._totpMode = true;
         const totpWrap = document.createElement('div');
         totpWrap.style.cssText = 'margin-top:12px;';
-        totpWrap.innerHTML = '<label for="totp-input" style="font-size:0.85em;opacity:0.7;display:block;margin-bottom:4px;">2FA Code</label><input type="text" id="totp-input" placeholder="Enter 6-digit code" aria-label="Two-factor authentication code" autocomplete="one-time-code" inputmode="numeric" maxlength="8" style="width:100%;padding:10px 12px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:8px;font-size:14px;box-sizing:border-box;text-align:center;letter-spacing:4px;">';
+        totpWrap.innerHTML = '<label for="totp-input" style="font-size:0.85em;opacity:0.7;display:block;margin-bottom:4px;">Código 2FA</label><input type="text" id="totp-input" placeholder="Introduce el código de 6 dígitos" aria-label="Código de autenticación en dos pasos" autocomplete="one-time-code" inputmode="numeric" maxlength="8" style="width:100%;padding:10px 12px;background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:8px;font-size:14px;box-sizing:border-box;text-align:center;letter-spacing:4px;">';
         const formEl = submitBtn.parentElement;
         formEl.insertBefore(totpWrap, submitBtn);
         const totpInput = document.getElementById('totp-input');
         totpInput.focus();
-        submitBtn.textContent = 'Verify';
+        submitBtn.textContent = 'Verificar';
         return;
       }
       finishLogin();
@@ -523,7 +523,7 @@
       const show = inp.type === 'password';
       inp.type = show ? 'text' : 'password';
       btn.innerHTML = show ? eyeOpen : eyeClosed;
-      btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+      btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
       inp.focus();
     });
   }

@@ -53,12 +53,12 @@ export function wireInpaintButtons({
     // Pre-check: build the union mask the AI will receive and verify
     // at least one pixel is painted.
     const preMerged = buildMergedMaskCanvas();
-    if (!preMerged) { if (uiModule) uiModule.showToast('Draw the area you want to inpaint first'); return; }
+    if (!preMerged) { if (uiModule) uiModule.showToast('Dibuja el área que deseas retocar primero'); return; }
     const pmCtx = preMerged.getContext('2d');
     const maskData = pmCtx.getImageData(0, 0, preMerged.width, preMerged.height).data;
     let hasMask = false;
     for (let i = 3; i < maskData.length; i += 4) { if (maskData[i] > 0) { hasMask = true; break; } }
-    if (!hasMask) { if (uiModule) uiModule.showToast('Draw the area you want to inpaint first'); return; }
+    if (!hasMask) { if (uiModule) uiModule.showToast('Dibuja el área que deseas retocar primero'); return; }
     const btn = document.getElementById(btnId);
     const btnLabel = labelId ? document.getElementById(labelId) : null;
     btn.disabled = true;
@@ -223,19 +223,19 @@ export function wireInpaintButtons({
             eSlider.value = '0';
           }
           if (eLabel) eLabel.textContent = '0px';
-          if (uiModule) uiModule.showToast('Inpaint complete — drag Edge feather / Edge stroke to blend', 5000);
+          if (uiModule) uiModule.showToast('Retoque completado — arrastra Suavizar borde / Trazo de borde para fusionar', 5000);
         } catch (renderErr) {
           console.error('[inpaint] render error', renderErr);
-          if (uiModule) uiModule.showToast('Inpaint render failed: ' + (renderErr.message || renderErr), 6000);
+          if (uiModule) uiModule.showToast('Error al renderizar el retoque: ' + (renderErr.message || renderErr), 6000);
         }
       };
       resultImg.onerror = (e) => {
         console.error('[inpaint] base64 decode failed', e);
-        if (uiModule) uiModule.showToast('Inpaint result failed to decode', 6000);
+        if (uiModule) uiModule.showToast('Error al decodificar el resultado del retoque', 6000);
       };
       resultImg.src = 'data:image/png;base64,' + data.image;
     } catch (e) {
-      if (uiModule) uiModule.showToast('Inpaint failed: ' + e.message, 6000);
+      if (uiModule) uiModule.showToast('Error en el retoque: ' + e.message, 6000);
     } finally {
       btn.disabled = false;
       if (btnLabel) btnLabel.textContent = idleLabel;
@@ -249,13 +249,13 @@ export function wireInpaintButtons({
   // Generate.
   document.getElementById('ge-inpaint-run').addEventListener('click', async () => {
     const prompt = document.getElementById('ge-inpaint-prompt')?.value?.trim();
-    if (!prompt) { if (uiModule) uiModule.showToast('Enter a prompt for inpainting'); return; }
+    if (!prompt) { if (uiModule) uiModule.showToast('Escribe un indicador para el retoque'); return; }
     const strength = (parseInt(document.getElementById('ge-strength-slider')?.value || '75')) / 100;
     await runInpaint({
       prompt, strength,
       btnId: 'ge-inpaint-run',
       labelId: 'ge-inpaint-run-label',
-      idleLabel: 'Generate', busyLabel: 'Generating',
+      idleLabel: 'Generar', busyLabel: 'Generando…',
     });
   });
 
@@ -286,7 +286,7 @@ export function wireInpaintButtons({
       prompt, strength,
       btnId: 'ge-inpaint-remove',
       labelId: 'ge-inpaint-remove-label',
-      idleLabel: 'Remove', busyLabel: 'Removing',
+      idleLabel: 'Eliminar', busyLabel: 'Eliminando…',
     });
   });
 
@@ -323,7 +323,7 @@ export function wireInpaintButtons({
       }
     }
     if (emptyCount === 0) {
-      if (uiModule) uiModule.showToast('No empty areas to outpaint — canvas is fully covered.');
+      if (uiModule) uiModule.showToast('No hay áreas vacías para extender — el lienzo está completamente cubierto.');
       return;
     }
     mrCtx.putImageData(mrImg, 0, 0);
@@ -348,7 +348,7 @@ export function wireInpaintButtons({
     // 4) Temporarily replace the active mask sub-layer with the
     //    outpaint mask. Snapshot the previous so we can restore.
     const mask = ensureActiveMaskLayer();
-    if (!mask) { if (uiModule) uiModule.showToast('No active layer for outpaint'); return; }
+    if (!mask) { if (uiModule) uiModule.showToast('No hay capa activa para extender'); return; }
     const savedMask = mask.ctx.getImageData(0, 0, mask.canvas.width, mask.canvas.height);
     mask.ctx.clearRect(0, 0, mask.canvas.width, mask.canvas.height);
     mask.ctx.drawImage(expanded, 0, 0);
@@ -361,7 +361,7 @@ export function wireInpaintButtons({
         prompt, strength,
         btnId: 'ge-inpaint-outpaint',
         labelId: 'ge-inpaint-outpaint-label',
-        idleLabel: 'Outpaint', busyLabel: 'Outpainting',
+        idleLabel: 'Extender', busyLabel: 'Extendiendo…',
       });
     } finally {
       // Restore the user's previous mask drawing so subsequent

@@ -142,7 +142,7 @@ export function wireSelectionControls({
     const btn = document.getElementById('ge-wand-vis');
     if (btn) {
       btn.innerHTML = state.wandMaskVisible ? EYE_OPEN : EYE_OFF;
-      btn.title = state.wandMaskVisible ? 'Hide selection overlay' : 'Show selection overlay';
+      btn.title = state.wandMaskVisible ? 'Ocultar superposición de selección' : 'Mostrar superposición de selección';
       btn.classList.toggle('visible', state.wandMaskVisible);
     }
     composite();
@@ -159,7 +159,7 @@ export function wireSelectionControls({
   document.getElementById('ge-wand-rembg')?.addEventListener('click', async () => {
     const btn = document.getElementById('ge-wand-rembg');
     const hint = buildSelectionHintMask();
-    if (!hint) { if (uiModule) uiModule.showToast('Click to make a wand selection first'); return; }
+    if (!hint) { if (uiModule) uiModule.showToast('Haz clic para crear una selección con la varita primero'); return; }
     await applyImageTool('/api/image/remove-bg', { hint_mask: hint }, 'BG Removed', btn);
     wandClear();
   });
