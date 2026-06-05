@@ -83,7 +83,7 @@ function _showCalUndoToast(label, undoFn) {
   _pushCalUndo({ label, run: undoFn });
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '') || /Mac/.test(navigator.userAgent || '');
   uiModule.showToast(label, {
-    action: 'Undo',
+    action: 'Deshacer',
     actionHint: isMac ? '⌘Z' : 'Ctrl+Z',
     duration: 6000,
     onAction: _popAndRunCalUndo,
@@ -2318,7 +2318,7 @@ function _wireAll(body) {
       _pushCalUndo({ label: 'move', run: () => _updateEvent(undoSnap.uid, { dtstart: undoSnap.dtstart, dtend: undoSnap.dtend || undefined }).then(_render) });
       await _updateEvent(ev.uid, { dtstart: _shiftDT(ev.dtstart, diff), dtend: ev.dtend ? _shiftDT(ev.dtend, diff) : undefined });
       _render();
-      uiModule.showToast?.('Moved', { duration: 4000, action: 'Undo', actionHint: 'Ctrl+Z', onAction: _popAndRunCalUndo });
+      uiModule.showToast?.('Movido', { duration: 4000, action: 'Deshacer', actionHint: 'Ctrl+Z', onAction: _popAndRunCalUndo });
     });
   });
 }
