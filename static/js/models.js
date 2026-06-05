@@ -13,30 +13,30 @@ import { modelColor } from './chatRenderer.js';
 import { providerLogo } from './providers.js';
 import { sortModelIds } from './modelSort.js';
 
-// Frases célebres (temática náutica / viaje / inspiración) que rotan en el
+// Frases célebres (filosofía e inteligencia artificial) que rotan en el
 // subtítulo de bienvenida. Se recorren en orden, guardando el índice en
 // localStorage para que cada arranque muestre la siguiente.
 const _FRASES_CELEBRES = [
-  '«No se descubren nuevos océanos sin atreverse a perder de vista la costa.» — André Gide',
-  '«Un barco está seguro en el puerto, pero no se construyó para eso.» — John A. Shedd',
-  '«Si quieres construir un barco, no reúnas a la gente para recoger madera: enséñales a anhelar el ancho e infinito mar.» — Antoine de Saint-Exupéry',
-  '«No puedes controlar el viento, pero puedes ajustar las velas.» — Proverbio',
-  '«Navega lejos del puerto seguro. Atrapa los vientos en tus velas. Explora. Sueña. Descubre.» — Mark Twain',
-  '«No hay viento favorable para quien no sabe a dónde va.» — Séneca',
-  '«Un viaje de mil millas comienza con un solo paso.» — Lao Tse',
-  '«Sólo quienes se arriesgan a ir demasiado lejos descubren lo lejos que se puede llegar.» — T. S. Eliot',
-  '«El mundo es un libro, y quienes no viajan leen sólo una página.» — San Agustín',
-  '«La calma del mar nunca hizo a un buen marinero.» — Proverbio',
-  '«No es el mar el que hunde el barco, sino el agua que entra en él.» — Proverbio',
-  '«Atrévete a saber.» — Horacio',
-  '«La mejor manera de predecir el futuro es crearlo.» — Peter Drucker',
-  '«El éxito es la suma de pequeños esfuerzos repetidos cada día.» — Robert Collier',
-  '«No cuentes los días, haz que los días cuenten.» — Muhammad Ali',
-  '«Quien tiene un porqué para vivir puede soportar casi cualquier cómo.» — Friedrich Nietzsche',
-  '«La imaginación es más importante que el conocimiento.» — Albert Einstein',
-  '«El que mueve montañas comienza apartando piedras pequeñas.» — Confucio',
-  '«La suerte favorece a la mente preparada.» — Louis Pasteur',
-  '«Lo esencial es invisible a los ojos.» — Antoine de Saint-Exupéry',
+  '«Pienso, luego existo.» — René Descartes',
+  '«Sólo sé que no sé nada.» — Sócrates',
+  '«La vida no examinada no merece ser vivida.» — Sócrates',
+  '«Lo único permanente es el cambio.» — Heráclito',
+  '«El conocimiento es poder.» — Francis Bacon',
+  '«La filosofía comienza con el asombro.» — Aristóteles',
+  '«El hombre es la medida de todas las cosas.» — Protágoras',
+  '«La ciencia es lo que sabemos; la filosofía es lo que no sabemos.» — Bertrand Russell',
+  '«¿Pueden pensar las máquinas?» — Alan Turing',
+  '«La pregunta de si una máquina puede pensar es tan relevante como la de si un submarino puede nadar.» — Edsger W. Dijkstra',
+  '«La verdadera cuestión no es si las máquinas piensan, sino si los hombres lo hacen.» — B. F. Skinner',
+  '«Toda tecnología lo bastante avanzada es indistinguible de la magia.» — Arthur C. Clarke',
+  '«La inteligencia es la capacidad de adaptarse al cambio.» — Stephen Hawking',
+  '«El verdadero signo de la inteligencia no es el conocimiento, sino la imaginación.» — Albert Einstein',
+  '«Moldeamos nuestras herramientas y, después, ellas nos moldean a nosotros.» — Marshall McLuhan',
+  '«La inteligencia artificial es la nueva electricidad.» — Andrew Ng',
+  '«No basta con tener un buen ingenio; lo principal es aplicarlo bien.» — René Descartes',
+  '«La mente que se abre a una nueva idea jamás vuelve a su tamaño original.» — Albert Einstein',
+  '«Dos cosas colman el ánimo de admiración: el cielo estrellado sobre mí y la ley moral en mí.» — Immanuel Kant',
+  '«Conócete a ti mismo.» — Sócrates',
 ];
 
 function _fraseCelebreRotativa() {
