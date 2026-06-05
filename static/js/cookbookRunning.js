@@ -148,7 +148,7 @@ function _terminalServeDiagnosis(task, outputText) {
       suggestion: 'Suggested action: use vLLM/SGLang on a compatible CUDA/ROCm GPU server, or download a GGUF version for llama.cpp/Ollama/unified-memory serving.',
       fixes: [
         { label: 'Find GGUF download', action: () => _openDownloadForGgufTask(task) },
-        { label: 'Edit serve', action: (panel) => _openServeEditForTask(task) },
+        { label: 'Editar servicio', action: (panel) => _openServeEditForTask(task) },
       ],
     };
   }
@@ -158,7 +158,7 @@ function _terminalServeDiagnosis(task, outputText) {
       suggestion: 'Suggested action: choose a CUDA/ROCm server where vLLM/SGLang can see the GPU, or download a GGUF version and serve it with llama.cpp/Ollama.',
       fixes: [
         { label: 'Find GGUF download', action: () => _openDownloadForGgufTask(task) },
-        { label: 'Edit serve', action: (panel) => _openServeEditForTask(task) },
+        { label: 'Editar servicio', action: (panel) => _openServeEditForTask(task) },
       ],
     };
   }
@@ -169,7 +169,7 @@ function _terminalServeDiagnosis(task, outputText) {
     suggestion: /Native llama-server not found|building llama-server|llama\.cpp/i.test(out)
       ? 'Suggested action: copy the troubleshooting bundle, then edit serve settings. For the quickest local/CPU path, use Ollama or a prebuilt llama-server; source builds can take several minutes and fail if build dependencies are incomplete.'
       : 'Suggested action: copy the troubleshooting bundle, then edit serve settings or relaunch with a CPU/backend fallback.',
-    fixes: [{ label: 'Edit serve', action: (panel) => _openServeEditForTask(task) }],
+    fixes: [{ label: 'Editar servicio', action: (panel) => _openServeEditForTask(task) }],
   };
 }
 
@@ -1943,7 +1943,7 @@ export function _renderRunningTab() {
             // Serving it supersedes the finished download — clear the card from
             // the Running tab (smooth exit) now that we've jumped to Serve.
             _animateOutThenRemove(el, task.sessionId);
-          } catch (err) { uiModule.showToast('Could not open Serve: ' + err.message); }
+          } catch (err) { uiModule.showToast('No se pudo abrir Servicio: ' + err.message); }
         });
       }
     }
@@ -2137,10 +2137,10 @@ export function _renderRunningTab() {
                 if (_ep && _ep.id) _probeEndpointUntilOnline(_ep.id, host, port);
               } else {
                 const body = await res.text().catch(() => '');
-                uiModule.showError(`Register failed: ${res.status} ${body.slice(0, 140)}`);
+                uiModule.showError(`Registro fallido: ${res.status} ${body.slice(0, 140)}`);
               }
             } catch (e) {
-              uiModule.showError(`Register failed: ${e.message || e}`);
+              uiModule.showError(`Registro fallido: ${e.message || e}`);
             }
           }});
         }
@@ -2487,7 +2487,7 @@ async function _reconnectTask(el, task) {
                   : /Native llama-server not found|building llama-server|llama\.cpp/i.test(lastOutput)
                   ? 'Suggested action: copy the troubleshooting bundle, then edit serve settings. For the quickest local/CPU path, use Ollama or a prebuilt llama-server; source builds can take several minutes and fail if build dependencies are incomplete.'
                   : 'Suggested action: copy the troubleshooting bundle, then edit serve settings or relaunch with a CPU/backend fallback.',
-                fixes: [{ label: 'Edit serve', action: (panel) => _openServeEditForTask(task) }],
+                fixes: [{ label: 'Editar servicio', action: (panel) => _openServeEditForTask(task) }],
               };
               _showDiagnosis(el, diag, lastOutput);
             } else if (task.type === 'download') {

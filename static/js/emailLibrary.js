@@ -496,7 +496,7 @@ async function _deleteEmailAndAdvance(em, card, opts = {}) {
   try {
     await fetch(`${API_BASE}/api/email/delete/${em.uid}?folder=${encodeURIComponent(state._libFolder)}${_acct()}`, { method: 'DELETE' });
   } catch (err) {
-    console.error('Failed to delete email:', err);
+    console.error('No se pudo eliminar el correo:', err);
     showToast('Error al eliminar el correo');
     return;
   }
@@ -1707,7 +1707,7 @@ async function _loadEmails({ force = false, useCache = true } = {}) {
     if (seq !== _libLoadSeq || accountAtStart !== (state._libAccountId || '')) return;
     if (sp) sp.destroy();
     // If we already painted the cached list, leave it on screen — beats
-    // wiping it for "Failed to load" when there's still readable content.
+    // wiping it for "No se pudo cargar" when there's still readable content.
     if (!cached) {
       const msg = e && e.message ? `Error al cargar: ${e.message}` : 'Error al cargar';
       grid.innerHTML = `<div class="email-loading">${_esc(msg)}${_emailSetupHintHtml()}</div>`;
@@ -2202,7 +2202,7 @@ async function _toggleCardPreview(card, em) {
   if (!em.is_read) {
     _syncEmailReadState(em.uid, true);
     fetch(`${API_BASE}/api/email/mark-read/${em.uid}?folder=${encodeURIComponent(folderAtStart)}${_acct()}`, { method: 'POST' })
-      .catch(err => console.error('Failed to mark email read:', err));
+      .catch(err => console.error('No se pudo marcar el correo como leído:', err));
   }
   // Class hook on the modal so the header-hide / padding rules work on
   // browsers without :has() support (Firefox mobile) — the :has() versions
@@ -3598,7 +3598,7 @@ function _wireAttachmentHandlers(reader, folder) {
           }
         } catch (e) {
           console.error('Open document failed:', e);
-          try { const { showError } = await import('./ui.js'); showError('Document opened but panel could not mount'); } catch (_) {}
+          try { const { showError } = await import('./ui.js'); showError('El documento se abrió, pero el panel no pudo montarse'); } catch (_) {}
         }
       } catch (e) {
         console.error('attachment-as-doc error', e);
@@ -3699,7 +3699,7 @@ function _buildAttsHtmlFor(uid, data) {
   );
 }
 
-// "Open in new tab" — the email opens in the library (expanded inline)
+// "Abrir en nueva pestaña" — the email opens in the library (expanded inline)
 // AND a separate floating "email viewer" overlay modal is created. The
 // overlay starts minimized as a chip in the dock; tapping the chip
 // brings the viewer up over the library. Multiple tabs = multiple
@@ -3785,7 +3785,7 @@ function _ensureEmailTabObserver() {
 // Hybrid model:
 //   - email-lib-modal (the inbox library) is unique. Its chip just
 //     restores it.
-//   - Each "Open in new tab" creates a separate per-email reader modal
+//   - Each "Abrir en nueva pestaña" creates a separate per-email reader modal
 //     (id "email-reader-{uid}-{seq}") with the SAME structure & classes
 //     as the library's inline reader, so they look identical. Each
 //     reader registers its own dock chip with a number badge.
@@ -4020,7 +4020,7 @@ async function _openEmailAsTab(em, folder) {
 }
 
 
-// "Open in new window" — spawns a floating draggable modal that shows just
+// "Abrir en nueva ventana" — spawns a floating draggable modal that shows just
 // the email content. Multiple windows can stack; each has its own DOM id
 // and close button. Uses `_makeDraggable` so dragging the header pans the
 // window around. Renders the body via _renderEmailBody for parity with the
@@ -4555,7 +4555,7 @@ function _showReaderMoreMenu(em, card, reader, anchor) {
           } else {
             await fetch(`${API_BASE}/api/email/clear-answered/${em.uid}?folder=${encodeURIComponent(state._libFolder)}${_acct()}`, { method: 'POST' });
           }
-        } catch (e) { console.error('Failed to toggle done:', e); }
+        } catch (e) { console.error('No se pudo cambiar el estado:', e); }
         _renderGrid();
       },
     },
@@ -4716,7 +4716,7 @@ function _showCardMenu(em, anchor) {
           } else {
             await fetch(`${API_BASE}/api/email/clear-answered/${em.uid}?folder=${encodeURIComponent(state._libFolder)}${_acct()}`, { method: 'POST' });
           }
-        } catch (e) { console.error('Failed to toggle done:', e); }
+        } catch (e) { console.error('No se pudo cambiar el estado:', e); }
         if (card) {
           if (check) check.classList.toggle('active', newState);
           if (newState) _syncEmailReadState(em.uid, true);

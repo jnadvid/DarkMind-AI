@@ -458,7 +458,7 @@ export async function _hwfitFetch(fresh = false) {
     loadingLbl.textContent = 'Loading…';
     loadingLbl.style.cssText = 'text-align:center;opacity:0.5;font-size:11px;';
     loadingDiv.appendChild(loadingLbl);
-    setTimeout(() => { if (loadingLbl.isConnected) loadingLbl.textContent = 'Scanning hardware…'; }, 2000);
+    setTimeout(() => { if (loadingLbl.isConnected) loadingLbl.textContent = 'Analizando hardware…'; }, 2000);
     list.innerHTML = '';
     list.appendChild(loadingDiv);
     _hwfitCache = null;   // no instant paint — clear until the fetch returns
@@ -1116,7 +1116,7 @@ export function _expandModelRow(row, modelData) {
         || [..._cachedModelIds].some(id => id === modelData.name || id.endsWith('/' + _short))
       );
       if (_cachedModelIds && !_downloaded) {
-        uiModule.showToast('Model not downloaded yet — starting download. Run again to serve once it finishes.');
+        uiModule.showToast('El modelo aún no está descargado: iniciando descarga. Ejecútalo de nuevo para servirlo cuando termine.');
         if (backend === 'ollama') {
           _runPanelCmd(panel, _buildDownloadCmd(modelData, backend), { timeout: 0 });
         } else {
@@ -1229,10 +1229,10 @@ export function _expandModelRow(row, modelData) {
           const runTab = document.querySelector('.cookbook-tab[data-backend="Running"]');
           if (runTab) runTab.click();
         } else {
-          uiModule.showError('Launch failed: ' + (data.error || ''));
+          uiModule.showError('Error al lanzar: ' + (data.error || ''));
         }
       } catch (e) {
-        uiModule.showError('Launch failed: ' + e.message);
+        uiModule.showError('Error al lanzar: ' + e.message);
       }
       quickRunBtn.disabled = false;
       quickRunBtn.textContent = 'Run';
@@ -1254,7 +1254,7 @@ export function _expandModelRow(row, modelData) {
         || [..._cachedModelIds].some(id => id === repo || id.endsWith('/' + short))
       );
       if (_cachedModelIds && !downloaded) {
-        uiModule.showToast('Download the model first, then configure from Serve tab');
+        uiModule.showToast('Descarga primero el modelo y luego configúralo desde la pestaña Servicio');
         return;
       }
       // Downloaded (or cache state unknown) — open the Serve panel, which switches
@@ -1263,7 +1263,7 @@ export function _expandModelRow(row, modelData) {
         const { openServePanelForRepo } = await import('./cookbookServe.js');
         await openServePanelForRepo(repo);
       } catch (e) {
-        uiModule.showToast('Could not open Serve: ' + (e && e.message ? e.message : e));
+        uiModule.showToast('No se pudo abrir Servicio: ' + (e && e.message ? e.message : e));
       }
     });
   }
@@ -1440,7 +1440,7 @@ export function _hwfitInit() {
     if (!dot) return;
     if (!host) {
       dot.className = 'cookbook-srv-status';
-      dot.title = 'Enter user@host to test';
+      dot.title = 'Introduce usuario@host para probar';
       setMsg('');
       return;
     }
@@ -1471,7 +1471,7 @@ export function _hwfitInit() {
       }
     } catch (e) {
       dot.className = 'cookbook-srv-status fail';
-      dot.title = `Test failed: ${e.message || e}`;
+      dot.title = `La prueba falló: ${e.message || e}`;
       setMsg(`Failed · ${e.message || e}`, 'var(--red,#e06c75)');
     }
   }
@@ -1499,7 +1499,7 @@ export function _hwfitInit() {
       credentials: 'same-origin',
     });
     const data = await res.json();
-    if (generate && !data.ok) throw new Error(data.error || 'Failed to generate SSH key');
+    if (generate && !data.ok) throw new Error(data.error || 'No se pudo generar la clave SSH');
     return (data.public_key || '').trim();
   }
 
@@ -1530,11 +1530,11 @@ export function _hwfitInit() {
       if (!publicKey && !generate) publicKey = await _fetchCookbookSshKey(true);
       cmdBox.value = _serverKeyCommand(host, port, publicKey);
       if (copyBtn) copyBtn.disabled = false;
-      if (genBtn) genBtn.textContent = 'Key ready';
+      if (genBtn) genBtn.textContent = 'Clave lista';
     } catch (e) {
       cmdBox.value = e.message || String(e);
       if (copyBtn) copyBtn.disabled = true;
-      if (genBtn) genBtn.textContent = 'Generate key';
+      if (genBtn) genBtn.textContent = 'Generar clave';
     } finally {
       if (genBtn) genBtn.disabled = false;
     }
@@ -1554,7 +1554,7 @@ export function _hwfitInit() {
     if (!entry.querySelector('.cookbook-srv-status')) {
       const dot = document.createElement('span');
       dot.className = 'cookbook-srv-status';
-      dot.title = 'Click to test SSH';
+      dot.title = 'Haz clic para probar SSH';
       dot.addEventListener('click', (e) => { e.stopPropagation(); _testServerConnection(entry); });
       if (titleEl) titleEl.insertBefore(dot, titleEl.firstChild);
       else if (row) row.insertBefore(dot, row.firstChild);
@@ -1590,7 +1590,7 @@ export function _hwfitInit() {
           b.classList.toggle('active', on);
           // Keep the "default" label after the icon (don't overwrite it).
           b.innerHTML = (on ? _MODELDIR_CHECK_ON : _MODELDIR_CHECK_OFF) + '<span class="cookbook-srv-default-label">default</span>';
-          b.title = on ? 'Default server — Cookbook opens here' : 'Make this the default server';
+          b.title = on ? 'Servidor predeterminado: Cookbook se abre aquí' : 'Convertir en servidor predeterminado';
         });
         // Apply immediately so the dropdowns reflect it without reopening
         // (inline — _applyServerSelection lives in cookbook.js and isn't imported here).
@@ -1723,7 +1723,7 @@ export function _hwfitInit() {
           if (data.ok) {
             setupBtn.textContent = '\u2713 Done';
             setupBtn.style.color = '#50fa7b';
-            uiModule.showToast(`Setup complete (${data.platform})`);
+            uiModule.showToast(`Configuración completada (${data.platform})`);
             // Store detected platform on the server entry
             if (data.platform) {
               entry.dataset.platform = data.platform;
@@ -1759,7 +1759,7 @@ export function _hwfitInit() {
           } else {
             setupBtn.textContent = 'Failed';
             setupBtn.style.color = 'var(--red)';
-            uiModule.showError(data.error || data.output || 'Setup failed');
+            uiModule.showError(data.error || data.output || 'La configuración falló');
           }
         } catch (e) {
           setupBtn.textContent = 'Error';
@@ -1814,12 +1814,12 @@ export function _hwfitInit() {
         d.classList.remove('active');
         d.innerHTML = _MODELDIR_CHECK_OFF;          // uncheck the others
         d.closest('.cookbook-modeldir-tag')?.classList.remove('cookbook-modeldir-target');
-        d.title = 'Send downloads here';
+        d.title = 'Enviar descargas aquí';
       });
       dlEl.classList.add('active');
       dlEl.innerHTML = _MODELDIR_CHECK_ON;           // check the chosen one
       tag.classList.add('cookbook-modeldir-target');
-      dlEl.title = 'Downloads go here';
+      dlEl.title = 'Las descargas van aquí';
       _syncServers();
       uiModule.showToast((dlEl.dataset.dlDir ? 'Downloads \u2192 ' + dlEl.dataset.dlDir : 'Downloads \u2192 default HF cache'));
     });

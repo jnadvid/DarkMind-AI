@@ -314,7 +314,7 @@ function _rerenderCachedModels() {
       : _bk === 'diffusers' ? '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 3c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zM6 9c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm0 6c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm6 4c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4-8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="currentColor"/></svg>'
       : '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 4l8 16 8-16h-4l-4 8-4-8z" fill="currentColor"/></svg>';
     html += `<span class="cookbook-card-backend" data-detected="${_bk}">${_bkIco}</span>`;
-    html += `<div class="memory-item-actions"><button type="button" class="memory-item-btn hwfit-cached-menu-btn" title="Actions" aria-label="Model actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>`;
+    html += `<div class="memory-item-actions"><button type="button" class="memory-item-btn hwfit-cached-menu-btn" title="Actions" aria-label="Acciones del modelo"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>`;
     html += `</div>`;
   }
   if (!visibleCount) html += '<div class="hwfit-loading">No hay modelos coincidentes</div>';
@@ -802,8 +802,8 @@ function _rerenderCachedModels() {
         const v = parseInt(_ctxEl0.value, 10);
         if (Number.isFinite(v) && v > cap) {
           _ctxEl0.value = String(cap);
-          _ctxEl0.title = `Capped to ${panel._modelCtxMax > 0 ? "this model's trained limit" : "the maximum sane context"} (${cap}).`;
-          if (announce) uiModule.showToast(`Context capped to ${cap}`);
+          _ctxEl0.title = `Limitado a ${panel._modelCtxMax > 0 ? "el límite entrenado de este modelo" : "el contexto máximo razonable"} (${cap}).`;
+          if (announce) uiModule.showToast(`Contexto limitado a ${cap}`);
           updateCmd();
         }
       }
@@ -954,7 +954,7 @@ function _rerenderCachedModels() {
         const seq = (panel._runtimeReadinessSeq || 0) + 1;
         panel._runtimeReadinessSeq = seq;
         note.style.display = '';
-        note.textContent = 'Checking runtime on selected server...';
+        note.textContent = 'Comprobando el runtime en el servidor seleccionado...';
         try {
           const { pkg, target } = await _fetchServeRuntimePackage(panel, backend);
           if (panel._runtimeReadinessSeq !== seq) return;
@@ -962,7 +962,7 @@ function _rerenderCachedModels() {
           note.style.color = pkg?.installed ? 'var(--fg-muted)' : 'var(--red)';
         } catch (err) {
           if (panel._runtimeReadinessSeq !== seq) return;
-          note.textContent = `Runtime readiness unavailable: ${err?.message || err}`;
+          note.textContent = `Disponibilidad del runtime desconocida: ${err?.message || err}`;
           note.style.color = 'var(--fg-muted)';
         }
       }
@@ -1087,7 +1087,7 @@ function _rerenderCachedModels() {
         const _norm = s => String(s || '').replace(/\s+/g, ' ').trim();
         const _existing = modelSlots.find(p => _norm(p.cmd) === _norm(cmd));
         if (_existing) {
-          await window.styledConfirm(`This config is already saved as "${_existing.label || 'Unnamed'}".`, { confirmText: 'OK', cancelText: 'Close' });
+          await window.styledConfirm(`Esta configuración ya está guardada como «${_existing.label || 'Sin nombre'}».`, { confirmText: 'OK', cancelText: 'Cerrar' });
           return false;
         }
         if (modelSlots.length >= 5) { uiModule.showToast('Max 5 saves per model'); return false; }
@@ -1127,7 +1127,7 @@ function _rerenderCachedModels() {
         if (!modelSlots.length) {
           const empty = document.createElement('div');
           empty.style.cssText = 'padding:6px 8px;opacity:0.5;position:relative;top:1px;';
-          empty.textContent = 'No saved configs yet';
+          empty.textContent = 'Aún no hay configuraciones guardadas';
           dropdown.appendChild(empty);
         }
         modelSlots.forEach((p, idx) => {
@@ -1148,7 +1148,7 @@ function _rerenderCachedModels() {
           if (p.confirmedWorking) {
             const badge = document.createElement('span');
             badge.className = 'cookbook-saved-confirmed';
-            badge.title = 'Confirmed working — this config launched and registered an endpoint';
+            badge.title = 'Funcionamiento confirmado: esta configuración se lanzó y registró un endpoint';
             badge.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#50fa7b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
             it.appendChild(badge);
           }
@@ -1525,7 +1525,7 @@ function _rerenderCachedModels() {
                   return;
                 }
                 const summary = pids.map(p => `${p.pid} (${p.name})`).join(', ');
-                if (!await window.styledConfirm(`Clear server GPU memory by sending SIGTERM to ${pids.length} process(es)?\n\n${summary}\n\nIf any survive, the next prompt can force-kill them with SIGKILL.`, { confirmText: 'SIGTERM', danger: true })) return;
+                if (!await window.styledConfirm(`¿Liberar la memoria de GPU del servidor enviando SIGTERM a ${pids.length} proceso(s)?\n\n${summary}\n\nSi alguno sobrevive, en el siguiente paso podrás forzar su cierre con SIGKILL.`, { confirmText: 'SIGTERM', danger: true })) return;
                 // First pass: SIGTERM
                 const hostVal = panel._gpuProbe.host;
                 const results = await Promise.all(pids.map(p =>
@@ -1836,7 +1836,7 @@ async function _deleteCachedModel(repo, itemEl, skipConfirm = false, model = nul
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ command: cmd }),
     });
-    if (!res.ok) { uiModule.showError(`Delete failed (${res.status})`); return; }
+    if (!res.ok) { uiModule.showError(`Error al eliminar (${res.status})`); return; }
     if (itemEl) {
       itemEl.querySelector('.cookbook-delete-overlay')?.remove();
       itemEl.style.transition = 'opacity 0.24s ease, transform 0.24s ease, max-height 0.28s ease, padding 0.28s ease, margin 0.28s ease';
@@ -1855,7 +1855,7 @@ async function _deleteCachedModel(repo, itemEl, skipConfirm = false, model = nul
     // Drop from the in-memory list so a re-render/filter doesn't resurrect it.
     _cachedAllModels = _cachedAllModels.filter(x => x.repo_id !== repo);
   } catch (e) {
-    uiModule.showError('Delete failed: ' + (e && e.message ? e.message : e));
+    uiModule.showError('Error al eliminar: ' + (e && e.message ? e.message : e));
   } finally {
     // Tear down the spinner. On success the row is already gone; on error the
     // row survives, so restore it (remove overlay, re-enable interaction).
@@ -1939,7 +1939,7 @@ export async function openServePanelForRepo(repo, fields) {
     }
     await new Promise(r => setTimeout(r, 100));
   }
-  uiModule.showToast('Model not found in cache — switch to the Serve tab manually');
+  uiModule.showToast('Modelo no encontrado en la caché: cambia a la pestaña Servicio manualmente');
   return false;
 }
 
@@ -1956,7 +1956,7 @@ export async function _fetchCachedModels() {
   _dlWrap.style.cssText = 'flex-direction:column;gap:6px;';
   _dlWrap.appendChild(_dlWp.element);
   const _dlLabel = document.createElement('div');
-  _dlLabel.textContent = 'Scanning cached models…';
+  _dlLabel.textContent = 'Buscando modelos en caché…';
   _dlLabel.style.cssText = 'opacity:0.5;font-size:11px;';
   _dlWrap.appendChild(_dlLabel);
   list.appendChild(_dlWrap);
