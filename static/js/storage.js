@@ -3,8 +3,8 @@
 
 // ── Key constants ──
 export const KEYS = {
-  THEME: 'odysseus-theme',
-  TOGGLES: 'odysseus-toggles',
+  THEME: 'darkmind-theme',
+  TOGGLES: 'darkmind-toggles',
   SIDEBAR_COLLAPSED: 'sidebar-collapsed',
   SIDEBAR_WIDTH: 'sidebar-width',
   SIDEBAR_SIDE: 'sidebar-side',
@@ -13,18 +13,18 @@ export const KEYS = {
   COMPARE_CHAT: 'compare-continue-chat',
   COMPARE_BLIND: 'compare-blind',
   COMPARE_RANDOM: 'compare-randomize',
-  MODELS_EXPANDED: 'odysseus-model-expanded',
-  MODEL_ENDPOINTS: 'odysseus-model-endpoints',
-  MODEL_SELECTED: 'odysseus-selected-model',
-  SORT_ORDER: 'odysseus-sessions-sort',
-  CHAT_SEARCH_SCOPE: 'odysseus-search-scope',
-  INCOGNITO: 'odysseus-incognito',
-  RAG_ACTIVE: 'odysseus-rag-active',
-  MCP_ACTIVE: 'odysseus-mcp-active',
+  MODELS_EXPANDED: 'darkmind-model-expanded',
+  MODEL_ENDPOINTS: 'darkmind-model-endpoints',
+  MODEL_SELECTED: 'darkmind-selected-model',
+  SORT_ORDER: 'darkmind-sessions-sort',
+  CHAT_SEARCH_SCOPE: 'darkmind-search-scope',
+  INCOGNITO: 'darkmind-incognito',
+  RAG_ACTIVE: 'darkmind-rag-active',
+  MCP_ACTIVE: 'darkmind-mcp-active',
   SECTION_ORDER: 'sidebar-section-order',
   ADMIN_LAST_TAB: 'admin-last-tab',
-  DENSITY: 'odysseus-density',
-  WORKSPACE: 'odysseus-workspace'
+  DENSITY: 'darkmind-density',
+  WORKSPACE: 'darkmind-workspace'
 };
 
 /**

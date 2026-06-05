@@ -96,6 +96,8 @@ report that answers the original question as completely as possible given all ev
 Remove redundancy, resolve contradictions, and maintain logical flow. \
 Keep source URLs as inline citations where relevant.
 
+IMPORTANTE: redacta TODO el informe en español (castellano de España), independientemente del idioma de las fuentes.
+
 Write only the updated report — no preamble or meta-commentary.
 """
 
@@ -139,6 +141,7 @@ Requirements:
 - Add a brief executive summary at the top
 - End with a clear conclusion that directly answers the question
 - Write in an engaging, informative style — not dry or robotic
+- REDACTA TODO EL INFORME EN ESPAÑOL (castellano de España), aunque las fuentes estén en otros idiomas. Los nombres propios, citas textuales y URLs se mantienen en su forma original.
 """
 
 CATEGORY_PROMPTS = {
