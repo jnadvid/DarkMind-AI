@@ -354,9 +354,9 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
     if (!el) return;
     const totalAll = Object.values(_libraryLanguages).reduce((a, b) => a + b, 0);
     if (_librarySearch || _libraryActiveLanguage) {
-      el.textContent = `${_libraryTotal} of ${totalAll} document${totalAll !== 1 ? 's' : ''}`;
+      el.textContent = `${_libraryTotal} de ${totalAll} documento${totalAll !== 1 ? 's' : ''}`;
     } else {
-      el.textContent = `${totalAll} document${totalAll !== 1 ? 's' : ''}`;
+      el.textContent = `${totalAll} documento${totalAll !== 1 ? 's' : ''}`;
     }
   }
 
@@ -1365,7 +1365,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       const s = document.createElement('script');
       s.src = '/static/lib/xlsx.full.min.js';
       s.onload = resolve;
-      s.onerror = () => reject(new Error('Failed to load XLSX library'));
+      s.onerror = () => reject(new Error('No se pudo cargar la librería XLSX'));
       document.head.appendChild(s);
     });
     return _xlsxReady;
@@ -1379,7 +1379,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       const s = document.createElement('script');
       s.src = '/static/lib/mammoth.browser.min.js';
       s.onload = resolve;
-      s.onerror = () => reject(new Error('Failed to load DOCX library'));
+      s.onerror = () => reject(new Error('No se pudo cargar la librería DOCX'));
       document.head.appendChild(s);
     });
     return _mammothReady;
@@ -2010,7 +2010,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
         const deleteBtn = preview.querySelector('.doclib-chat-delete-btn');
         if (deleteBtn) deleteBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
-          if (!await window.styledConfirm('Delete this chat?', { confirmText: 'Delete', danger: true })) return;
+          if (!await window.styledConfirm('¿Eliminar este chat?', { confirmText: 'Eliminar', danger: true })) return;
           await fetch(API_BASE + '/api/session/' + session.id, { method: 'DELETE' });
           card.style.maxHeight = `${Math.max(card.getBoundingClientRect().height, card.scrollHeight)}px`;
           card.classList.add('memory-tidy-removing');
@@ -2076,7 +2076,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
               '<div class="memory-item-meta" style="font-size:10px;opacity:0.4;margin-top:2px;">' + [model, _relTime(s.updated_at)].filter(Boolean).join(' \u00b7 ') + '</div>' +
             '</div>' +
             chevronSvg +
-            '<div class="memory-item-actions"><button class="memory-item-btn _chat-menu" title="Actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
+            '<div class="memory-item-actions"><button class="memory-item-btn _chat-menu" title="Acciones"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
           '</div>' +
           '<div class="doclib-chat-preview" style="display:none;"></div>';
         const cb = card.querySelector('.memory-select-cb');
@@ -2255,7 +2255,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
       try {
         const res = await fetch(API_BASE + '/api/sessions/auto-sort', { method: 'POST', credentials: 'same-origin' });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Tidy failed');
+        if (!res.ok) throw new Error(data.detail || 'Error al organizar');
         if (data.status === 'ok') {
           if (window.uiModule) window.uiModule.showToast('Organizado' + (data.updated !== 1 ? 's' : '') + ' ' + data.updated + ' sesion' + (data.updated !== 1 ? 'es' : '') + ' en ' + data.folders.length + ' carpeta' + (data.folders.length !== 1 ? 's' : ''));
           if (window.sessionModule) await window.sessionModule.loadSessions();
@@ -2431,7 +2431,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
               '<div class="memory-item-title">' + arcIconSvg + _esc(s.name || 'Sin título') + '</div>' +
               '<div class="memory-item-meta" style="font-size:10px;opacity:0.4;margin-top:2px;">' + [model, _relTime(s.updated_at)].filter(Boolean).join(' \u00b7 ') + '</div>' +
             '</div>' +
-            '<div class="memory-item-actions"><button class="memory-item-btn _arc-menu" title="Actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
+            '<div class="memory-item-actions"><button class="memory-item-btn _arc-menu" title="Acciones"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
           '</div>' +
           '<div class="doclib-chat-preview" style="display:none;"></div>';
         const cb = card.querySelector('.memory-select-cb');
@@ -2475,7 +2475,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
               '<div class="memory-item-title">' + _arcDocIco + _esc(d.title || 'Sin título') + '</div>' +
               '<div class="memory-item-meta" style="font-size:10px;opacity:0.4;margin-top:2px;">' + ['Documento', (d.language || 'text'), _relTime(d.updated_at)].filter(Boolean).join(' · ') + '</div>' +
             '</div>' +
-            '<div class="memory-item-actions"><button class="memory-item-btn _arc-doc-menu" title="Actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
+            '<div class="memory-item-actions"><button class="memory-item-btn _arc-doc-menu" title="Acciones"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
           '</div>' +
           '<div class="doclib-chat-preview" style="display:none;"></div>';
         const _dcbEl = card.querySelector('.memory-select-cb');
@@ -2512,7 +2512,7 @@ let _libraryArchivedView = false;   // Documents tab showing archived docs?
               '<div class="memory-item-title">' + _arcResIco + _esc(r.query || 'Investigación') + '</div>' +
               '<div class="memory-item-meta" style="font-size:10px;opacity:0.4;margin-top:2px;">' + ['Investigación', (r.source_count ? r.source_count + ' fuente' + (r.source_count !== 1 ? 's' : '') : ''), _relTime(r.completed_at ? new Date(r.completed_at * 1000).toISOString() : '')].filter(Boolean).join(' · ') + '</div>' +
             '</div>' +
-            '<div class="memory-item-actions"><button class="memory-item-btn _arc-res-menu" title="Actions"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
+            '<div class="memory-item-actions"><button class="memory-item-btn _arc-res-menu" title="Acciones"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button></div>' +
           '</div>' +
           '<div class="doclib-chat-preview" style="display:none;"></div>';
         const _rcbEl = card.querySelector('.memory-select-cb');

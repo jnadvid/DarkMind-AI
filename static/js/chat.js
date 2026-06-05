@@ -830,18 +830,18 @@ import createResearchSynapse from './researchSynapse.js';
       
       const modelName = sessionModule.getCurrentModel() || null;
 
-      let loadingText = 'Initializing...';
+      let loadingText = 'Inicializando...';
 
       if (el('web-toggle').checked && !_isAgent) {
         const _searchLabel = searchModule ? searchModule.getProviderLabel() : 'web';
-        loadingText = `Searching via ${_searchLabel}...<br>
+        loadingText = `Buscando en ${_searchLabel}...<br>
                        <span style="font-size: 0.9em; opacity: 0.8;">
-                       Query: "${msg.substring(0, 50)}${msg.length > 50 ? '...' : ''}"<br>
-                       Fetching top results...</span>`;
+                       Consulta: "${msg.substring(0, 50)}${msg.length > 50 ? '...' : ''}"<br>
+                       Obteniendo los mejores resultados...</span>`;
       } else if (el('research-toggle').checked) {
-        loadingText = 'Deep research mode active...';
+        loadingText = 'Modo de investigación profunda activo...';
       } else {
-        loadingText = 'Processing request...';
+        loadingText = 'Procesando solicitud...';
       }
 
       var roleLabel = _shortModel(modelName);
@@ -862,12 +862,12 @@ import createResearchSynapse from './researchSynapse.js';
       // Update spinner message based on mode
       if (el('web-toggle').checked && !_isAgent) {
         spinner.updateMessage('Buscando en la web con ' + (searchModule ? searchModule.getProviderLabel() : 'SearXNG'));
-        setTimeout(() => spinner.updateMessage('Processing results'), 1500);
+        setTimeout(() => spinner.updateMessage('Procesando resultados'), 1500);
       } else if (el('research-toggle').checked) {
         spinner.updateMessage('Investigando');
-        setTimeout(() => spinner.updateMessage('Analyzing sources'), 1500);
+        setTimeout(() => spinner.updateMessage('Analizando fuentes'), 1500);
       } else {
-        spinner.updateMessage('Processing request');
+        spinner.updateMessage('Procesando solicitud');
         const endpointUrlForProbe = sessionModule.getCurrentEndpointUrl ? sessionModule.getCurrentEndpointUrl() : null;
         if (endpointUrlForProbe && modelName) {
           processingProbeTimer = setTimeout(async () => {
@@ -875,14 +875,14 @@ import createResearchSynapse from './researchSynapse.js';
             if (accumulated || !spinner || !spinner.element || (currentAbort && currentAbort.signal.aborted)) return;
             processingProbeAbort = new AbortController();
             try {
-              spinner.updateMessage('Checking model endpoint');
+              spinner.updateMessage('Comprobando endpoint del modelo');
               const status = await _probeCurrentEndpointStatus(endpointUrlForProbe, processingProbeAbort.signal);
               if (accumulated || !spinner || !spinner.element || (currentAbort && currentAbort.signal.aborted)) return;
               if (!status) {
-                spinner.updateMessage('Still waiting for model');
+                spinner.updateMessage('Esperando al modelo');
               } else if (status.alive) {
                 const latency = status.latency_ms ? ` (${status.latency_ms}ms)` : '';
-                spinner.updateMessage(`Endpoint online${latency}; waiting for first token`);
+                spinner.updateMessage(`Endpoint en línea${latency}; esperando el primer token`);
               } else {
                 // Probe confirms the endpoint isn't responding. Don't
                 // sit on a hung fetch — give the user 5s to read the
@@ -891,7 +891,7 @@ import createResearchSynapse from './researchSynapse.js';
                 // instead of leaving the spinner spinning forever.
                 if (status.error) console.warn('Model endpoint probe failed:', status.error);
                 let _countdown = 5;
-                spinner.updateMessage(`Endpoint offline — cancelling in ${_countdown}s`);
+                spinner.updateMessage(`Endpoint sin conexión — cancelando en ${_countdown}s`);
                 const _tick = setInterval(() => {
                   _countdown--;
                   if (!spinner || !spinner.element || (currentAbort && currentAbort.signal.aborted) || accumulated) {
@@ -899,7 +899,7 @@ import createResearchSynapse from './researchSynapse.js';
                     return;
                   }
                   if (_countdown > 0) {
-                    spinner.updateMessage(`Endpoint offline — cancelling in ${_countdown}s`);
+                    spinner.updateMessage(`Endpoint sin conexión — cancelando en ${_countdown}s`);
                   } else {
                     clearInterval(_tick);
                     if (currentAbort && !currentAbort.signal.aborted) {
@@ -911,7 +911,7 @@ import createResearchSynapse from './researchSynapse.js';
               }
             } catch (e) {
               if (e && e.name !== 'AbortError' && spinner && spinner.element && !accumulated) {
-                spinner.updateMessage('Still waiting for model');
+                spinner.updateMessage('Esperando al modelo');
               }
             } finally {
               processingProbeAbort = null;
@@ -973,7 +973,7 @@ import createResearchSynapse from './researchSynapse.js';
         } catch {}
         // Auto-switch to chat mode for tool-related errors
         if (errText.includes('tool') || errText.includes('auto')) {
-          errText = 'This model doesn\'t support agent tools — switched to Chat mode. Try again.';
+          errText = 'Este modelo no admite herramientas de agente — se ha cambiado al modo Chat. Inténtalo de nuevo.';
           const _ab = document.getElementById('mode-agent-btn');
           const _cb = document.getElementById('mode-chat-btn');
           if (_ab && _cb) {

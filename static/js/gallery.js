@@ -343,7 +343,7 @@ async function _handleGalleryDrop(e) {
 
 function _renderStats() {
   const el = document.getElementById('gallery-stats');
-  if (el) el.textContent = `${_total} photo${_total !== 1 ? 's' : ''}`;
+  if (el) el.textContent = `${_total} foto${_total !== 1 ? 's' : ''}`;
 }
 
 function _renderTags(tags) {
@@ -359,7 +359,7 @@ function _renderTags(tags) {
 function _renderModels(models) {
   const sel = document.getElementById('gallery-model-filter');
   if (!sel) return;
-  let html = '<option value="">All sources</option>';
+  let html = '<option value="">Todos los orígenes</option>';
   models.forEach(m => {
     const selected = _activeModel === m ? ' selected' : '';
     html += `<option value="${_esc(m)}"${selected}>${_esc(m)}</option>`;
@@ -377,17 +377,17 @@ function _renderAlbums() {
     // Order: All, then the heart, then any active tag chips (to the right of
     // both), then the active-album chip. No favorites-within-an-album view, so
     // the heart is hidden while an album is active.
-    let fhtml = `<button class="gallery-chip${!_activeAlbum && !_favoritesOnly ? ' active' : ''}" data-album="">All</button>`;
+    let fhtml = `<button class="gallery-chip${!_activeAlbum && !_favoritesOnly ? ' active' : ''}" data-album="">Todas</button>`;
     if (!_activeAlbum) {
-      fhtml += `<button class="gallery-chip gallery-chip-fav${_favoritesOnly ? ' active' : ''}" data-fav="true" title="Favorites">&#9829;</button>`;
+      fhtml += `<button class="gallery-chip gallery-chip-fav${_favoritesOnly ? ' active' : ''}" data-fav="true" title="Favoritos">&#9829;</button>`;
     }
     _activeTags.forEach(t => {
-      fhtml += `<span class="gallery-chip gallery-chip-active-album" title="Filtered to tag — click × to remove"><span>#${_esc(t)}</span><button class="gallery-chip-clear" data-clear-tag="${_esc(t)}" aria-label="Remove tag filter">&times;</button></span>`;
+      fhtml += `<span class="gallery-chip gallery-chip-active-album" title="Filtrado por etiqueta — clic × para quitar"><span>#${_esc(t)}</span><button class="gallery-chip-clear" data-clear-tag="${_esc(t)}" aria-label="Quitar filtro de etiqueta">&times;</button></span>`;
     });
     if (_activeAlbum) {
       const a = _albums.find(x => x.id === _activeAlbum);
       if (a) {
-        fhtml += `<span class="gallery-chip gallery-chip-active-album" title="Currently showing this album — click X to clear"><span>${_esc(a.name)}</span><button class="gallery-chip-clear" data-clear="album" aria-label="Clear album filter">&times;</button></span>`;
+        fhtml += `<span class="gallery-chip gallery-chip-active-album" title="Mostrando este álbum — clic × para borrar"><span>${_esc(a.name)}</span><button class="gallery-chip-clear" data-clear="album" aria-label="Borrar filtro de álbum">&times;</button></span>`;
       }
     }
     filterC.innerHTML = fhtml;
@@ -448,15 +448,15 @@ function _ensureAlbumsToolbar(container) {
   container.innerHTML = `
     <div class="gallery-toolbar" id="gallery-albums-toolbar">
       <div class="gallery-search-wrap">
-        <input type="text" class="gallery-search" id="gallery-albums-search" placeholder="Search albums..." />
+        <input type="text" class="gallery-search" id="gallery-albums-search" placeholder="Buscar álbumes..." />
       </div>
-      <button class="gallery-select-btn gallery-toolbar-action" id="gallery-albums-select-btn" title="Select for bulk actions" style="position:relative;top:2px;"><span style="position:relative;top:1px;">Select</span></button>
+      <button class="gallery-select-btn gallery-toolbar-action" id="gallery-albums-select-btn" title="Seleccionar para acciones en lote" style="position:relative;top:2px;"><span style="position:relative;top:1px;">Seleccionar</span></button>
     </div>
     <div class="memory-bulk-bar hidden" id="gallery-albums-bulk-bar">
-      <label class="memory-bulk-check-all" style="position:relative;top:-1px;"><input type="checkbox" id="gallery-albums-bulk-all"> All</label>
-      <span id="gallery-albums-bulk-count" style="position:relative;top:-1px;">0 selected</span>
-      <button class="memory-toolbar-btn" id="gallery-albums-bulk-delete" title="Delete selected" style="margin-left:auto;color:var(--color-error, #f44);position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Delete</button>
-      <button class="memory-toolbar-btn" id="gallery-albums-bulk-cancel" title="Cancel (Esc)" style="margin-left:4px;padding:3px 6px;position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      <label class="memory-bulk-check-all" style="position:relative;top:-1px;"><input type="checkbox" id="gallery-albums-bulk-all"> Todos</label>
+      <span id="gallery-albums-bulk-count" style="position:relative;top:-1px;">0 seleccionados</span>
+      <button class="memory-toolbar-btn" id="gallery-albums-bulk-delete" title="Eliminar seleccionados" style="margin-left:auto;color:var(--color-error, #f44);position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Eliminar</button>
+      <button class="memory-toolbar-btn" id="gallery-albums-bulk-cancel" title="Cancelar (Esc)" style="margin-left:4px;padding:3px 6px;position:relative;top:-3px;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     </div>
     <div id="gallery-albums-grid-wrap"></div>
   `;
