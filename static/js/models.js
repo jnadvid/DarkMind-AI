@@ -598,29 +598,15 @@ export async function refreshModels(force = false) {
       const welcomeSub = document.getElementById('welcome-sub');
       if (welcomeSub) welcomeSub.innerHTML = 'Escribe <span class="setup-trigger-link" style="color:var(--accent,var(--red));font-weight:600;cursor:pointer;text-decoration:underline;" title="Clic para iniciar la configuración">/setup</span> para empezar.';
       const welcomeTip = document.getElementById('welcome-tip');
-      if (welcomeTip) welcomeTip.textContent = 'Escribe /setup y elige modelos locales o API.';
+      if (welcomeTip) { welcomeTip.style.display = ''; welcomeTip.textContent = 'Escribe /setup y elige modelos locales o API.'; }
     } else {
       // Configured installs should feel ready, not stuck in onboarding.
+      // Mostramos solo la frase célebre rotativa; el "Consejo:" se oculta para
+      // que la frase quede limpia y protagonice la pantalla de bienvenida.
       const welcomeSub = document.getElementById('welcome-sub');
       if (welcomeSub) welcomeSub.textContent = _fraseCelebreRotativa();
       const welcomeTip = document.getElementById('welcome-tip');
-      if (welcomeTip) {
-        const tips = window.innerWidth <= 768
-          ? [
-              'Consejo: Mantén pulsada una sesión para renombrar, eliminar y opciones de memoria.',
-              'Consejo: Toca el icono del ojo para el modo incógnito: sin historial guardado.',
-              'Consejo: Cambia al modo Agente cuando quieras usar herramientas.',
-              'Consejo: Adjunta imágenes o archivos con el botón + junto al campo de texto.',
-            ]
-          : [
-              'Consejo: Pulsa Ctrl+K para buscar en todas tus conversaciones.',
-              'Consejo: Pulsa Ctrl+B para mostrar/ocultar la barra lateral.',
-              'Consejo: Shift+clic en el toggle de la barra lateral para moverla al otro lado.',
-              'Consejo: Arrastra y suelta archivos sobre el chat para adjuntarlos.',
-              'Consejo: Clic derecho en una sesión para renombrar, eliminar y opciones de memoria.',
-            ];
-        welcomeTip.textContent = tips[Math.floor(Math.random() * tips.length)];
-      }
+      if (welcomeTip) { welcomeTip.textContent = ''; welcomeTip.style.display = 'none'; }
     }
   } catch (e) {
     console.error(e);
