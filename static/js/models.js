@@ -37,6 +37,17 @@ const _FRASES_CELEBRES = [
   '«La mente que se abre a una nueva idea jamás vuelve a su tamaño original.» — Albert Einstein',
   '«Dos cosas colman el ánimo de admiración: el cielo estrellado sobre mí y la ley moral en mí.» — Immanuel Kant',
   '«Conócete a ti mismo.» — Sócrates',
+  '«El obstáculo no es el camino; el obstáculo es el camino.» — Marco Aurelio',
+  '«No somos lo que logramos, sino lo que superamos. Lo demás es solo ruido.» — Friedrich Nietzsche (adaptación)',
+  '«La vida no se trata de esperar a que pase la tormenta, sino de aprender a bailar bajo la lluvia.» — Vivian Greene',
+  '«El presente es el único lugar donde el pasado se redime y el futuro se construye.» — Eckhart Tolle',
+  '«No preguntes qué puede hacer el mundo por ti; pregunta qué puedes hacer tú con el mundo.» — John F. Kennedy (variación)',
+  '«La mente es como un paracaídas: solo funciona si se abre.» — Albert Einstein',
+  '«El sufrimiento es inevitable, pero el sufrimiento por el sufrimiento es opcional.» — Viktor Frankl',
+  '«No eres un árbol: si no te gusta dónde estás, muévete.» — Jim Rohn',
+  '«La sabiduría no es acumular respuestas, sino aprender a vivir con las preguntas.» — Rainer Maria Rilke',
+  '«El universo no conspira contra ti, pero tampoco a favor: simplemente te da las herramientas. El resto es tu elección.» — Paulo Coelho (adaptación)',
+  '«La noche más oscura es la que precede al amanecer… pero solo si decides seguir caminando.» — Anónimo',
 ];
 
 function _fraseCelebreRotativa() {
