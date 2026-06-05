@@ -167,14 +167,14 @@ function _showSetupEndpointChoices() {
       '<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:color-mix(in srgb,var(--bg) 88%,var(--fg) 12%);">' +
         '<div style="font-weight:700;margin-bottom:6px;">' + SETUP_LOCAL_ICON + 'Local setup</div>' +
         '<div>Paste endpoint URL in chat (example):</div>' +
-        '<pre style="margin:4px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Click to fill in chat">http://localhost:11434/v1</code></pre>' +
+        '<pre style="margin:4px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Haz clic para rellenar en el chat">http://localhost:11434/v1</code></pre>' +
         '<div style="margin-top:4px;">or</div>' +
-        '<pre style="margin:2px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Click to fill in chat">http://llm-host.local:8000/v1</code></pre>' +
+        '<pre style="margin:2px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Haz clic para rellenar en el chat">http://llm-host.local:8000/v1</code></pre>' +
       '</div>' +
       '<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;background:color-mix(in srgb,var(--bg) 88%,var(--fg) 12%);">' +
         '<div style="font-weight:700;margin-bottom:6px;">' + SETUP_API_ICON + 'API setup</div>' +
         '<div>Paste provider name then API key (example):</div>' +
-        '<pre style="margin:4px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Click to fill in chat">deepseek sk-...</code></pre>' +
+        '<pre style="margin:4px 0 0;"><code class="setup-clickable-code" style="cursor:pointer;text-decoration:underline;" title="Haz clic para rellenar en el chat">deepseek sk-...</code></pre>' +
         '<div style="margin-top:8px;font-size:1em;"><span>Supported providers:</span><br>' + providers + '</div>' +
       '</div>' +
     '</div>'
@@ -184,10 +184,10 @@ function _showSetupEndpointChoices() {
 function _showSetupEndpointChoicesStreamed(options = {}) {
   const blocks = [
     options.simple
-      ? { kind: 'p', text: 'Paste in chat below either' }
+      ? { kind: 'p', text: 'Pega en el chat de abajo cualquiera de' }
       : { kind: 'p', html: '<strong>Quick start:</strong> add your first AI endpoint by pasting it in chat.' },
     { kind: 'heading', html: SETUP_LOCAL_ICON + 'Local setup' },
-    { kind: 'p', text: 'Paste endpoint URL in chat (example):' },
+    { kind: 'p', text: 'Pega la URL del endpoint en el chat (ejemplo):' },
     {
       kind: 'code',
       text: 'http://localhost:11434/v1',
@@ -200,7 +200,7 @@ function _showSetupEndpointChoicesStreamed(options = {}) {
       copyText: 'http://llm-host.local:8000/v1',
     },
     { kind: 'heading', html: SETUP_API_ICON + 'API setup' },
-    { kind: 'p', text: 'Paste provider name then API key (example):' },
+    { kind: 'p', text: 'Pega el nombre del proveedor y luego la clave de API (ejemplo):' },
     {
       kind: 'code',
       text: 'deepseek sk-...',
@@ -684,7 +684,7 @@ async function handleSetupWizard(mode, input) {
     if (!provider) {
       _addMessage('user', input);
       setupMode = false;
-      await _setupReply('Provider not recognised. Try ' + SETUP_PROVIDER_HINT + '. Type /setup endpoint to try again.');
+      await _setupReply('Proveedor no reconocido. Prueba ' + SETUP_PROVIDER_HINT + '. Type /setup endpoint to try again.');
       return;
     }
     if (paired?.credential) {
@@ -745,7 +745,7 @@ async function handleSetupWizard(mode, input) {
     if (!provider) {
       pendingSetupApiKey = '';
       setupMode = false;
-      await typewriterReply('Provider not recognised. Try ' + SETUP_PROVIDER_HINT + '. Type /setup endpoint to try again.');
+      await typewriterReply('Proveedor no reconocido. Prueba ' + SETUP_PROVIDER_HINT + '. Type /setup endpoint to try again.');
       return;
     }
     await connectDetectedSetupEndpoint({ base_url: provider.url, api_key: key, name: provider.name });
@@ -762,10 +762,10 @@ async function handleSetupWizard(mode, input) {
     if (tm && colors) {
       tm.applyColors(colors);
       tm.save(name, colors);
-      await typewriterReply(`Theme switched to "${name}".`);
+      await typewriterReply(`Tema cambiado a "${name}".`);
     } else if (tm && tm.applyTheme) {
       tm.applyTheme(name);
-      await typewriterReply(`Theme switched to "${name}".`);
+      await typewriterReply(`Tema cambiado a "${name}".`);
     } else {
       slashReply(`Unknown theme "${name}". Try /theme to see available themes.`);
     }
@@ -788,7 +788,7 @@ async function handleSetupWizard(mode, input) {
       } else {
         await typewriterReply(`Unknown feature "${name}". Available: ${Object.keys(features).join(', ')}`);
       }
-    } catch { await typewriterReply('Could not update features.'); }
+    } catch { await typewriterReply('No se pudieron actualizar las funciones.'); }
     return;
   }
 
@@ -904,7 +904,7 @@ async function _cmdSessionNew(args, ctx) {
     _hideWelcomeScreen();
     const shortModel = (model || '').split('/').pop();
     await typewriterReply(`New session — ${shortModel || 'ready'}.`);
-  } else { const err = await res.json().catch(() => null); slashReply('Failed to create session' + (err?.detail ? ': ' + ctx.esc(err.detail) : '')); }
+  } else { const err = await res.json().catch(() => null); slashReply('No se pudo crear la sesión' + (err?.detail ? ': ' + ctx.esc(err.detail) : '')); }
   return true;
 }
 
@@ -934,7 +934,7 @@ async function _cmdSessionDelete(args, ctx) {
 
   // Single session delete
   const target = _resolveSession(cleanArg) || ctx.sid;
-  if (!target) { slashReply('No session to delete'); return true; }
+  if (!target) { slashReply('No hay sesión que eliminar'); return true; }
   const sessions = sessionModule.getSessions();
   const sess = sessions.find(s => s.id === target);
   const label = sess ? `"${ctx.esc(sess.name || target.slice(0,8))}"` : target.slice(0,8);
@@ -950,7 +950,7 @@ async function _cmdSessionDelete(args, ctx) {
 
 async function _cmdSessionArchive(args, ctx) {
   const target = _resolveSession(args[0]) || ctx.sid;
-  if (!target) { slashReply('No session to archive'); return true; }
+  if (!target) { slashReply('No hay sesión que archivar'); return true; }
   const sessions = sessionModule.getSessions();
   const sess = sessions.find(s => s.id === target);
   const label = sess ? `"${ctx.esc(sess.name || target.slice(0,8))}"` : target.slice(0,8);
@@ -974,7 +974,7 @@ async function _cmdSessionRename(args, ctx) {
 async function _cmdSessionImportant(args, ctx) {
   const fd = new FormData(); fd.append('important', 'true');
   await fetch(`${API_BASE}/api/session/${ctx.sid}/important`, { method: 'POST', body: fd, credentials: 'same-origin' });
-  await typewriterReply('Session marked as important');
+  await typewriterReply('Sesión marcada como importante');
   return true;
 }
 
@@ -986,7 +986,7 @@ async function _cmdSessionUnimportant(args, ctx) {
 }
 
 async function _cmdSessionFork(args, ctx) {
-  if (!ctx.sid) { slashReply('No active session'); return true; }
+  if (!ctx.sid) { slashReply('No hay sesión activa'); return true; }
   const keepCount = parseInt(args[0]) || 0;
   const res = await fetch(`${API_BASE}/api/session/${ctx.sid}/fork`, {
     method: 'POST', credentials: 'same-origin',
@@ -1003,7 +1003,7 @@ async function _cmdSessionFork(args, ctx) {
 }
 
 async function _cmdSessionTruncate(args, ctx) {
-  if (!ctx.sid) { slashReply('No active session'); return true; }
+  if (!ctx.sid) { slashReply('No hay sesión activa'); return true; }
   const keep = parseInt(args[0]);
   if (!keep || keep < 1) { slashReply('Usage: /truncate N — deletes older messages, keeps the last N'); return true; }
   const res = await fetch(`${API_BASE}/api/session/${ctx.sid}/truncate`, {
@@ -1019,7 +1019,7 @@ async function _cmdSessionTruncate(args, ctx) {
 async function _cmdSessionList(args, ctx) {
   const sessions = sessionModule.getSessions();
   const active = sessions.filter(s => !s.archived);
-  if (!active.length) { slashReply('No active sessions'); return true; }
+  if (!active.length) { slashReply('No hay sesiones activas'); return true; }
   const lines = active.slice(0, 40).map(s => {
     const current = s.id === ctx.sid ? ' <b>(current)</b>' : '';
     return `${ctx.esc(s.name || 'Untitled')} <span style="opacity:0.5">${s.id.slice(0,8)}</span>${current}`;
@@ -1039,7 +1039,7 @@ async function _cmdSessionSwitch(args, ctx) {
   if (match) {
     await sessionModule.selectSession(match.id);
     await typewriterReply(`Switched to "${ctx.esc(match.name)}"`);
-  } else { await typewriterReply(`No session matching "${ctx.esc(query)}"`); }
+  } else { await typewriterReply(`No hay ninguna sesión que coincida con "${ctx.esc(query)}"`); }
   return true;
 }
 
@@ -1051,7 +1051,7 @@ async function _cmdSessionSort(args, ctx) {
     await sessionModule.loadSessions();
     // Handle skipped status
     if (data.status === 'skipped') {
-      await typewriterReply(`Auto-sort skipped: ${data.reason || 'No sessions to sort'}`);
+      await typewriterReply(`Auto-sort skipped: ${data.reason || 'No hay sesiones que ordenar'}`);
     } else {
       const del_msg = data.deleted_empty ? ` (${data.deleted_empty} empty deleted)` : '';
       await typewriterReply(`Sorted ${data.updated || 0} sessions into ${data.folders?.length || 0} folders${del_msg}`);
@@ -1061,7 +1061,7 @@ async function _cmdSessionSort(args, ctx) {
 }
 
 async function _cmdSessionInfo(args, ctx) {
-  if (!ctx.sid) { slashReply('No active session'); return true; }
+  if (!ctx.sid) { slashReply('No hay sesión activa'); return true; }
   const sessions = sessionModule.getSessions();
   const s = sessions.find(ss => ss.id === ctx.sid);
   if (!s) { slashReply('Session not found'); return true; }
@@ -1076,12 +1076,12 @@ Created: ${s.created_at || '?'}</pre>`);
 
 async function _cmdSessionClear(args, ctx) {
   document.getElementById('chat-history').innerHTML = '';
-  slashReply('Chat display cleared');
+  slashReply('Vista del chat limpiada');
   return true;
 }
 
 async function _cmdSessionExport(args, ctx) {
-  if (!ctx.sid) { slashReply('No active session'); return true; }
+  if (!ctx.sid) { slashReply('No hay sesión activa'); return true; }
   // Parse linux-style: cat > file.json, cat > notes.txt, cat > chat.html
   let filename = '';
   let fmt = 'md';
@@ -1138,7 +1138,7 @@ async function _cmdToggleDoc(args, ctx) {
       if (btn) btn.classList.add('active');
       slashReply('Document editor: opened');
     }
-  } else { slashReply('Document module not available'); }
+  } else { slashReply('El módulo de documentos no está disponible'); }
   return true;
 }
 
@@ -1310,7 +1310,7 @@ async function _cmdToolPanel(tool, args, ctx) {
   if (target === 'email') {
     const btn = document.getElementById('rail-email') || document.getElementById('email-section-title');
     if (btn) btn.click();
-    else slashReply('Could not open Email.');
+    else slashReply('No se pudo abrir Correo.');
     return true;
   }
   if (target === 'settings') {
@@ -1335,7 +1335,7 @@ async function _cmdSettings(args, ctx) {
     }
   } catch (e) {
     console.warn('/settings open failed', e);
-    slashReply('Could not open Settings.');
+    slashReply('No se pudo abrir Ajustes.');
     return true;
   }
   return true;
@@ -1356,7 +1356,7 @@ async function _cmdTheme(args, ctx) {
   }
   if (sub === 'save' && args[1]) {
     const saveName = args[1].toLowerCase().replace(/\s+/g, '-');
-    if (tm.THEMES[saveName]) { slashReply('Cannot overwrite a built-in theme.'); return true; }
+    if (tm.THEMES[saveName]) { slashReply('No se puede sobrescribir un tema integrado.'); return true; }
     const s = tm.getSaved();
     const colors = s ? s.colors : tm.THEMES.dark;
     tm.saveCustomTheme(saveName, colors);
@@ -1368,7 +1368,7 @@ async function _cmdTheme(args, ctx) {
     if (!args[1]) { slashReply('Usage: /theme delete &lt;name&gt; or /theme delete all'); return true; }
     const delArg = args[1].toLowerCase().replace(/\s+/g, '-');
     if (delArg === 'all') {
-      if (!customNames.length) { slashReply('No custom themes to delete'); return true; }
+      if (!customNames.length) { slashReply('No hay temas personalizados que eliminar'); return true; }
       for (const n of customNames) { if (tm.deleteCustomTheme) tm.deleteCustomTheme(n); }
       await typewriterReply(`Deleted ${customNames.length} custom theme${customNames.length !== 1 ? 's' : ''}`);
       return true;
@@ -1407,7 +1407,7 @@ async function _cmdModels(args, ctx) {
     lines.push(`<b>${ctx.esc(ep.endpoint_name || ep.url)}</b>`);
     (ep.models || []).forEach(m => lines.push(`  ${ctx.esc(m)}`));
   });
-  slashReply(`<pre>${lines.join('\n') || 'No models found'}</pre>`);
+  slashReply(`<pre>${lines.join('\n') || 'No se encontraron modelos'}</pre>`);
   return true;
 }
 
@@ -1417,7 +1417,7 @@ async function _cmdMemoryList(args, ctx) {
   const res = await fetch(`${API_BASE}/api/memory`, { credentials: 'same-origin' });
   const data = await res.json();
   const mems = data.memory || [];
-  if (!mems.length) { slashReply('No memories stored'); return true; }
+  if (!mems.length) { slashReply('No hay recuerdos almacenados'); return true; }
   const lines = mems.slice(0, 40).map(m => `[${m.category||'fact'}] ${m.id.slice(0,8)} — ${ctx.esc(m.text)}`);
   if (mems.length > 40) lines.push(`... and ${mems.length - 40} more`);
   slashReply(`<pre>${lines.join('\n')}</pre>`);
@@ -1433,7 +1433,7 @@ async function _cmdMemoryAdd(args, ctx) {
     body: JSON.stringify({ text, category: 'fact', source: 'user' })
   });
   if (res.ok) await typewriterReply(`Memory added: ${ctx.esc(text)}`);
-  else slashReply('Failed to add memory');
+  else slashReply('No se pudo añadir el recuerdo');
   return true;
 }
 
@@ -1446,7 +1446,7 @@ async function _cmdMemoryDelete(args, ctx) {
     const listRes = await fetch(`${API_BASE}/api/memory`, { credentials: 'same-origin' });
     const listData = await listRes.json();
     const mems = listData.memory || [];
-    if (!mems.length) { slashReply('No memories to delete'); return true; }
+    if (!mems.length) { slashReply('No hay recuerdos que eliminar'); return true; }
     if (!force) {
       slashReply(`This will delete all ${mems.length} memories. Use <code>/m rm -rf</code> to confirm.`);
       return true;
@@ -1483,7 +1483,7 @@ async function _cmdMemorySearch(args, ctx) {
   const res = await fetch(`${API_BASE}/api/memory/search`, { method: 'POST', body: fd, credentials: 'same-origin' });
   const data = await res.json();
   const mems = data.memories || [];
-  if (!mems.length) { await typewriterReply(`No memories matching "${ctx.esc(query)}"`); return true; }
+  if (!mems.length) { await typewriterReply(`No hay recuerdos que coincidan con "${ctx.esc(query)}"`); return true; }
   const lines = mems.map(m => `[${m.category||'fact'}] ${ctx.esc(m.text)}`);
   slashReply(`<pre>${lines.join('\n')}</pre>`);
   return true;
@@ -1500,7 +1500,7 @@ async function _cmdNote(args, ctx) {
     body: JSON.stringify({ title: text, content: '', note_type: 'note', source: 'slash' })
   });
   if (res.ok) await typewriterReply(`Note added: ${ctx.esc(text)}`);
-  else slashReply('Failed to save note');
+  else slashReply('No se pudo guardar la nota');
   return true;
 }
 
@@ -1589,7 +1589,7 @@ async function _cmdTodo(args, ctx) {
   const sub = (args[0] || '').toLowerCase();
   if (sub === 'list' || sub === 'ls') {
     const res = await fetch(`${API_BASE}/api/notes?note_type=note`, { credentials: 'same-origin' });
-    if (!res.ok) { slashReply('Failed to load todos'); return true; }
+    if (!res.ok) { slashReply('No se pudieron cargar las tareas pendientes'); return true; }
     const data = await res.json();
     const items = (data.notes || data || []).filter(n => !n.archived).slice(0, 30);
     if (!items.length) { slashReply('No todos'); return true; }
@@ -1606,7 +1606,7 @@ async function _cmdTodo(args, ctx) {
     body: JSON.stringify({ title: rest, note_type: 'note', source: 'slash', label: 'todo' }),
   });
   if (res.ok) await typewriterReply(`Todo added: ${ctx.esc(rest)}`);
-  else slashReply('Failed to add todo');
+  else slashReply('No se pudo añadir la tarea pendiente');
   return true;
 }
 
@@ -1677,7 +1677,7 @@ async function _cmdRagList(args, ctx) {
     data.files.slice(0, 30).forEach(f => lines.push(`  ${ctx.esc(f.name || f.path || String(f))}`));
     if (data.files.length > 30) lines.push(`  ... and ${data.files.length - 30} more`);
   }
-  slashReply(lines.length ? `<pre>${lines.join('\n')}</pre>` : 'No files or directories indexed');
+  slashReply(lines.length ? `<pre>${lines.join('\n')}</pre>` : 'No hay archivos ni directorios indexados');
   return true;
 }
 
@@ -1692,7 +1692,7 @@ async function _cmdRagAdd(args, ctx) {
   if (res.ok) {
     const data = await res.json();
     await typewriterReply(`Indexed "${ctx.esc(dir)}" (${data.indexed_count || 0} files)`);
-  } else { slashReply('Failed to add directory'); }
+  } else { slashReply('No se pudo añadir el directorio'); }
   return true;
 }
 
@@ -1727,7 +1727,7 @@ async function _cmdRagRemove(args, ctx) {
     method: 'DELETE', credentials: 'same-origin'
   });
   if (res.ok) await typewriterReply(`Removed "${ctx.esc(dir)}" from RAG`);
-  else slashReply('Failed to remove directory');
+  else slashReply('No se pudo quitar el directorio');
   return true;
 }
 
@@ -1754,7 +1754,7 @@ async function _cmdSearch(args, ctx) {
   if (res.ok) {
     const data = await res.json();
     const results = Array.isArray(data) ? data : (data.results || []);
-    if (!results.length) { slashReply(`No results for "${ctx.esc(query)}"`); return true; }
+    if (!results.length) { slashReply(`Sin resultados para "${ctx.esc(query)}"`); return true; }
     const lines = results.slice(0, 20).map(r => {
       const name = ctx.esc(r.session_name || r.name || 'Untitled');
       const snippet = ctx.esc((r.content_snippet || r.content || r.snippet || '').slice(0, 100));
@@ -1777,14 +1777,14 @@ Messages:  ${d.messages || '?'}
 Memories:  ${d.memories || '?'}
 Documents: ${d.documents || '?'}
 Uploads:   ${d.uploads || '?'}</pre>`);
-  } else { slashReply('Failed to fetch stats'); }
+  } else { slashReply('No se pudieron obtener las estadísticas'); }
   return true;
 }
 
 // ── Context compaction ──
 
 async function _cmdCompact(args, ctx) {
-  if (!ctx.sid) { slashReply('No active chat to compact'); return true; }
+  if (!ctx.sid) { slashReply('No hay chat activo que compactar'); return true; }
   const reply = slashReply('Compacting context ');
   const compactSpinner = spinnerModule.create('Compacting context', 'inline', 'whirlpool');
   if (reply?.body) {
@@ -5452,43 +5452,43 @@ const COMMANDS = {
   chats: {
     alias: ['chat', 'session', 'sessions', 's'],
     category: 'Chats',
-    help: 'Manage chat sessions',
+    help: 'Gestionar sesiones de chat',
     default: 'info',
     subs: {
-      'new':         { handler: _cmdSessionNew,         alias: ['create','mkdir'], help: 'Create new chat',             usage: '/chats new [name]' },
-      'delete':      { handler: _cmdSessionDelete,      alias: ['del','rm'],       help: 'Delete chat',                 usage: '/chats delete [id]' },
-      'archive':     { handler: _cmdSessionArchive,     alias: ['tar'],            help: 'Archive chat',                usage: '/chats archive [id]' },
-      'rename':      { handler: _cmdSessionRename,      alias: ['mv'],             help: 'Rename current chat',         usage: '/chats rename Name' },
-      'favorite':    { handler: _cmdSessionImportant,   alias: ['pin','important'], help: 'Mark as favorite',          usage: '/chats favorite' },
-      'unfavorite':  { handler: _cmdSessionUnimportant, alias: ['unpin','unimportant'], help: 'Unmark favorite',       usage: '/chats unfavorite' },
-      'fork':        { handler: _cmdSessionFork,        alias: ['cp'],             help: 'Fork chat (keep first N msgs)', usage: '/chats fork [N]' },
-      'truncate':    { handler: _cmdSessionTruncate,    alias: [],                 help: 'Delete older messages, keep last N', usage: '/chats truncate N' },
-      'switch':      { handler: _cmdSessionSwitch,      alias: ['goto','cd'],      help: 'Switch to chat by name/id',    usage: '/chats switch name' },
-      'sort':        { handler: _cmdSessionSort,        alias: [],                 help: 'Auto-sort into folders',      usage: '/chats sort' },
-      'info':        { handler: _cmdSessionInfo,        alias: ['stat'],           help: 'Show chat details',           usage: '/chats info' },
-      'clear':       { handler: _cmdSessionClear,       alias: [],                 help: 'Clear chat display',          usage: '/chats clear' },
-      'export':      { handler: _cmdSessionExport,      alias: ['cat'],            help: 'Download as markdown',        usage: '/chats export' }
+      'new':         { handler: _cmdSessionNew,         alias: ['create','mkdir'], help: 'Crear un chat nuevo',             usage: '/chats new [name]' },
+      'delete':      { handler: _cmdSessionDelete,      alias: ['del','rm'],       help: 'Eliminar chat',                 usage: '/chats delete [id]' },
+      'archive':     { handler: _cmdSessionArchive,     alias: ['tar'],            help: 'Archivar chat',                usage: '/chats archive [id]' },
+      'rename':      { handler: _cmdSessionRename,      alias: ['mv'],             help: 'Renombrar el chat actual',         usage: '/chats rename Name' },
+      'favorite':    { handler: _cmdSessionImportant,   alias: ['pin','important'], help: 'Marcar como favorito',          usage: '/chats favorite' },
+      'unfavorite':  { handler: _cmdSessionUnimportant, alias: ['unpin','unimportant'], help: 'Desmarcar favorito',       usage: '/chats unfavorite' },
+      'fork':        { handler: _cmdSessionFork,        alias: ['cp'],             help: 'Bifurcar chat (conservar los primeros N mensajes)', usage: '/chats fork [N]' },
+      'truncate':    { handler: _cmdSessionTruncate,    alias: [],                 help: 'Eliminar mensajes antiguos, conservar los últimos N', usage: '/chats truncate N' },
+      'switch':      { handler: _cmdSessionSwitch,      alias: ['goto','cd'],      help: 'Cambiar a un chat por nombre/id',    usage: '/chats switch name' },
+      'sort':        { handler: _cmdSessionSort,        alias: [],                 help: 'Ordenar automáticamente en carpetas',      usage: '/chats sort' },
+      'info':        { handler: _cmdSessionInfo,        alias: ['stat'],           help: 'Mostrar detalles del chat',           usage: '/chats info' },
+      'clear':       { handler: _cmdSessionClear,       alias: [],                 help: 'Limpiar la vista del chat',          usage: '/chats clear' },
+      'export':      { handler: _cmdSessionExport,      alias: ['cat'],            help: 'Descargar como markdown',        usage: '/chats export' }
     }
   },
   toggle: {
     alias: ['t'],
     category: 'Quick toggles',
     hidden: true,
-    help: 'Toggle features on/off',
+    help: 'Activar/desactivar funciones',
     default: '_show',
     subs: {
-      'web':       { handler: _cmdToggleWeb,       alias: ['search','s','w'],  help: 'Toggle web search',       usage: '/toggle web' },
-      'bash':      { handler: _cmdToggleBash,      alias: ['b','shell'],       help: 'Toggle bash/shell',       usage: '/toggle bash' },
-      'research':  { handler: _cmdToggleResearch,  alias: ['r'],               help: 'Toggle deep research',    usage: '/toggle research' },
-      'doc':       { handler: _cmdToggleDoc,       alias: [],     help: 'Toggle document editor',  usage: '/toggle doc' },
-      'sidebar':   { handler: _cmdToggleSidebar,   alias: ['sb'], help: 'Cycle sidebar (full/mini/off)', usage: '/toggle sidebar [1|2|3]' },
-      '_show':     { handler: _cmdToggleShow,      alias: [],     help: 'Show all toggle states',  usage: '/toggle' }
+      'web':       { handler: _cmdToggleWeb,       alias: ['search','s','w'],  help: 'Activar/desactivar la búsqueda web',       usage: '/toggle web' },
+      'bash':      { handler: _cmdToggleBash,      alias: ['b','shell'],       help: 'Activar/desactivar bash/shell',       usage: '/toggle bash' },
+      'research':  { handler: _cmdToggleResearch,  alias: ['r'],               help: 'Activar/desactivar investigación profunda',    usage: '/toggle research' },
+      'doc':       { handler: _cmdToggleDoc,       alias: [],     help: 'Activar/desactivar el editor de documentos',  usage: '/toggle doc' },
+      'sidebar':   { handler: _cmdToggleSidebar,   alias: ['sb'], help: 'Alternar barra lateral (completa/mini/oculta)', usage: '/toggle sidebar [1|2|3]' },
+      '_show':     { handler: _cmdToggleShow,      alias: [],     help: 'Mostrar el estado de todos los interruptores',  usage: '/toggle' }
     }
   },
   workspace: {
     alias: ['ws'],
     category: 'Agent',
-    help: 'Set the folder the agent works in',
+    help: 'Definir la carpeta en la que trabaja el agente',
     handler: _cmdWorkspace,
     noUserBubble: true,
     usage: '/workspace [set <path> | clear | pick]',
@@ -5496,31 +5496,31 @@ const COMMANDS = {
   memory: {
     alias: ['m'],
     category: 'Memory',
-    help: 'Manage persistent memories',
+    help: 'Gestionar recuerdos persistentes',
     default: 'list',
     subs: {
-      'list':   { handler: _cmdMemoryList,   alias: ['ls'],          help: 'List all memories',   usage: '/memory list' },
-      'add':    { handler: _cmdMemoryAdd,    alias: ['echo'],        help: 'Save a memory',       usage: '/memory add text' },
-      'delete': { handler: _cmdMemoryDelete, alias: ['del', 'rm'],   help: 'Delete by ID',        usage: '/memory delete id' },
-      'search': { handler: _cmdMemorySearch, alias: ['grep'],        help: 'Search memories',     usage: '/memory search q' }
+      'list':   { handler: _cmdMemoryList,   alias: ['ls'],          help: 'Listar todos los recuerdos',   usage: '/memory list' },
+      'add':    { handler: _cmdMemoryAdd,    alias: ['echo'],        help: 'Guardar un recuerdo',       usage: '/memory add text' },
+      'delete': { handler: _cmdMemoryDelete, alias: ['del', 'rm'],   help: 'Eliminar por ID',        usage: '/memory delete id' },
+      'search': { handler: _cmdMemorySearch, alias: ['grep'],        help: 'Buscar recuerdos',     usage: '/memory search q' }
     }
   },
   rag: {
     alias: [],
     category: 'RAG',
     hidden: true,
-    help: 'Manage document indexing',
+    help: 'Gestionar la indexación de documentos',
     default: 'list',
     subs: {
-      'list':   { handler: _cmdRagList,   alias: ['ls'],       help: 'List indexed files',    usage: '/rag list' },
-      'add':    { handler: _cmdRagAdd,    alias: [],           help: 'Add directory',         usage: '/rag add /path' },
-      'remove': { handler: _cmdRagRemove, alias: ['rm'],       help: 'Remove directory',      usage: '/rag remove /path' }
+      'list':   { handler: _cmdRagList,   alias: ['ls'],       help: 'Listar archivos indexados',    usage: '/rag list' },
+      'add':    { handler: _cmdRagAdd,    alias: [],           help: 'Añadir directorio',         usage: '/rag add /path' },
+      'remove': { handler: _cmdRagRemove, alias: ['rm'],       help: 'Quitar directorio',      usage: '/rag remove /path' }
     }
   },
   todo: {
     alias: ['td'],
     category: 'Productivity',
-    help: 'Add or list todos',
+    help: 'Añadir o listar tareas pendientes',
     handler: _cmdTodo,
     noUserBubble: true,
     usage: '/todo Your task  ·  /todo list',
@@ -5528,7 +5528,7 @@ const COMMANDS = {
   event: {
     alias: ['ev'],
     category: 'Productivity',
-    help: 'Create a calendar event',
+    help: 'Crear un evento de calendario',
     handler: _cmdEvent,
     noUserBubble: true,
     usage: '/event tomorrow 14:00 Team call',
@@ -5536,105 +5536,105 @@ const COMMANDS = {
   setup: {
     alias: ['su', 'seutp'],
     category: 'Getting started',
-    help: 'Add local or API model endpoints',
+    help: 'Añadir endpoints de modelos locales o de API',
     handler: _cmdSetup,
     usage: '/setup local URL  ·  /setup groq KEY  ·  /setup copilot  ·  /setup endpoint'
   },
   demo: {
     alias: ['tour'],
     category: 'Tours',
-    help: 'Full guided product tour',
+    help: 'Tour guiado completo del producto',
     handler: _cmdDemo,
     usage: '/demo'
   },
   'tour-compare': {
     alias: ['compare-tour'],
     category: 'Tours',
-    help: 'Model comparison tour',
+    help: 'Tour de comparación de modelos',
     handler: _cmdTourCompare,
     usage: '/tour-compare'
   },
   'tour-cookbook': {
     alias: ['cookbook-tour'],
     category: 'Tours',
-    help: 'Cookbook tour: hardware, downloads, serving',
+    help: 'Tour de Cookbook: hardware, descargas, servicio',
     handler: _cmdTourCookbook,
     usage: '/tour-cookbook'
   },
   'tour-research': {
     alias: ['research-tour'],
     category: 'Tours',
-    help: 'Deep Research tour',
+    help: 'Tour de Investigación Profunda',
     handler: _cmdTourResearch,
     usage: '/tour-research'
   },
   'tour-library': {
     alias: ['library-tour', 'tour-doc', 'tour-document', 'doc-tour', 'document-tour'],
     category: 'Tours',
-    help: 'Library and document editor tour',
+    help: 'Tour de la Biblioteca y el editor de documentos',
     handler: _cmdTourLibrary,
     usage: '/tour-library'
   },
   'tour-theme': {
     alias: ['theme-tour'],
     category: 'Tours',
-    help: 'Theme editor tour',
+    help: 'Tour del editor de temas',
     handler: _cmdTourTheme,
     usage: '/tour-theme'
   },
   'tour-settings': {
     alias: ['tour-setting', 'settings-tour'],
     category: 'Tours',
-    help: 'Settings tour: models, integrations, appearance',
+    help: 'Tour de Ajustes: modelos, integraciones, apariencia',
     handler: _cmdTourSettings,
     usage: '/tour-settings'
   },
   'tour-gallery': {
     alias: ['gallery-tour'],
     category: 'Tours',
-    help: 'Gallery tour: photos, albums, editor',
+    help: 'Tour de la Galería: fotos, álbumes, editor',
     handler: _cmdTourGallery,
     usage: '/tour-gallery'
   },
   'tour-brain': {
     alias: ['brain-tour', 'tour-memory', 'memory-tour'],
     category: 'Tours',
-    help: 'Brain tour: memories, tidy, skills, settings',
+    help: 'Tour del Cerebro: recuerdos, orden, habilidades, ajustes',
     handler: _cmdTourBrain,
     usage: '/tour-brain'
   },
   'tour-task-1': {
     alias: ['tour-task', 'tour-tasks', 'tour-tasks-1', 'tasks-tour', 'tasks-tour-1'],
     category: 'Tours',
-    help: 'Tasks tour: built-ins, runs, pause controls',
+    help: 'Tour de Tareas: integradas, ejecuciones, controles de pausa',
     handler: _cmdTourTask1,
     usage: '/tour-task-1'
   },
   'tour-task-2': {
     alias: ['tour-tasks-2', 'tasks-tour-2'],
     category: 'Tours',
-    help: 'Tasks tour: adding and managing tasks',
+    help: 'Tour de Tareas: añadir y gestionar tareas',
     handler: _cmdTourTask2,
     usage: '/tour-task-2'
   },
   prompt: {
     alias: [],
     category: 'Getting started',
-    help: 'Send a random starter prompt',
+    help: 'Enviar una instrucción inicial al azar',
     handler: _cmdPrompt,
     usage: '/prompt'
   },
   theme: {
     alias: [],
     category: 'Settings',
-    help: 'Change color theme',
+    help: 'Cambiar el tema de color',
     handler: _cmdTheme,
     usage: '/theme name'
   },
   settings: {
     alias: ['cfg', 'preferences', 'config'],
     category: 'Settings',
-    help: 'Open the Settings panel',
+    help: 'Abrir el panel de Ajustes',
     handler: _cmdSettings,
     usage: '/settings [tab]'
   },
@@ -5642,77 +5642,77 @@ const COMMANDS = {
     alias: ['show'],
     category: 'Utility',
     hidden: true,
-    help: 'Open a tool panel',
+    help: 'Abrir un panel de herramientas',
     handler: _cmdOpen,
     usage: '/open Cookbook'
   },
   cookbook: {
     alias: ['cook'],
     category: 'Tools',
-    help: 'Open Cookbook; use "serve" to jump to model serving',
+    help: 'Abrir Cookbook; usa "serve" para ir al servicio de modelos',
     handler: (args, ctx) => _cmdToolPanel('cookbook', args, ctx),
     usage: '/cookbook  ·  /cookbook serve qwen'
   },
   email: {
     alias: ['mail', 'inbox'],
     category: 'Tools',
-    help: 'Open Email',
+    help: 'Abrir Correo',
     handler: (args, ctx) => _cmdToolPanel('email', args, ctx),
     usage: '/email'
   },
   notes: {
     alias: [],
     category: 'Tools',
-    help: 'Open Notes',
+    help: 'Abrir Notas',
     handler: (args, ctx) => _cmdToolPanel('notes', args, ctx),
     usage: '/notes'
   },
   tasks: {
     alias: [],
     category: 'Tools',
-    help: 'Open Tasks',
+    help: 'Abrir Tareas',
     handler: (args, ctx) => _cmdToolPanel('tasks', args, ctx),
     usage: '/tasks'
   },
   brain: {
     alias: ['memories'],
     category: 'Tools',
-    help: 'Open Brain',
+    help: 'Abrir el Cerebro',
     handler: (args, ctx) => _cmdToolPanel('brain', args, ctx),
     usage: '/brain'
   },
   library: {
     alias: ['docs', 'documents'],
     category: 'Tools',
-    help: 'Open Library',
+    help: 'Abrir Biblioteca',
     handler: (args, ctx) => _cmdToolPanel('library', args, ctx),
     usage: '/library'
   },
   gallery: {
     alias: ['photos'],
     category: 'Tools',
-    help: 'Open Gallery',
+    help: 'Abrir Galería',
     handler: (args, ctx) => _cmdToolPanel('gallery', args, ctx),
     usage: '/gallery'
   },
   research: {
     alias: [],
     category: 'Tools',
-    help: 'Open Deep Research',
+    help: 'Abrir Investigación Profunda',
     handler: (args, ctx) => _cmdToolPanel('research', args, ctx),
     usage: '/research'
   },
   compare: {
     alias: [],
     category: 'Tools',
-    help: 'Open Compare',
+    help: 'Abrir Comparar',
     handler: (args, ctx) => _cmdToolPanel('compare', args, ctx),
     usage: '/compare'
   },
   models: {
     alias: ['model'],
     category: 'Settings',
-    help: 'List available models',
+    help: 'Listar los modelos disponibles',
     handler: _cmdModels,
     usage: '/models'
   },
@@ -5720,7 +5720,7 @@ const COMMANDS = {
     alias: ['ws', 'websearch'],
     category: 'Utility',
     hidden: true,
-    help: 'Web search (sends query with web enabled)',
+    help: 'Búsqueda web (envía la consulta con la web activada)',
     handler: _cmdWebSearch,
     noUserBubble: true,
     usage: '/search query'
@@ -5729,7 +5729,7 @@ const COMMANDS = {
     alias: ['search-history'],
     category: 'Utility',
     hidden: true,
-    help: 'Search all conversations',
+    help: 'Buscar en todas las conversaciones',
     handler: _cmdSearch,
     usage: '/find query'
   },
@@ -5737,7 +5737,7 @@ const COMMANDS = {
     alias: ['df'],
     category: 'Utility',
     hidden: true,
-    help: 'Database statistics',
+    help: 'Estadísticas de la base de datos',
     handler: _cmdStats,
     usage: '/stats'
   },
@@ -5745,7 +5745,7 @@ const COMMANDS = {
     alias: [],
     category: 'Utility',
     hidden: true,
-    help: 'Compact older chat messages',
+    help: 'Compactar mensajes antiguos del chat',
     handler: _cmdCompact,
     usage: '/compact'
   },
@@ -5753,7 +5753,7 @@ const COMMANDS = {
     alias: ['exec', 'run', 'shell'],
     category: 'Utility',
     hidden: true,
-    help: 'Run a shell command',
+    help: 'Ejecutar un comando de shell',
     handler: _cmdShell,
     usage: '/sh command'
   },
@@ -5761,7 +5761,7 @@ const COMMANDS = {
     alias: ['keys', 'keybinds', 'bind'],
     category: 'Utility',
     hidden: true,
-    help: 'Show keyboard shortcuts',
+    help: 'Mostrar los atajos de teclado',
     handler: _cmdShortcuts,
     usage: '/shortcuts'
   },
@@ -5769,14 +5769,14 @@ const COMMANDS = {
     alias: ['?', 'man', 'commands'],
     category: 'Utility',
     hidden: true,
-    help: 'This help',
+    help: 'Esta ayuda',
     handler: _cmdHelp,
     usage: '/help'
   },
   note: {
     alias: ['n'],
     category: 'Memory',
-    help: 'Quick-save a note',
+    help: 'Guardar rápidamente una nota',
     handler: _cmdNote,
     usage: '/note text'
   },
@@ -5791,8 +5791,8 @@ const COMMANDS = {
   cowsay:  { alias: ['moo', 'say'], hidden: true, handler: _cmdSay,     usage: '/cowsay [text]' },
   wisdom:  { alias: ['inspire'],    hidden: true, handler: _cmdWisdom,  usage: '/wisdom' },
   uptime:  { alias: [],             hidden: true, handler: _cmdUptime,  usage: '/uptime' },
-  ping:    { alias: ['pong'], category: 'Utility', hidden: true, help: 'Check if model endpoints are alive', handler: _cmdPing, usage: '/ping' },
-  probe:   { alias: ['test-models'], category: 'Utility', hidden: true, help: 'Test which models actually respond', handler: _cmdProbe, usage: '/probe [endpoint]' },
+  ping:    { alias: ['pong'], category: 'Utility', hidden: true, help: 'Comprobar si los endpoints de modelos responden', handler: _cmdPing, usage: '/ping' },
+  probe:   { alias: ['test-models'], category: 'Utility', hidden: true, help: 'Probar qué modelos responden realmente', handler: _cmdProbe, usage: '/probe [endpoint]' },
   color:   { alias: ['colour'],     hidden: true, handler: _cmdColor,   usage: '/color [hex]' },
 };
 
