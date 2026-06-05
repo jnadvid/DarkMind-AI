@@ -149,7 +149,7 @@ function _initGroupTab() {
       return m;
     }).filter(Boolean);
 
-    if (picked.length < 2) { uiModule.showToast('Need at least 2 participants — add models or characters'); return; }
+    if (picked.length < 2) { uiModule.showToast('Se necesitan al menos 2 participantes: añade modelos o personajes'); return; }
 
     const modal = document.getElementById('custom-preset-modal');
     if (modal) modal.classList.add('hidden');
@@ -192,7 +192,7 @@ function _initGroupTab() {
       } catch (e) {}
     }
 
-    uiModule.showToast('Group chat ready — ' + picked.length + ' participants');
+    uiModule.showToast('Chat de grupo listo — ' + picked.length + ' participantes');
   });
 
   const groupTab = document.querySelector('.preset-tab[data-chartab="group"]');
@@ -470,7 +470,7 @@ export async function showModelPicker() {
       body.innerHTML = '';
       const stepTitle = document.createElement('div');
       stepTitle.style.cssText = 'font-size:12px;opacity:0.5;margin-bottom:8px;';
-      stepTitle.textContent = 'Assign characters (optional)';
+      stepTitle.textContent = 'Asignar personajes (opcional)';
       body.appendChild(stepTitle);
 
       // Build character options

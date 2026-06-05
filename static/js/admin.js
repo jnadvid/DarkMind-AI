@@ -138,7 +138,7 @@ async function loadUsers() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ [key]: value }),
               });
-            } catch (e) { uiModule.showError('Failed to update privilege'); }
+            } catch (e) { uiModule.showError('No se pudo actualizar el privilegio'); }
           };
           if (input.type === 'checkbox') input.addEventListener('change', handler);
           else input.addEventListener('change', handler);
@@ -167,7 +167,7 @@ async function loadUsers() {
             });
             const data = await res.json().catch(() => ({}));
             if (!res.ok) {
-              uiModule.showError(data.detail || 'Failed to rename user');
+              uiModule.showError(data.detail || 'No se pudo renombrar el usuario');
               return;
             }
             if (data.renamed_self) {
@@ -176,7 +176,7 @@ async function loadUsers() {
             }
             loadUsers();
           } catch (err) {
-            uiModule.showError('Failed to rename user');
+            uiModule.showError('No se pudo renombrar el usuario');
           }
         });
       }
@@ -187,10 +187,10 @@ async function loadUsers() {
         delBtn.addEventListener('click', async (e) => {
           e.stopPropagation();
           const username = delBtn.dataset.admDelUser;
-          if (!await uiModule.styledConfirm(`Remove user "${username}"?`, { confirmText: 'Quitar', danger: true })) return;
+          if (!await uiModule.styledConfirm(`¿Quitar al usuario «${username}»?`, { confirmText: 'Quitar', danger: true })) return;
           const res = await fetch('/api/auth/users', { method: 'DELETE', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username }) });
           if (res.ok) loadUsers();
-          else uiModule.showError('Failed to delete user');
+          else uiModule.showError('No se pudo eliminar el usuario');
         });
       }
 
@@ -235,7 +235,7 @@ async function _loadModelsForUser(username, allowedSet, privPanel) {
       // If all are checked, send empty array (= no restrictions)
       const value = checked.length === allModels.length ? [] : checked;
       const hint = privPanel.querySelector('.priv-models-list[data-user]')?.previousElementSibling?.querySelector('div[style*="opacity"]');
-      if (hint) hint.textContent = value.length === 0 ? 'All models allowed (no restrictions)' : value.length + ' model(s) allowed';
+      if (hint) hint.textContent = value.length === 0 ? 'Todos los modelos permitidos (sin restricciones)' : value.length + ' modelo(s) permitido(s)';
       fetch(`/api/auth/users/${encodeURIComponent(username)}/privileges`, {
         method: 'PUT', credentials: 'same-origin',
         headers: { 'Content-Type': 'application/json' },
@@ -282,15 +282,15 @@ function initAddUser() {
     const username = el('adm-newUsername').value.trim();
     const password = el('adm-newPassword').value;
     const is_admin = el('adm-newIsAdmin').checked;
-    if (!username) { msg.textContent = 'Username required'; msg.className = 'admin-error'; return; }
-    if (password.length < 8) { msg.textContent = 'Password must be at least 8 characters'; msg.className = 'admin-error'; return; }
+    if (!username) { msg.textContent = 'El nombre de usuario es obligatorio'; msg.className = 'admin-error'; return; }
+    if (password.length < 8) { msg.textContent = 'La contraseña debe tener al menos 8 caracteres'; msg.className = 'admin-error'; return; }
     el('adm-addBtn').disabled = true;
     try {
       const res = await fetch('/api/auth/users', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password, is_admin }) });
       const data = await res.json();
-      if (res.ok) { msg.textContent = 'User created'; msg.className = 'admin-success'; el('adm-newUsername').value = ''; el('adm-newPassword').value = ''; el('adm-newIsAdmin').checked = false; loadUsers(); }
+      if (res.ok) { msg.textContent = 'Usuario creado'; msg.className = 'admin-success'; el('adm-newUsername').value = ''; el('adm-newPassword').value = ''; el('adm-newIsAdmin').checked = false; loadUsers(); }
       else { msg.textContent = data.detail || 'Failed'; msg.className = 'admin-error'; }
-    } catch (e) { msg.textContent = 'Request failed'; msg.className = 'admin-error'; }
+    } catch (e) { msg.textContent = 'La solicitud falló'; msg.className = 'admin-error'; }
     el('adm-addBtn').disabled = false;
   });
 }
@@ -562,7 +562,7 @@ async function loadEndpoints() {
             const attachRefresh = () => {
               panel.querySelector(`[data-ep-refresh-models="${epId}"]`)?.addEventListener('click', async (e) => {
                 e.preventDefault();
-                panel.innerHTML = _loadingHtml('Refreshing models...');
+                panel.innerHTML = _loadingHtml('Actualizando modelos...');
                 try {
                   const res = await fetch(`/api/model-endpoints/${epId}/models?refresh=true&refresh_timeout=60`, { credentials: 'same-origin' });
                   const refreshWarning = res.headers.get('X-Model-Refresh-Warning') || '';
@@ -818,7 +818,7 @@ function initEndpointForm() {
       msg.textContent = ''; msg.className = '';
       const rawUrl = (urlInput.value || provider.value).trim();
       const apiKey = el('adm-epApiKey').value.trim();
-      if (!rawUrl) { msg.textContent = 'Select a provider or enter a base URL'; msg.className = 'admin-error'; return; }
+      if (!rawUrl) { msg.textContent = 'Selecciona un proveedor o introduce una URL base'; msg.className = 'admin-error'; return; }
       if (provider.value && !apiKey) { msg.textContent = 'API key is required for cloud providers'; msg.className = 'admin-error'; return; }
       const url = provider.value && rawUrl === provider.value ? rawUrl : _normalizeBaseUrl(rawUrl);
       apiTestController = new AbortController();
@@ -841,10 +841,10 @@ function initEndpointForm() {
         _renderEndpointTestResult(msg, res, d);
       } catch (e) {
         if (e && e.name === 'AbortError') {
-          msg.textContent = 'Test canceled';
+          msg.textContent = 'Prueba cancelada';
           msg.className = '';
         } else {
-          msg.textContent = 'Test failed: ' + (e && e.message ? e.message : 'request failed');
+          msg.textContent = 'La prueba falló: ' + (e && e.message ? e.message : 'la solicitud falló');
           msg.className = 'admin-error';
         }
       }
@@ -865,7 +865,7 @@ function initEndpointForm() {
     msg.textContent = ''; msg.className = '';
     const rawUrl = (urlInput.value || provider.value).trim();
     const apiKey = el('adm-epApiKey').value.trim();
-    if (!rawUrl) { msg.textContent = 'Select a provider or enter a base URL'; msg.className = 'admin-error'; return; }
+    if (!rawUrl) { msg.textContent = 'Selecciona un proveedor o introduce una URL base'; msg.className = 'admin-error'; return; }
     if (provider.value && !apiKey) { msg.textContent = 'API key is required for cloud providers'; msg.className = 'admin-error'; return; }
     // Normalize URL (fix typos, add /v1, strip wrong paths)
     const url = provider.value && rawUrl === provider.value ? rawUrl : _normalizeBaseUrl(rawUrl);
@@ -908,7 +908,7 @@ function initEndpointForm() {
           msg.className = 'admin-success';
         }
       } else { msg.textContent = d.detail || 'Failed'; msg.className = 'admin-error'; }
-    } catch (e) { msg.textContent = 'Request failed'; msg.className = 'admin-error'; }
+    } catch (e) { msg.textContent = 'La solicitud falló'; msg.className = 'admin-error'; }
     btn.disabled = false; btn.textContent = 'Add';
   });
 
@@ -928,8 +928,8 @@ function initEndpointForm() {
       try {
         const res = await fetch('/api/copilot/device/start', { method: 'POST', body: new FormData(), credentials: 'same-origin' });
         start = await res.json();
-        if (!res.ok) { status.textContent = start.detail || 'Failed to start login'; status.className = 'admin-error'; reset(); return; }
-      } catch (e) { status.textContent = 'Request failed'; status.className = 'admin-error'; reset(); return; }
+        if (!res.ok) { status.textContent = start.detail || 'No se pudo iniciar el inicio de sesión'; status.className = 'admin-error'; reset(); return; }
+      } catch (e) { status.textContent = 'La solicitud falló'; status.className = 'admin-error'; reset(); return; }
 
       const { poll_id, user_code, verification_uri, verification_uri_complete, interval, expires_in } = start;
       // Prefer the "complete" URL — it embeds the code so the user only has to
@@ -992,7 +992,7 @@ function initEndpointForm() {
       const msg = _endpointMsg('local');
       msg.textContent = ''; msg.className = '';
       const raw = (el('adm-epLocalUrl').value || '').trim();
-      if (!raw) { msg.textContent = 'Enter a base URL to test'; msg.className = 'admin-error'; return; }
+      if (!raw) { msg.textContent = 'Introduce una URL base para probar'; msg.className = 'admin-error'; return; }
       const url = _normalizeBaseUrl(raw);
       const keyEl = el('adm-epLocalApiKey');
       const apiKey = keyEl ? keyEl.value.trim() : '';
@@ -1006,7 +1006,7 @@ function initEndpointForm() {
         const d = await res.json();
         _renderEndpointTestResult(msg, res, d);
       } catch (e) {
-        msg.textContent = 'Test failed: ' + (e && e.message ? e.message : 'request failed');
+        msg.textContent = 'La prueba falló: ' + (e && e.message ? e.message : 'la solicitud falló');
         msg.className = 'admin-error';
       }
       localTestBtn.disabled = false;
@@ -1018,7 +1018,7 @@ function initEndpointForm() {
       const msg = _endpointMsg('local');
       msg.textContent = ''; msg.className = '';
       const raw = (el('adm-epLocalUrl').value || '').trim();
-      if (!raw) { msg.textContent = 'Enter a base URL (e.g. http://localhost:8002/v1)'; msg.className = 'admin-error'; return; }
+      if (!raw) { msg.textContent = 'Introduce una URL base (p. ej. http://localhost:8002/v1)'; msg.className = 'admin-error'; return; }
       const url = _normalizeBaseUrl(raw);
       const keyEl = el('adm-epLocalApiKey');
       const apiKey = keyEl ? keyEl.value.trim() : '';
@@ -1049,7 +1049,7 @@ function initEndpointForm() {
             : 'Added (offline — will retry on next load)';
           msg.className = d.online ? 'admin-success' : 'admin-error';
         } else { msg.textContent = d.detail || 'Failed'; msg.className = 'admin-error'; }
-      } catch (e) { msg.textContent = 'Request failed'; msg.className = 'admin-error'; }
+      } catch (e) { msg.textContent = 'La solicitud falló'; msg.className = 'admin-error'; }
       localAddBtn.disabled = false; localAddBtn.textContent = 'Add';
     });
   }
@@ -1089,7 +1089,7 @@ function initEndpointForm() {
         wrap.style.cssText = 'display:flex;align-items:center;padding:8px 0;';
         wrap.appendChild(wp.element);
         const txt = document.createElement('span');
-        txt.textContent = 'Scanning ports 8000-8020 and 11434 for model servers...';
+        txt.textContent = 'Buscando servidores de modelos en los puertos 8000-8020 y 11434...';
         txt.style.cssText = 'font-size:12px;opacity:0.7;';
         wrap.appendChild(txt);
         msg.appendChild(wrap);
@@ -1100,7 +1100,7 @@ function initEndpointForm() {
         const data = await res.json();
         const items = data.items || [];
         if (!items.length) {
-          msg.textContent = 'No model servers found. Make sure vLLM, llama.cpp, SGLang, or Ollama is running. Docker users may need Ollama bound to a trusted reachable interface.';
+          msg.textContent = 'No se encontraron servidores de modelos. Asegúrate de que vLLM, llama.cpp, SGLang u Ollama estén en ejecución. Con Docker quizá debas exponer Ollama en una interfaz accesible de confianza.';
           msg.className = 'admin-error';
         } else {
           // Auto-add each discovered endpoint. Server dedupes on base_url
@@ -1132,7 +1132,7 @@ function initEndpointForm() {
           loadEndpoints();
         }
       } catch (e) {
-        msg.textContent = 'Scan failed: ' + e.message;
+        msg.textContent = 'La búsqueda falló: ' + e.message;
         msg.className = 'admin-error';
       }
       if (discoverBtn._wp) { discoverBtn._wp.destroy(); discoverBtn._wp = null; }
@@ -1659,7 +1659,7 @@ function initMcpForm() {
     if (help) {
       _activeHelp = help;
       const helpLink = document.createElement('a');
-      helpLink.textContent = 'How do I get these?';
+      helpLink.textContent = '¿Cómo consigo esto?';
       helpLink.href = '#';
       helpLink.style.cssText = 'font-size:10.5px;opacity:0.5;margin-top:2px;display:inline-block;';
       helpLink.addEventListener('click', (e) => {
@@ -1731,10 +1731,10 @@ function initMcpForm() {
     const env = _collectEnv();
     const url = el('adm-mcpUrl').value.trim();
     const msg = el('adm-mcpMsg');
-    if (!name) { msg.textContent = 'Name is required'; msg.className = 'admin-error'; return; }
-    if (transport === 'stdio' && !command) { msg.textContent = 'Command is required for stdio'; msg.className = 'admin-error'; return; }
+    if (!name) { msg.textContent = 'El nombre es obligatorio'; msg.className = 'admin-error'; return; }
+    if (transport === 'stdio' && !command) { msg.textContent = 'El comando es obligatorio para stdio'; msg.className = 'admin-error'; return; }
     if (transport === 'sse' && !url) { msg.textContent = 'URL is required for SSE'; msg.className = 'admin-error'; return; }
-    try { JSON.parse(env); } catch { msg.textContent = 'Env must be valid JSON'; msg.className = 'admin-error'; return; }
+    try { JSON.parse(env); } catch { msg.textContent = 'Env debe ser JSON válido'; msg.className = 'admin-error'; return; }
     const fd = new FormData();
     fd.append('name', name); fd.append('transport', transport); fd.append('command', command); fd.append('args', args); fd.append('env', env); fd.append('url', url);
     // If preset has oauthFile config, send credentials for file generation
@@ -1760,7 +1760,7 @@ function initMcpForm() {
         msg.className = 'admin-success';
       } else if (data.connected) {
         msg.textContent = `Added ${name} (${data.tool_count} tools discovered)`; msg.className = 'admin-success';
-      } else { msg.textContent = `Added but connection failed: ${data.error || 'unknown'}`; msg.className = 'admin-error'; }
+      } else { msg.textContent = `Añadido, pero la conexión falló: ${data.error || 'desconocido'}`; msg.className = 'admin-error'; }
       el('adm-mcpName').value = ''; el('adm-mcpCommand').value = ''; el('adm-mcpArgs').value = ''; el('adm-mcpUrl').value = '';
       _clearEnvFields(); helpBox.style.display = 'none'; _activeHelp = null; _activeOauthFile = null; _activeOauth = null;
       loadMcpServers();
@@ -1786,7 +1786,7 @@ async function loadRag() {
       dirList.innerHTML = dirs.map(d => `<div class="admin-rag-item"><span class="admin-rag-item-name" title="${esc(d)}">${esc(d)}</span><button class="admin-btn-delete" data-adm-rag-dir="${esc(d)}">Remove</button></div>`).join('');
       dirList.querySelectorAll('[data-adm-rag-dir]').forEach(btn => {
         btn.addEventListener('click', async () => {
-          if (!await uiModule.styledConfirm(`Remove directory "${btn.dataset.admRagDir}" from RAG?`, { confirmText: 'Quitar', danger: true })) return;
+          if (!await uiModule.styledConfirm(`¿Quitar el directorio «${btn.dataset.admRagDir}» de RAG?`, { confirmText: 'Quitar', danger: true })) return;
           btn.disabled = true; btn.textContent = '...';
           try {
             const res = await fetch('/api/personal/remove_directory?directory=' + encodeURIComponent(btn.dataset.admRagDir), { method: 'DELETE' });
@@ -1899,7 +1899,7 @@ async function loadTokens() {
       </div>`).join('');
     list.querySelectorAll('[data-adm-del-token]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if (!await uiModule.styledConfirm('Revoke this API token? External integrations using it will stop working.', { confirmText: 'Revoke', danger: true })) return;
+        if (!await uiModule.styledConfirm('¿Revocar este token de API? Las integraciones externas que lo usen dejarán de funcionar.', { confirmText: 'Revocar', danger: true })) return;
         await fetch(`/api/tokens/${btn.dataset.admDelToken}`, { method: 'DELETE', credentials: 'same-origin' });
         loadTokens();
       });
@@ -1913,14 +1913,14 @@ function initTokenForm() {
     const reveal = el('adm-tokenReveal');
     msg.textContent = ''; msg.className = ''; reveal.style.display = 'none';
     const name = el('adm-tokenName').value.trim();
-    if (!name) { msg.textContent = 'Token name is required'; msg.className = 'admin-error'; return; }
+    if (!name) { msg.textContent = 'El nombre del token es obligatorio'; msg.className = 'admin-error'; return; }
     const fd = new FormData(); fd.append('name', name);
     try {
       const res = await fetch('/api/tokens', { method: 'POST', body: fd, credentials: 'same-origin' });
       const data = await res.json();
       if (res.ok) { el('adm-tokenValue').textContent = data.token; reveal.style.display = ''; el('adm-tokenName').value = ''; loadTokens(); }
       else { msg.textContent = data.detail || 'Failed'; msg.className = 'admin-error'; }
-    } catch (e) { msg.textContent = 'Request failed'; msg.className = 'admin-error'; }
+    } catch (e) { msg.textContent = 'La solicitud falló'; msg.className = 'admin-error'; }
   });
   el('adm-tokenCopyBtn').addEventListener('click', () => {
     const val = el('adm-tokenValue').textContent;
@@ -1963,10 +1963,10 @@ async function loadWebhooks() {
     }).join('');
     list.querySelectorAll('[data-adm-wh-test]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        const msg = el('adm-whMsg'); msg.textContent = 'Sending test...'; msg.className = '';
+        const msg = el('adm-whMsg'); msg.textContent = 'Enviando prueba...'; msg.className = '';
         try {
           const res = await fetch(`/api/webhooks/${btn.dataset.admWhTest}/test`, { method: 'POST', credentials: 'same-origin' });
-          msg.textContent = res.ok ? 'Test sent!' : 'Test failed'; msg.className = res.ok ? 'admin-success' : 'admin-error';
+          msg.textContent = res.ok ? '¡Prueba enviada!' : 'La prueba falló'; msg.className = res.ok ? 'admin-success' : 'admin-error';
           setTimeout(() => loadWebhooks(), 1000);
         } catch (e) { msg.textContent = 'Failed: ' + e.message; msg.className = 'admin-error'; }
       });
@@ -1991,14 +1991,14 @@ function initWebhookForm() {
     const url = el('adm-whUrl').value.trim();
     const secret = el('adm-whSecret').value.trim();
     const events = Array.from(modalEl.querySelectorAll('.adm-wh-event:checked')).map(e => e.value).join(',');
-    if (!name) { msg.textContent = 'Name is required'; msg.className = 'admin-error'; return; }
+    if (!name) { msg.textContent = 'El nombre es obligatorio'; msg.className = 'admin-error'; return; }
     if (!url) { msg.textContent = 'URL is required'; msg.className = 'admin-error'; return; }
-    if (!events) { msg.textContent = 'Select at least one event'; msg.className = 'admin-error'; return; }
+    if (!events) { msg.textContent = 'Selecciona al menos un evento'; msg.className = 'admin-error'; return; }
     const fd = new FormData();
     fd.append('name', name); fd.append('url', url); fd.append('secret', secret); fd.append('events', events);
     try {
       const res = await fetch('/api/webhooks', { method: 'POST', body: fd, credentials: 'same-origin' });
-      if (res.ok) { msg.textContent = 'Webhook added'; msg.className = 'admin-success'; el('adm-whName').value = ''; el('adm-whUrl').value = ''; el('adm-whSecret').value = ''; loadWebhooks(); }
+      if (res.ok) { msg.textContent = 'Webhook añadido'; msg.className = 'admin-success'; el('adm-whName').value = ''; el('adm-whUrl').value = ''; el('adm-whSecret').value = ''; loadWebhooks(); }
       else { const d = await res.json(); msg.textContent = d.detail || 'Failed'; msg.className = 'admin-error'; }
     } catch (e) { msg.textContent = 'Failed: ' + e.message; msg.className = 'admin-error'; }
   });
@@ -2089,7 +2089,7 @@ function initBackup() {
     btn.disabled = true; btn.textContent = 'Exporting...'; msg.textContent = '';
     try {
       const res = await fetch('/api/export', { credentials: 'same-origin' });
-      if (!res.ok) throw new Error('Export failed');
+      if (!res.ok) throw new Error('La exportación falló');
       const blob = await res.blob();
       const disposition = res.headers.get('Content-Disposition') || '';
       const match = disposition.match(/filename=(.+)/);
@@ -2099,8 +2099,8 @@ function initBackup() {
       a.download = filename;
       a.click();
       URL.revokeObjectURL(a.href);
-      msg.textContent = 'Export downloaded.'; msg.className = 'admin-success';
-    } catch (e) { msg.textContent = 'Export failed: ' + e.message; msg.className = 'admin-error'; }
+      msg.textContent = 'Exportación descargada.'; msg.className = 'admin-success';
+    } catch (e) { msg.textContent = 'La exportación falló: ' + e.message; msg.className = 'admin-error'; }
     btn.disabled = false; btn.textContent = 'Export Data';
   });
 
@@ -2122,11 +2122,11 @@ function initBackup() {
       });
       const result = await res.json();
       if (res.ok && result.ok) {
-        msg.textContent = result.message || 'Import successful.'; msg.className = 'admin-success';
+        msg.textContent = result.message || 'Importación correcta.'; msg.className = 'admin-success';
       } else {
-        msg.textContent = result.message || result.detail || 'Import failed'; msg.className = 'admin-error';
+        msg.textContent = result.message || result.detail || 'La importación falló'; msg.className = 'admin-error';
       }
-    } catch (e) { msg.textContent = 'Import failed: ' + e.message; msg.className = 'admin-error'; }
+    } catch (e) { msg.textContent = 'La importación falló: ' + e.message; msg.className = 'admin-error'; }
     btn.disabled = false; btn.textContent = 'Import Data';
   });
 }
@@ -2159,7 +2159,7 @@ function initDangerZone() {
           if (_wipeMsg) { _wipeMsg.textContent = data.detail || 'Failed'; _wipeMsg.className = 'admin-error'; }
         }
       } catch (e) {
-        if (_wipeMsg) { _wipeMsg.textContent = 'Request failed: ' + e.message; _wipeMsg.className = 'admin-error'; }
+        if (_wipeMsg) { _wipeMsg.textContent = 'La solicitud falló: ' + e.message; _wipeMsg.className = 'admin-error'; }
       }
       btn.disabled = false; btn.textContent = prev;
     });

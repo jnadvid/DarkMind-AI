@@ -2309,7 +2309,7 @@ import createResearchSynapse from './researchSynapse.js';
                 _removeThinkingSpinner();
                 const budgetDiv = document.createElement('div');
                 budgetDiv.style.cssText = 'font-size:11px;opacity:0.6;font-style:italic;padding:4px 8px;margin:4px 0;';
-                budgetDiv.textContent = `Tool budget reached (${json.used}/${json.limit} calls). Agent stopped.`;
+                budgetDiv.textContent = `Se alcanzó el límite de herramientas (${json.used}/${json.limit} llamadas). El agente se detuvo.`;
                 const chatBox = document.getElementById('chat-history');
                 chatBox.appendChild(budgetDiv);
 
@@ -2375,7 +2375,7 @@ import createResearchSynapse from './researchSynapse.js';
       }
 
       if (!_streamSawDone) {
-        throw new Error('Stream closed before completion');
+        throw new Error('La transmisión se cerró antes de completarse');
       }
 
       _renderStream();
@@ -4389,7 +4389,7 @@ import createResearchSynapse from './researchSynapse.js';
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ msg_ids: msgIds })
       });
-      if (!res.ok) throw new Error('Server error ' + res.status);
+      if (!res.ok) throw new Error('Error del servidor ' + res.status);
       domToRemove.forEach(el => el.remove());
       if (uiModule) uiModule.showToast('Mensaje eliminado');
     } catch (err) {
@@ -4461,7 +4461,7 @@ import createResearchSynapse from './researchSynapse.js';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ msg_id: msgId, content: newContent }),
         });
-        if (!res.ok) throw new Error('Server error ' + res.status);
+        if (!res.ok) throw new Error('Error del servidor ' + res.status);
 
         // Re-render body with markdown
         body.innerHTML = markdownModule.processWithThinking(markdownModule.squashOutsideCode(newContent));

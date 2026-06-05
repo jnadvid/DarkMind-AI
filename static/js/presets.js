@@ -413,7 +413,7 @@ function initPersistentChat() {
         fd.append('skip_validation', 'true');
       }
       const res = await fetch(`${API_BASE}/api/session`, { method: 'POST', body: fd });
-      if (!res.ok) throw new Error('Failed to create session');
+      if (!res.ok) throw new Error('No se pudo crear la sesión');
       const data = await res.json();
       const sessionId = data.session_id || data.id;
 
@@ -476,7 +476,7 @@ function initSaveAsTemplate() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(template),
       });
-      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      if (!res.ok) throw new Error(`El servidor devolvió ${res.status}`);
       const data = await res.json();
       if (data.success) {
         await loadUserTemplates();
@@ -857,7 +857,7 @@ export async function saveCustomPreset(showToast, showError) {
   } catch (error) {
     console.error('Error saving custom preset:', error);
     if (showError) {
-      showError('Failed to save custom preset');
+      showError('No se pudo guardar el preajuste personalizado');
     }
   }
 }

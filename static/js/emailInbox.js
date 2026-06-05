@@ -416,7 +416,7 @@ function _renderList() {
   if (_senderFilter) {
     const chip = document.createElement('div');
     chip.className = 'email-filter-chip';
-    chip.innerHTML = `<span class="email-filter-chip-label">From: ${_esc(_senderFilterLabel || _senderFilter)}</span><button class="email-filter-chip-clear" title="Clear filter">&times;</button>`;
+    chip.innerHTML = `<span class="email-filter-chip-label">De: ${_esc(_senderFilterLabel || _senderFilter)}</span><button class="email-filter-chip-clear" title="Borrar filtro">&times;</button>`;
     chip.querySelector('.email-filter-chip-clear').addEventListener('click', () => _clearSenderFilter());
     list.appendChild(chip);
   }
@@ -882,7 +882,7 @@ async function _openEmail(em, itemEl, preloadedData = null, mode = 'reply') {
           // import pattern the rest of this file uses. (Previously this
           // referenced a bare `uiModule`, throwing a ReferenceError that
           // the outer catch swallowed → reply silently did nothing.)
-          import('./ui.js').then(m => m.showError && m.showError('Failed to create reply draft (' + docRes.status + ')')).catch(() => {});
+          import('./ui.js').then(m => m.showError && m.showError('No se pudo crear el borrador de respuesta (' + docRes.status + ')')).catch(() => {});
           return;
         }
         const doc = await docRes.json();
@@ -1193,7 +1193,7 @@ async function _composeNew() {
     }
     if (!sid) {
       console.error('compose: could not obtain a session_id');
-      import('./ui.js').then(m => m.showError && m.showError('Could not start a new email (no session).')).catch(() => {});
+      import('./ui.js').then(m => m.showError && m.showError('No se pudo iniciar un correo nuevo (sin sesión).')).catch(() => {});
       return;
     }
     const res = await fetch(`${API_BASE}/api/document`, {
@@ -1208,7 +1208,7 @@ async function _composeNew() {
     });
     if (!res.ok) {
       console.error('compose POST failed', res.status, await res.text().catch(() => ''));
-      import('./ui.js').then(m => m.showError && m.showError('Failed to create new email (' + res.status + ')')).catch(() => {});
+      import('./ui.js').then(m => m.showError && m.showError('No se pudo crear el correo nuevo (' + res.status + ')')).catch(() => {});
       return;
     }
     const doc = await res.json();
