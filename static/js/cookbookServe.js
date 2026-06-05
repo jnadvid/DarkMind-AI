@@ -1092,7 +1092,7 @@ function _rerenderCachedModels() {
         }
         if (modelSlots.length >= 5) { uiModule.showToast('Max 5 saves per model'); return false; }
         const label = await uiModule.styledPrompt('Name this config so you can recall it later.', {
-          title: 'Save Config', placeholder: 'e.g. LoRA, 8-bit, fast', confirmText: 'Save',
+          title: 'Save Config', placeholder: 'e.g. LoRA, 8-bit, fast', confirmText: 'Guardar',
         });
         if (!label) return false;
         const host = panel._host || '';
@@ -1172,7 +1172,7 @@ function _rerenderCachedModels() {
           del.addEventListener('click', async (e) => {
             e.stopPropagation();
             const label = p.label || `Config ${idx + 1}`;
-            if (!await window.styledConfirm(`Delete saved config "${label}"?`, { confirmText: 'Delete', danger: true })) return;
+            if (!await window.styledConfirm(`Delete saved config "${label}"?`, { confirmText: 'Eliminar', danger: true })) return;
             const cur = _loadPresets();
             const toRemove = _presetsForModel(cur, repo)[idx];
             if (toRemove) {
@@ -1687,7 +1687,7 @@ function _rerenderCachedModels() {
             if (!_probeGpus.length) {
               const _proceed = await window.styledConfirm(
                 `No GPU detected on ${_probeHost ? _probeHost : 'this host'}. ${serveState.backend.toUpperCase()} needs a visible CUDA/ROCm accelerator to start — launching now will most likely crash early.\n\nLaunch anyway?`,
-                { title: 'No GPU detected', confirmText: 'Launch anyway', cancelText: 'Cancel', danger: true },
+                { title: 'No GPU detected', confirmText: 'Launch anyway', cancelText: 'Cancelar', danger: true },
               );
               if (!_proceed) return;
             }
@@ -1781,7 +1781,7 @@ function _resolveCacheHost() {
 }
 
 async function _deleteCachedModel(repo, itemEl, skipConfirm = false, model = null) {
-  if (!skipConfirm && !(await uiModule.styledConfirm(`Delete ${repo} from cache?`, { confirmText: 'Delete', danger: true }))) return;
+  if (!skipConfirm && !(await uiModule.styledConfirm(`Delete ${repo} from cache?`, { confirmText: 'Eliminar', danger: true }))) return;
   const m = model || _cachedAllModels.find(x => x.repo_id === repo);
   // Delete the EXACT on-disk path the scan reported. Models in a custom
   // model dir live at <path>/<repo>; HF-cache models at

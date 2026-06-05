@@ -1690,7 +1690,7 @@ export function _hwfitInit() {
                 || 'this server';
       let ok = true;
       if (uiModule && uiModule.styledConfirm) {
-        ok = await uiModule.styledConfirm(`Remove "${name}"?`, { confirmText: 'Remove', danger: true });
+        ok = await uiModule.styledConfirm(`Remove "${name}"?`, { confirmText: 'Quitar', danger: true });
       } else {
         ok = confirm(`Remove "${name}"?`);
       }

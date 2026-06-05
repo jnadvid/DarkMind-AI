@@ -197,7 +197,7 @@ function _statusPill(sk) {
 function _sourcePill(sk) {
   if (sk.source !== 'teacher-escalation') return '';
   const teacher = sk.teacher_model || 'teacher';
-  return `<span class="memory-cat-badge" title="Created by teacher escalation: ${esc(teacher)}" style="background:color-mix(in srgb, var(--color-warning, #f0ad4e) 22%, transparent);">teacher-created</span>`;
+  return `<span class="memory-cat-badge" title="Creada por escalada al profesor: ${esc(teacher)}" style="background:color-mix(in srgb, var(--color-warning, #f0ad4e) 22%, transparent);">creada por profesor</span>`;
 }
 
 function _modelShortName(model) {
@@ -290,12 +290,12 @@ function _auditModelPills(sk) {
   const teacher = sk.audit_teacher_model || '';
   let html = '';
   if (worker) {
-    html += `<span class="memory-cat-badge skill-model-pill skill-model-student" title="Last audited by default audit model: ${esc(worker)}">audit</span>`;
+    html += `<span class="memory-cat-badge skill-model-pill skill-model-student" title="Auditada por última vez por el modelo de auditoría predeterminado: ${esc(worker)}">auditoría</span>`;
   }
   if (sk.audit_by_teacher || teacher) {
     const title = teacher
-      ? `Teacher rewrote this skill; audit model passed after the rewrite. Teacher: ${teacher}`
-      : 'Teacher rewrote this skill; audit model passed after the rewrite.';
+      ? `El profesor reescribió esta habilidad; el modelo de auditoría la aprobó tras la reescritura. Profesor: ${teacher}`
+      : 'El profesor reescribió esta habilidad; el modelo de auditoría la aprobó tras la reescritura.';
     html += `<span class="memory-cat-badge skill-model-pill skill-model-teacher" title="${esc(title)}">teacher-fixed</span>`;
   }
   return html;
@@ -322,15 +322,15 @@ function _necessityPill(sk) {
     : 'possibly-irrelevant';
   const group = sk._duplicateNames || [];
   const why = sk._duplicateGroup
-    ? `Duplicate group #${sk._duplicateGroup}. Recommended keep: ${sk._duplicateKeepName}. Group: ${group.join(', ')}`
-    : (nec.reason || 'May not be worth keeping') + (dup.length ? ' | overlaps: ' + dup.join(', ') : '');
+    ? `Grupo duplicado n.º ${sk._duplicateGroup}. Recomendado conservar: ${sk._duplicateKeepName}. Grupo: ${group.join(', ')}`
+    : (nec.reason || 'Quizá no merezca la pena conservarla') + (dup.length ? ' | overlaps: ' + dup.join(', ') : '');
   return `<span class="memory-cat-badge skill-necessity-pill skill-necessity-${kind}" title="${esc(why)}">${label}</span>`;
 }
 
 function _duplicatePriorityPill(sk) {
   if (!sk._duplicateGroup) return '';
   if (sk._duplicateKeep) {
-    return `<span class="memory-cat-badge skill-duplicate-keep" title="Best duplicate candidate by published status, uses, confidence, and specificity">recommended</span>`;
+    return `<span class="memory-cat-badge skill-duplicate-keep" title="Mejor candidata duplicada por estado de publicación, usos, confianza y especificidad">recomendada</span>`;
   }
   return `<span class="memory-cat-badge skill-duplicate-lower" title="Lower-priority duplicate. Suggested keeper: ${esc(sk._duplicateKeepName || '')}">lower-priority</span>`;
 }
@@ -341,7 +341,7 @@ function _duplicatePriorityPill(sk) {
 function _auditMarks(sk) {
   let html = '';
   if (sk.audit_verdict === 'pass') {
-    html += `<span class="skill-verified" title="Passed an automated test"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`;
+    html += `<span class="skill-verified" title="Pasó una prueba automatizada"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>`;
   }
   if (sk.audit_by_teacher) {
     const teacher = sk.audit_teacher_model ? `: ${sk.audit_teacher_model}` : '';
@@ -465,7 +465,7 @@ function _buildBuiltinCards() {
         <div class="doclib-card-title" style="display:flex;align-items:center;gap:6px;min-width:0;">
           <code style="font-weight:600;font-size:0.9em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;">${esc(b.name)}</code>
           <span class="memory-cat-badge" style="background:color-mix(in srgb, var(--fg) 14%, transparent)">built-in</span>
-          ${b.is_overridden ? '<span class="memory-cat-badge" title="You have edited this built-in capability" style="background:color-mix(in srgb, var(--color-warning, #f0ad4e) 30%, transparent);">edited</span>' : ''}
+          ${b.is_overridden ? '<span class="memory-cat-badge" title="Has editado esta capacidad integrada" style="background:color-mix(in srgb, var(--color-warning, #f0ad4e) 30%, transparent);">editada</span>' : ''}
         </div>
         ${b.description ? `<div class="doclib-card-session" title="${esc(b.description)}" style="font-size:10px;opacity:0.55;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(b.description)}</div>` : ''}
       </div>
@@ -492,7 +492,7 @@ function _buildBuiltinCards() {
     const revertBtn = document.createElement('button');
     revertBtn.className = 'doclib-card-text-btn doclib-card-action-btn doclib-card-text-btn-danger';
     revertBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>Revert';
-    revertBtn.title = 'Restore the original shipped instructions';
+    revertBtn.title = 'Restaurar las instrucciones originales de fábrica';
     revertBtn.addEventListener('click', (e) => { e.stopPropagation(); _revertBuiltin(b.name); });
 
     const editBtn = document.createElement('button');
@@ -531,7 +531,7 @@ async function _expandBuiltinCard(card, name) {
   if (grid) grid.scrollTop = 0;
   const pre = card.querySelector('.skill-md-pre');
   if (pre && !card._loaded) {
-    pre.textContent = 'Loading…';
+    pre.textContent = 'Cargando…';
     try {
       const res = await fetch(`${API}/api/skills/builtin/${encodeURIComponent(name)}`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -541,7 +541,7 @@ async function _expandBuiltinCard(card, name) {
       card._text = data.text || '';
       card._default = data.default || '';
     } catch (e) {
-      pre.textContent = 'Failed to load.';
+      pre.textContent = 'No se pudo cargar.';
     }
   }
 }
@@ -576,7 +576,7 @@ async function _saveBuiltinEdit(card, name) {
     uiModule.showToast('Built-in capability updated');
     builtinSkills = [];  // force reload of built-in list (refreshes "edited" badge)
     await loadSkills();
-  } catch (e) { uiModule.showError('Save failed: ' + e.message); }
+  } catch (e) { uiModule.showError('Error al guardar: ' + e.message); }
 }
 
 async function _revertBuiltin(name) {
@@ -584,10 +584,10 @@ async function _revertBuiltin(name) {
   try {
     const res = await fetch(`${API}/api/skills/builtin/${encodeURIComponent(name)}`, { method: 'DELETE' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    uiModule.showToast('Reverted to default');
+    uiModule.showToast('Restaurado a los valores predeterminados');
     builtinSkills = [];
     await loadSkills();
-  } catch (e) { uiModule.showError('Revert failed: ' + e.message); }
+  } catch (e) { uiModule.showError('Error al restaurar: ' + e.message); }
 }
 
 function _getFilteredSkills() {
@@ -621,7 +621,7 @@ function renderSkillsList() {
   const showBuiltin = false;
 
   if (!sorted.length && !showBuiltin) {
-    container.innerHTML = `<div style="text-align:center;opacity:0.4;padding:24px 0;font-size:11px;">${loaded ? 'No skills yet, use agent for it to auto extract them.' : 'Loading…'}</div>`;
+    container.innerHTML = `<div style="text-align:center;opacity:0.4;padding:24px 0;font-size:11px;">${loaded ? 'Aún no hay habilidades; usa el agente para que las extraiga automáticamente.' : 'Cargando…'}</div>`;
     return;
   }
 
@@ -724,7 +724,7 @@ function renderSkillsList() {
     pubBtn.className = 'doclib-card-text-btn doclib-card-action-btn';
     if (isPublished) {
       pubBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12l5 5L20 7"/></svg>Unpublish';
-      pubBtn.title = 'Move back to draft';
+      pubBtn.title = 'Devolver a borrador';
       pubBtn.addEventListener('click', (e) => { e.stopPropagation(); _setSkillStatus(name, 'draft'); });
     } else {
       pubBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Publish';
@@ -738,7 +738,7 @@ function renderSkillsList() {
     const testBtn = document.createElement('button');
     testBtn.className = 'doclib-card-text-btn doclib-card-action-btn';
     testBtn.innerHTML = _svg(_ICON.test, { size: 11 }) + 'Test';
-    testBtn.title = 'Test this skill — run it + AI judge';
+    testBtn.title = 'Probar esta habilidad — ejecutarla + juez de IA';
     testBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       // Immediate visual feedback: previously the click looked like nothing
@@ -845,7 +845,7 @@ function renderSkillsList() {
   // "Your skills" section — show the header only when there's also a
   // built-in section to distinguish from (otherwise it's just the list).
   if (cards.length) {
-    if (showBuiltin) container.appendChild(_mkSectionHeader('user', 'Your skills', cards.length));
+    if (showBuiltin) container.appendChild(_mkSectionHeader('user', 'Tus habilidades', cards.length));
     cards.forEach(c => { c.dataset.skillSection = 'user'; container.appendChild(c); });
   }
 
@@ -991,14 +991,14 @@ async function _expandSkillCard(card, name) {
       card._mdLoaded = true;
       card._md = md || '';
     } else {
-      pre.textContent = 'Loading…';
+      pre.textContent = 'Cargando…';
       try {
         const md = await _fetchSkillMarkdown(name);
         pre.textContent = md || '(empty)';
         card._mdLoaded = true;
         card._md = md;
       } catch (e) {
-        pre.textContent = 'Failed to load SKILL.md';
+        pre.textContent = 'No se pudo cargar SKILL.md';
       }
     }
   }
@@ -1045,12 +1045,12 @@ async function _saveSkillEdit(card, name) {
     uiModule.showToast('Saved');
     await loadSkills();  // re-render (frontmatter changes like name/status may have changed)
   } catch (e) {
-    uiModule.showError('Save failed: ' + e.message);
+    uiModule.showError('Error al guardar: ' + e.message);
   }
 }
 
 async function _deleteSkill(name, card = null) {
-  if (!(await uiModule.styledConfirm(`Delete skill "${name}"? This removes the SKILL.md.`, { confirmText: 'Delete', danger: true }))) return;
+  if (!(await uiModule.styledConfirm(`¿Eliminar la habilidad «${name}»? Esto borra el SKILL.md.`, { confirmText: 'Eliminar', danger: true }))) return;
   // Locate the card if the caller didn't hand one over, so we can collapse it
   // away gracefully (same fade+shrink as the document library) instead of
   // re-rendering the whole list.
@@ -1070,8 +1070,8 @@ async function _deleteSkill(name, card = null) {
     } else {
       await loadSkills();
     }
-    uiModule.showToast('Skill deleted');
-  } catch (e) { uiModule.showError('Delete failed: ' + e.message); }
+    uiModule.showToast('Habilidad eliminada');
+  } catch (e) { uiModule.showError('Error al eliminar: ' + e.message); }
 }
 
 async function _setSkillStatus(name, status) {
@@ -1082,8 +1082,8 @@ async function _setSkillStatus(name, status) {
       body: JSON.stringify({ status }),
     });
     await loadSkills();
-    uiModule.showToast(status === 'published' ? 'Skill approved' : 'Skill moved to draft');
-  } catch (e) { uiModule.showError('Update failed: ' + e.message); }
+    uiModule.showToast(status === 'published' ? 'Habilidad aprobada' : 'Habilidad movida a borrador');
+  } catch (e) { uiModule.showError('Error al actualizar: ' + e.message); }
 }
 
 // ---- Test a skill (sandbox agent run + AI eval) ----
@@ -1286,7 +1286,7 @@ function _renderTestVerdict(el, v, card, name) {
   const isPub = card && card.dataset && card.dataset.skillStatus === 'published';
   const approveLabel = isPub ? 'Approved' : 'Approve';
   const approveCls = 'skill-eval-approve' + (isPub ? ' is-approved' : (verdict === 'pass' ? ' suggested' : ''));
-  const approveTitle = isPub ? 'Already approved — click to unpublish' : 'Publish — appears in the skills index';
+  const approveTitle = isPub ? 'Ya aprobada — haz clic para despublicar' : 'Publicar — aparece en el índice de habilidades';
   el.innerHTML =
     '<div class="skill-eval-head"><span class="skill-eval-badge skill-eval-' + cls + '">' + label + (conf ? ' · ' + conf : '') + '</span>' +
     '<span class="skill-eval-summary">' + esc((v && v.summary) || '') + '</span></div>' +
@@ -1294,8 +1294,8 @@ function _renderTestVerdict(el, v, card, name) {
     '<div class="doclib-card-expanded-actions skill-eval-actions-wrap">' +
       '<button class="doclib-card-text-btn doclib-card-action-btn ' + approveCls + '" data-act="approve" title="' + approveTitle + '">' + approveLabel + '</button>' +
       '<div class="doclib-action-group"><div class="doclib-action-btn-row">' +
-        '<button class="doclib-card-text-btn doclib-card-action-btn" data-act="retry" title="Run the test again">Retry</button>' +
-        '<button class="doclib-card-text-btn doclib-card-action-btn" data-act="copy" title="Copy the run output + verdict">Copy</button>' +
+        '<button class="doclib-card-text-btn doclib-card-action-btn" data-act="retry" title="Ejecutar la prueba de nuevo">Reintentar</button>' +
+        '<button class="doclib-card-text-btn doclib-card-action-btn" data-act="copy" title="Copiar la salida + veredicto">Copiar</button>' +
         '<button class="doclib-card-text-btn doclib-card-action-btn" data-act="edit">Edit</button>' +
         '<button class="doclib-card-text-btn doclib-card-action-btn doclib-card-text-btn-danger" data-act="del"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:3px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Delete</button>' +
       '</div></div>' +
@@ -1311,7 +1311,7 @@ function _renderTestVerdict(el, v, card, name) {
     if (btn) {
       const pub = card.dataset.skillStatus === 'published';
       btn.textContent = pub ? 'Approved' : 'Approve';
-      btn.title = pub ? 'Already approved — click to unpublish' : 'Publish — appears in the skills index';
+      btn.title = pub ? 'Ya aprobada — haz clic para despublicar' : 'Publicar — aparece en el índice de habilidades';
       btn.classList.toggle('is-approved', pub);
       btn.classList.toggle('suggested', !pub && verdict === 'pass');
     }
@@ -1413,7 +1413,7 @@ async function _auditAllSkills(opts = {}) {
       ? `${names.length} selected ${names.length === 1 ? 'skill' : 'skills'}`
       : `${names.length} visible ${names.length === 1 ? 'skill' : 'skills'}`;
     if (!names.length) {
-      uiModule.showToast(explicitNames ? 'No selected skills to audit' : 'No visible skills to audit');
+      uiModule.showToast(explicitNames ? 'No hay habilidades seleccionadas que auditar' : 'No hay habilidades visibles que auditar');
       return;
     }
     const confirmed = await _confirmAuditSkills(label);
@@ -1423,9 +1423,9 @@ async function _auditAllSkills(opts = {}) {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ scope: explicitNames ? 'selected' : 'all', names, skip_audited: confirmed.skipAudited }),
       });
-      if (!r.ok) { uiModule.showError('Audit failed to start (HTTP ' + r.status + ')'); return; }
+      if (!r.ok) { uiModule.showError('La auditoría no pudo iniciarse (HTTP ' + r.status + ')'); return; }
       st = await _fetchAuditStatus();
-    } catch (e) { uiModule.showError('Audit failed: ' + (e.message || e)); return; }
+    } catch (e) { uiModule.showError('La auditoría falló: ' + (e.message || e)); return; }
     _auditSeenResults = 0;
   }
   panel.classList.remove('hidden');
@@ -1540,8 +1540,8 @@ function _renderAuditPanel(panel, st) {
   const head = running
     ? `Auditing ${done}/${total}${st.current ? ' — ' + esc(st.current) : ''}`
     : cancelled
-      ? `Audit cancelled — ${done}/${total}`
-    : `Audit complete — ${total} skill${total === 1 ? '' : 's'}`;
+      ? `Auditoría cancelada — ${done}/${total}`
+    : `Auditoría completa — ${total} ${total === 1 ? 'habilidad' : 'habilidades'}`;
   panel.innerHTML =
     '<div class="skills-audit-head">' +
       '<span class="skills-audit-title-wrap" style="display:inline-flex;align-items:center;gap:8px;">' +
@@ -1648,7 +1648,7 @@ async function _bulkDelete() {
   const n = _selectedNames.size;
   const ok = await uiModule.styledConfirm(
     `Delete ${n} ${n === 1 ? 'skill' : 'skills'}? This removes their SKILL.md files.`,
-    { confirmText: 'Delete', danger: true }
+    { confirmText: 'Eliminar', danger: true }
   );
   if (!ok) return;
   let deleted = 0;
@@ -1813,7 +1813,7 @@ async function _showSkillSource(name) {
       wrap.remove();
       await loadSkills();
     } catch (e) {
-      uiModule.showError('Save failed: ' + e.message);
+      uiModule.showError('Error al guardar: ' + e.message);
     }
   });
 }
@@ -1859,9 +1859,9 @@ async function addSkill() {
      'new-skill-category']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     await loadSkills();
-    uiModule.showToast('Skill added (draft)');
+    uiModule.showToast('Habilidad añadida (borrador)');
   } catch (err) {
-    uiModule.showError('Failed to add skill: ' + err.message);
+    uiModule.showError('No se pudo añadir la habilidad: ' + err.message);
   }
 }
 

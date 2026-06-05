@@ -2923,7 +2923,7 @@ async function _renderLibResearch(grid) {
               uiModule.showToast('Activa Investigación y envía para relanzar');
             }},
             { label: 'Delete', danger: true, action: async () => {
-              if (!await window.styledConfirm('¿Eliminar esta investigación?', { confirmText: 'Delete', danger: true })) return;
+              if (!await window.styledConfirm('¿Eliminar esta investigación?', { confirmText: 'Eliminar', danger: true })) return;
               await fetch(`${API_BASE}/api/research/${item.id}`, { method: 'DELETE' });
               _renderLibGrid();
             }},

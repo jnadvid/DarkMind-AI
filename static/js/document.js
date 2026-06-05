@@ -8492,7 +8492,7 @@ import * as Modals from './modalManager.js';
     const doc = docs.get(activeDocId);
     const name = doc ? doc.title : 'this document';
     const ok = uiModule && uiModule.styledConfirm
-      ? await uiModule.styledConfirm(`Delete "${name}"?`, { confirmText: 'Delete', danger: true })
+      ? await uiModule.styledConfirm(`Delete "${name}"?`, { confirmText: 'Eliminar', danger: true })
       : confirm(`Delete "${name}"?`);
     if (!ok) return;
     try {

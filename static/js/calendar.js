@@ -37,7 +37,7 @@ function _pickCalBgImage() {
         const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd, credentials: 'same-origin' });
         const data = await res.json();
         const fileId = data.files?.[0]?.id;
-        if (!fileId) throw new Error('Upload failed');
+        if (!fileId) throw new Error('Error al subir');
         finish(`${API_BASE}/api/upload/${fileId}`);
       } catch { finish(null); }
     });
@@ -186,7 +186,7 @@ async function _fetchCalendars() {
     _calendars.forEach((c, i) => {
       if (!c.color || c.color.startsWith('<')) c.color = CAL_PALETTE[i % CAL_PALETTE.length];
     });
-  } catch (e) { _calendars = []; _calendarsError = e.message || 'Connection failed'; }
+  } catch (e) { _calendars = []; _calendarsError = e.message || 'Error de conexión'; }
 
   // First open: fire a background CalDAV pull. We don't await — the
   // initial render uses whatever's already cached locally, and the
@@ -217,7 +217,7 @@ async function _syncCaldav(interactive) {
       _render();
     }
   } catch (e) {
-    if (interactive) return { errors: [e.message || 'Sync failed'] };
+    if (interactive) return { errors: [e.message || 'Error de sincronización'] };
   }
 }
 
@@ -2553,7 +2553,7 @@ async function _showCalSettings() {
     status.textContent = 'Sincronizando…';
     const data = await _syncCaldav(true) || {};
     if (data.errors && data.errors.length) {
-      status.textContent = `Sync failed: ${data.errors[0]}`;
+      status.textContent = `Error de sincronización: ${data.errors[0]}`;
     } else {
       const parts = [];
       if (data.events) parts.push(`${data.events} events`);
@@ -2882,7 +2882,7 @@ function _showEventForm(existing, defaultDate, defaultEndDate) {
   document.getElementById('cal-form-mobile-cancel')?.addEventListener('click', _cancelEventForm);
   document.getElementById('cal-f-save')?.addEventListener('click', async () => {
     const summary = document.getElementById('cal-f-sum').value.trim();
-    if (!summary) { uiModule.showToast('Title required'); return; }
+    if (!summary) { uiModule.showToast('El título es obligatorio'); return; }
     const dv = document.getElementById('cal-f-date').value;
     const dvEnd = document.getElementById('cal-f-date-end').value || dv;
     const isAD = document.getElementById('cal-f-allday').checked;
@@ -2939,14 +2939,14 @@ function _showEventForm(existing, defaultDate, defaultEndDate) {
         }
       }
       _selectedDay = dv; _render();
-    } catch (e) { uiModule.showToast('Failed to save'); }
+    } catch (e) { uiModule.showToast('No se pudo guardar'); }
   });
   document.getElementById('cal-f-del')?.addEventListener('click', async () => {
     const name = existing && existing.summary ? `"${existing.summary}"` : 'this event';
-    const ok = await uiModule.styledConfirm(`Delete ${name}?`, { confirmText: 'Delete', danger: true });
+    const ok = await uiModule.styledConfirm(`Delete ${name}?`, { confirmText: 'Eliminar', danger: true });
     if (!ok) return;
     try { await _deleteEvent(existing.uid); _render(); }
-    catch (e) { uiModule.showToast('Failed to delete'); }
+    catch (e) { uiModule.showToast('No se pudo eliminar'); }
   });
   // ── Bespoke-form behavior ──────────────────────────────────────────
   const formEl = body.querySelector('.cal-form');
@@ -3131,7 +3131,7 @@ function _locHTML(loc) {
   }
   // No URL — link the whole thing to OpenStreetMap.
   const mapUrl = 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(loc);
-  return `<a href="${mapUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();" title="Open in OpenStreetMap">${_e(loc)}</a>`;
+  return `<a href="${mapUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation();" title="Abrir en OpenStreetMap">${_e(loc)}</a>`;
 }
 
 // ── Open / Close ──

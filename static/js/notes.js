@@ -339,7 +339,7 @@ function _pickCustomBgImage() {
         const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd, credentials: 'same-origin' });
         const data = await res.json();
         const fileId = data.files?.[0]?.id;
-        if (!fileId) throw new Error('Upload failed');
+        if (!fileId) throw new Error('Error al subir');
         finish(`${API_BASE}/api/upload/${fileId}`);
       } catch { finish(null); }
     });
@@ -386,7 +386,7 @@ function _undoArchive(note, prevIdx) {
     const i = _notes.findIndex(n => n.id === note.id);
     if (i >= 0) _notes.splice(i, 1);
     _renderNotes();
-    uiModule.showError('Undo failed');
+    uiModule.showError('No se pudo deshacer');
   });
 }
 
@@ -414,7 +414,7 @@ async function _saveNote(note) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(note),
   });
-  if (!res.ok) throw new Error('Failed to save note');
+  if (!res.ok) throw new Error('No se pudo guardar la nota');
   return await res.json();
 }
 
@@ -431,7 +431,7 @@ async function _patchNote(id, patch) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(patch),
   });
-  if (!res.ok) throw new Error('Failed to update note');
+  if (!res.ok) throw new Error('No se pudo actualizar la nota');
   return await res.json();
 }
 
@@ -645,8 +645,8 @@ function _formatReminderTag(dateStr) {
   return `${dateLabel}, ${time}`;
 }
 // Build a human label for a date's nth-weekday-of-month, e.g. "2nd Tuesday"
-const _ORDINALS = ['1st', '2nd', '3rd', '4th', '5th'];
-const _DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const _ORDINALS = ['1.º', '2.º', '3.º', '4.º', '5.º'];
+const _DAYS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 function _nthWeekdayLabel(d) {
   const n = Math.ceil(d.getDate() / 7); // 1..5
   return `${_ORDINALS[n - 1] || `${n}th`} ${_DAYS[d.getDay()]}`;
@@ -740,18 +740,18 @@ function _formatRepeatLabel(repeat, originalDate) {
   if (parts[0] === 'weekly') {
     const wd = parseInt(parts[1], 10);
     if (isNaN(wd)) return 'Weekly';
-    return `Weekly on ${_DAYS[wd]}s`;
+    return `Cada semana en ${_DAYS[wd]}`;
   }
   if (parts[0] === 'monthly') {
-    if (parts[1] === 'day') return `Monthly on day ${parts[2]}`;
+    if (parts[1] === 'day') return `Cada mes el día ${parts[2]}`;
     if (parts[1] === 'nth') {
       const n = parseInt(parts[2], 10);
       const wd = parseInt(parts[3], 10);
-      return `Monthly on ${_ORDINALS[n - 1] || `${n}th`} ${_DAYS[wd]}`;
+      return `Cada mes el ${_ORDINALS[n - 1] || `${n}.º`} ${_DAYS[wd]}`;
     }
     if (parts[1] === 'last') {
       const wd = parseInt(parts[2], 10);
-      return `Monthly on last ${_DAYS[wd]}`;
+      return `Cada mes el último ${_DAYS[wd]}`;
     }
   }
   return norm;
@@ -913,7 +913,7 @@ function _checkReminders() {
 }
 
 function _fireReminder(note) {
-  const title = note.title || 'Note reminder';
+  const title = note.title || 'Recordatorio de nota';
   // Include the verbatim note content so the email/notification actually
   // shows what to do, not just a count. Cap the per-item lines (8 max) and
   // total length so the body stays inbox-friendly.
@@ -3372,7 +3372,7 @@ function _buildForm(note = null) {
         const res = await fetch(`${API_BASE}/api/upload`, { method: 'POST', body: fd, credentials: 'same-origin' });
         const data = await res.json();
         const fileId = data.files?.[0]?.id;
-        if (!fileId) throw new Error('Upload failed');
+        if (!fileId) throw new Error('Error al subir');
         currentImageUrl = `${API_BASE}/api/upload/${fileId}`;
         // Only ever keep the latest attached photo — drop any existing wrap
         // before inserting a fresh one. Picking a second photo replaces the
@@ -3387,7 +3387,7 @@ function _buildForm(note = null) {
         form.querySelector('.note-form-header').after(wrap);
         wrap.querySelector('.note-form-image-rm').addEventListener('click', () => { wrap.remove(); currentImageUrl = ''; });
         wrap.querySelector('img').src = currentImageUrl;
-      } catch (err) { uiModule.showError('Image upload failed'); }
+      } catch (err) { uiModule.showError('Error al subir la imagen'); }
       photoInput.value = '';
     });
   }
@@ -3624,16 +3624,16 @@ function _buildForm(note = null) {
     }).catch(() => {
       _notes.splice(idx, 0, removed);
       _renderNotes();
-      uiModule.showError('Failed to archive');
+      uiModule.showError('No se pudo archivar');
     });
   });
   form.querySelector('.note-form-delete-btn')?.addEventListener('click', async () => {
     if (!isEdit) return;
     const id = note.id;
     if (uiModule.styledConfirm) {
-      const ok = await uiModule.styledConfirm('Delete this note?', { confirmText: 'Delete', danger: true });
+      const ok = await uiModule.styledConfirm('¿Eliminar esta nota?', { confirmText: 'Eliminar', danger: true });
       if (!ok) return;
-    } else if (!confirm('Delete this note?')) {
+    } else if (!confirm('¿Eliminar esta nota?')) {
       return;
     }
     const idx = _notes.findIndex(n => n.id === id);
@@ -3641,7 +3641,7 @@ function _buildForm(note = null) {
     _editingId = null;
     _renderNotes();
     _deleteNoteApi(id).then(() => uiModule.showToast('Deleted')).catch(() => {
-      uiModule.showError('Failed to delete');
+      uiModule.showError('No se pudo eliminar');
       _fetchNotes().then(() => _renderNotes());
     });
   });
@@ -3916,7 +3916,7 @@ function _wireCanvas(container, initialImageUrl) {
       const rm = document.createElement('button');
       rm.type = 'button';
       rm.className = 'note-form-draw-bg-rm';
-      rm.title = 'Clear photo (regular draw)';
+      rm.title = 'Borrar foto (dibujo normal)';
       rm.innerHTML = '&times;';
       rm.addEventListener('click', (e) => {
         e.preventDefault();
@@ -4240,7 +4240,7 @@ function _createNote(type = 'todo') {
   form.classList.add('note-form-new');
   body.prepend(form);
   form.querySelector('.note-form-title').focus();
-  if (restored) uiModule.showToast('Restored unsaved note');
+  if (restored) uiModule.showToast('Nota sin guardar restaurada');
 }
 
 // Build the plain-text/markdown form of a note for clipboard copy.
@@ -4320,10 +4320,10 @@ async function _agentSolveNote(id) {
   const note = _notes.find(n => n.id === id);
   if (!note) return;
   const prompt = _noteToAgentPrompt(note);
-  if (!prompt) { uiModule.showToast('Nothing to solve — note is empty'); return; }
+  if (!prompt) { uiModule.showToast('Nada que resolver: la nota está vacía'); return; }
   try {
     const dc = await (await fetch(`${API_BASE}/api/default-chat`, { credentials: 'same-origin' })).json();
-    if (!dc.endpoint_url || !dc.model) { uiModule.showError('No default chat model configured'); return; }
+    if (!dc.endpoint_url || !dc.model) { uiModule.showError('No hay modelo de chat predeterminado configurado'); return; }
 
     // 1. Create the session server-side (no UI switch). skip_validation
     //    avoids re-probing — the default-chat endpoint is already known good.
@@ -4335,7 +4335,7 @@ async function _agentSolveNote(id) {
     if (dc.endpoint_id) csFd.append('endpoint_id', dc.endpoint_id);
     csFd.append('skip_validation', 'true');
     const csRes = await fetch(`${API_BASE}/api/session`, { method: 'POST', credentials: 'same-origin', body: csFd });
-    if (!csRes.ok) { uiModule.showError('Could not create agent session'); return; }
+    if (!csRes.ok) { uiModule.showError('No se pudo crear la sesión del agente'); return; }
     const sess = await csRes.json();
     const sid = sess.id;
 
@@ -4364,9 +4364,9 @@ async function _agentSolveNote(id) {
       })
       .catch(() => {});
 
-    uiModule.showToast('Agent working in background — tap the Agent tag when ready');
+    uiModule.showToast('El agente trabaja en segundo plano: toca la etiqueta Agente cuando esté listo');
   } catch (e) {
-    uiModule.showError('Agent failed: ' + (e.message || e));
+    uiModule.showError('El agente falló: ' + (e.message || e));
   }
 }
 
@@ -4465,7 +4465,7 @@ function _editNote(id) {
 
 async function _deleteNote(id) {
   const ok = uiModule?.styledConfirm
-    ? await uiModule.styledConfirm('Delete this note?', { confirmText: 'Delete', danger: true })
+    ? await uiModule.styledConfirm('¿Eliminar esta nota?', { confirmText: 'Eliminar', danger: true })
     : confirm('Delete this note?');
   if (!ok) return;
   try { await _deleteNoteApi(id); await _fetchNotes(); _renderNotes(); uiModule.showToast('Deleted'); }

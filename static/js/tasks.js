@@ -18,7 +18,7 @@ let _escHandler = null;
 let _viewingRuns = null; // task id when viewing run history
 let _clockInterval = null;
 
-const DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const DAYS_OF_WEEK = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
 
 // ---- API ----
 
@@ -59,7 +59,7 @@ async function _createTask(data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error('Failed to create task');
+  if (!res.ok) throw new Error('No se pudo crear la tarea');
   return await res.json();
 }
 
@@ -70,7 +70,7 @@ async function _updateTask(id, data) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error('Failed to update task');
+  if (!res.ok) throw new Error('No se pudo actualizar la tarea');
   return await res.json();
 }
 
@@ -78,7 +78,7 @@ async function _deleteTask(id) {
   const res = await fetch(`${API_BASE}/api/tasks/${id}`, {
     method: 'DELETE', credentials: 'same-origin',
   });
-  if (!res.ok) throw new Error('Failed to delete task');
+  if (!res.ok) throw new Error('No se pudo eliminar la tarea');
 }
 
 function _taskCardById(id) {
@@ -100,14 +100,14 @@ async function _pauseTask(id) {
   const res = await fetch(`${API_BASE}/api/tasks/${id}/pause`, {
     method: 'POST', credentials: 'same-origin',
   });
-  if (!res.ok) throw new Error('Failed to pause task');
+  if (!res.ok) throw new Error('No se pudo pausar la tarea');
 }
 
 async function _resumeTask(id) {
   const res = await fetch(`${API_BASE}/api/tasks/${id}/resume`, {
     method: 'POST', credentials: 'same-origin',
   });
-  if (!res.ok) throw new Error('Failed to resume task');
+  if (!res.ok) throw new Error('No se pudo reanudar la tarea');
 }
 
 async function _runNow(id, force = false) {
@@ -118,12 +118,12 @@ async function _runNow(id, force = false) {
     // Surface the backend's actual reason — 409 means "already running",
     // 404 task missing, etc. Previously every error rendered as the same
     // generic "Failed to trigger task", which hid the cause.
-    let msg = `Failed to trigger task (${res.status})`;
+    let msg = `No se pudo ejecutar la tarea (${res.status})`;
     try {
       const data = await res.json();
       if (data && data.detail) msg = data.detail;
     } catch (_) {}
-    if (res.status === 409) msg = 'Task is already running';
+    if (res.status === 409) msg = 'La tarea ya se está ejecutando';
     throw new Error(msg);
   }
 }
@@ -134,7 +134,7 @@ async function _stopTask(id) {
     credentials: 'same-origin',
   });
   if (!res.ok) {
-    let msg = `Failed to stop task (${res.status})`;
+    let msg = `No se pudo detener la tarea (${res.status})`;
     try {
       const data = await res.json();
       if (data && data.detail) msg = data.detail;
@@ -233,20 +233,20 @@ function _scheduleLabel(task) {
   if (task.schedule === 'once') {
     if (task.scheduled_date) {
       const d = new Date(task.scheduled_date);
-      return `Once on ${d.toLocaleDateString()} at ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+      return `Una vez el ${d.toLocaleDateString()} a las ${d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     }
-    return 'Once';
+    return 'Una vez';
   }
   const localTime = _utcTimeToLocal(t);
-  if (task.schedule === 'daily') return `Daily at ${localTime}`;
+  if (task.schedule === 'daily') return `Cada día a las ${localTime}`;
   if (task.schedule === 'weekly') {
     const day = DAYS_OF_WEEK[task.scheduled_day ?? 0];
-    return `Weekly on ${day} at ${localTime}`;
+    return `Cada semana el ${day} a las ${localTime}`;
   }
   if (task.schedule === 'monthly') {
     const d = task.scheduled_day ?? 1;
     const suffix = ordinalSuffix(d);
-    return `Monthly on ${d}${suffix} at ${localTime}`;
+    return `Cada mes el día ${d} a las ${localTime}`;
   }
   return task.schedule || '—';
 }
@@ -366,7 +366,7 @@ function _taskAiMark(task) {
   const action = task?.action || '';
   const aiAction = _MODEL_BACKED_ACTIONS.has(action);
   if (!(kind === 'llm' || kind === 'research' || task?.model || task?.endpointUrl || aiAction)) return '';
-  return '<svg class="task-ai-mark" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-label="Uses model" title="Uses model"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg>';
+  return '<svg class="task-ai-mark" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-label="Usa modelo" title="Usa modelo"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg>';
 }
 
 // ---- Custom pickers ----
@@ -564,7 +564,7 @@ async function _taskBulkDelete() {
   const ids = [..._taskSelected];
   if (!ids.length) return;
   const ok = uiModule?.styledConfirm
-    ? await uiModule.styledConfirm(`Delete ${ids.length} task${ids.length > 1 ? 's' : ''}? This cannot be undone.`, { confirmText: 'Delete', danger: true })
+    ? await uiModule.styledConfirm(`Delete ${ids.length} task${ids.length > 1 ? 's' : ''}? This cannot be undone.`, { confirmText: 'Eliminar', danger: true })
     : confirm(`Delete ${ids.length} task(s)?`);
   if (!ok) return;
   const results = await Promise.allSettled(ids.map(id => _deleteTask(id)));
@@ -697,16 +697,16 @@ function _renderList() {
       const items = [];
       // Run now stays in the kebab too (alongside the new Run button on the
       // card) for users coming from muscle-memory / mobile long-press.
-      if (task.status !== 'completed') items.push({ label: 'Run now', icon: '<polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', action: () => _doRunNow(task.id) });
+      if (task.status !== 'completed') items.push({ label: 'Ejecutar ahora', icon: '<polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>', action: () => _doRunNow(task.id) });
       items.push({ label: 'Edit', icon: '<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>', action: () => _showForm(task) });
       if (task.status === 'active') items.push({ label: 'Pause', icon: '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>', action: () => _doPause(task.id) });
       else if (task.status === 'paused') items.push({ label: 'Resume', icon: '<polygon points="5 3 19 12 5 21 5 3"/>', action: () => _doResume(task.id) });
       items.push({ label: 'History', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>', action: () => _showRunHistory(task.id, task.name) });
       if (task.is_builtin && task.is_modified) {
-        items.push({ label: 'Revert to default', icon: '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>', action: () => _doRevert(task.id) });
+        items.push({ label: 'Restaurar valores predeterminados', icon: '<polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>', action: () => _doRevert(task.id) });
       }
       if (_taskClearCacheLabel(task)) {
-        items.push({ label: 'Clear cache', icon: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>', action: () => _doClearTaskCache(task.id, _taskClearCacheLabel(task)) });
+        items.push({ label: 'Borrar caché', icon: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>', action: () => _doClearTaskCache(task.id, _taskClearCacheLabel(task)) });
       }
       items.push({ label: 'Delete', icon: '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>', action: () => _doDelete(task.id), danger: true });
       _showTaskDropdown(menuBtn, items);
@@ -717,7 +717,7 @@ function _renderList() {
     if (task.status !== 'completed') {
       const runBtn = document.createElement('button');
       runBtn.className = 'task-status-badge task-run-now-badge task-card-run-btn';
-      runBtn.title = 'Run now';
+      runBtn.title = 'Ejecutar ahora';
       runBtn.style.cssText = 'position:relative;top:1px;margin-right:4px;';
       runBtn.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Run</span>';
       runBtn.addEventListener('click', (e) => { e.stopPropagation(); _doRunNow(task.id); });
@@ -772,7 +772,7 @@ function _renderList() {
       const lr = document.createElement('div');
       lr.style.cssText = `font-size:11px;margin-bottom:6px;padding:4px 8px;border-left:2px solid ${color};background:color-mix(in srgb, ${color} 8%, transparent);border-radius:2px;line-height:1.4;cursor:pointer;`;
       lr.innerHTML = `<span style="font-weight:600;color:${color};">${isErr ? '✗' : '✓'}</span> <span style="opacity:0.9;">${_esc(prev) || (isErr ? 'Failed (no detail)' : 'Success (no output)')}</span>`;
-      lr.title = 'Open full history';
+      lr.title = 'Abrir historial completo';
       lr.addEventListener('click', (e) => { e.stopPropagation(); _showRunHistory(task.id, task.name); });
       detail.appendChild(lr);
     }
@@ -927,13 +927,13 @@ function _showTaskDropdown(anchor, items) {
 // ---- Presets ----
 
 const _TASK_PRESETS = [
-  { label: 'Prompt on schedule',    desc: 'Run a prompt daily, weekly, etc.',             taskType: 'llm',      triggerType: 'schedule' },
-  { label: 'Prompt on event',       desc: 'Trigger every N sessions or messages',         taskType: 'llm',      triggerType: 'event' },
-  { label: 'Research on schedule',  desc: 'Run deep research on a topic',                 taskType: 'research', triggerType: 'schedule' },
-  { label: 'Research on event',     desc: 'Run deep research after app events',           taskType: 'research', triggerType: 'event' },
-  { label: 'Action on schedule',    desc: 'Run tidy/cleanup on a timer',                  taskType: 'action',   triggerType: 'schedule' },
-  { label: 'Action on event',       desc: 'Run tidy/cleanup every N sessions or messages', taskType: 'action', triggerType: 'event' },
-  { label: 'Webhook triggered',     desc: 'Trigger via external HTTP call',               taskType: 'llm',      triggerType: 'webhook' },
+  { label: 'Instrucción programada',    desc: 'Ejecuta una instrucción a diario, semanalmente, etc.',             taskType: 'llm',      triggerType: 'schedule' },
+  { label: 'Instrucción por evento',       desc: 'Se dispara cada N sesiones o mensajes',         taskType: 'llm',      triggerType: 'event' },
+  { label: 'Investigación programada',  desc: 'Ejecuta investigación profunda sobre un tema',                 taskType: 'research', triggerType: 'schedule' },
+  { label: 'Investigación por evento',     desc: 'Ejecuta investigación profunda tras eventos de la app',           taskType: 'research', triggerType: 'event' },
+  { label: 'Acción programada',    desc: 'Ejecuta orden/limpieza con temporizador',                  taskType: 'action',   triggerType: 'schedule' },
+  { label: 'Acción por evento',       desc: 'Ejecuta orden/limpieza cada N sesiones o mensajes', taskType: 'action', triggerType: 'event' },
+  { label: 'Disparada por webhook',     desc: 'Se dispara mediante una llamada HTTP externa',               taskType: 'llm',      triggerType: 'webhook' },
 ];
 
 // Icon for each preset, keyed off task/trigger type (24x24 stroke SVG).
@@ -956,8 +956,8 @@ function _showPresetPicker() {
   html += '<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:2px;"><h2 style="margin:0;padding:0;line-height:1;">Add Task</h2></div>';
   html += '<p class="memory-desc" style="position:relative;top:4px;">Describe a task for the AI to draft, or pick a type below to set one up manually.</p>';
   html += '<div class="task-ai-compose" style="display:flex;gap:6px;margin:6px 0 10px;">'
-    + '<input type="text" id="task-ai-input" class="memory-search-input" style="flex:1;" placeholder="Describe a task — e.g. &quot;every weekday 7am summarize my unread email&quot;" />'
-    + '<button class="memory-toolbar-btn active" id="task-ai-btn" title="Draft a task with AI" style="white-space:nowrap;height:28px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px;"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg>Draft with AI</button>'
+    + '<input type="text" id="task-ai-input" class="memory-search-input" style="flex:1;" placeholder="Describe una tarea — p. ej. &quot;cada día laborable a las 7:00 resume mi correo sin leer&quot;" />'
+    + '<button class="memory-toolbar-btn active" id="task-ai-btn" title="Redactar una tarea con IA" style="white-space:nowrap;height:28px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-1px;margin-right:3px;"><path d="M12 0L14.59 8.41L23 12L14.59 15.59L12 24L9.41 15.59L1 12L9.41 8.41Z"/></svg>Redactar con IA</button>'
     + '</div>';
   html += '<div class="memory-list" style="max-height:none;flex:1;gap:0px;margin-top:2px;padding-right:8px;">';
   _TASK_PRESETS.forEach((p, i) => {
@@ -1065,7 +1065,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
   function renderTypeOpts() {
     typeOpts.innerHTML = '';
     if (taskType === 'llm' || taskType === 'research') {
-      const placeholder = taskType === 'research' ? 'What should be researched?' : 'What should the AI do?';
+      const placeholder = taskType === 'research' ? '¿Qué se debe investigar?' : '¿Qué debe hacer la IA?';
       typeOpts.innerHTML = `
         <label class="task-form-label">${taskType === 'research' ? 'Research question' : 'Prompt'}</label>
         <textarea id="task-form-prompt" class="task-form-input task-form-textarea" rows="4" placeholder="${placeholder}">${existing?.prompt || ''}</textarea>
@@ -1172,7 +1172,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
         if (sched === 'weekly') {
           const label = document.createElement('label');
           label.className = 'task-form-label';
-          label.textContent = 'Day of week';
+          label.textContent = 'Día de la semana';
           schedOpts.appendChild(label);
           const sel = document.createElement('select');
           sel.id = 'task-form-day';
@@ -1188,7 +1188,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
         } else if (sched === 'monthly') {
           const label = document.createElement('label');
           label.className = 'task-form-label';
-          label.textContent = 'Day of month';
+          label.textContent = 'Día del mes';
           schedOpts.appendChild(label);
           const inp = document.createElement('input');
           inp.type = 'number';
@@ -1210,7 +1210,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
         } else if (sched === 'cron') {
           const label = document.createElement('label');
           label.className = 'task-form-label';
-          label.textContent = 'Cron expression';
+          label.textContent = 'Expresión cron';
           schedOpts.appendChild(label);
           const inp = document.createElement('input');
           inp.type = 'text';
@@ -1221,7 +1221,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
           schedOpts.appendChild(inp);
           const hint = document.createElement('div');
           hint.style.cssText = 'font-size:10px;opacity:0.4;margin-top:2px;';
-          hint.textContent = 'min hour day month weekday — e.g. "0 */2 * * *" = every 2 hours';
+          hint.textContent = 'min hora día mes díasemana — p. ej. "0 */2 * * *" = cada 2 horas';
           schedOpts.appendChild(hint);
         }
       }
@@ -1422,14 +1422,14 @@ function _showForm(existing, initTaskType, initTriggerType) {
     if (taskType === 'llm' || taskType === 'research') {
       const prompt = document.getElementById('task-form-prompt')?.value?.trim();
       if (!prompt) {
-        if (uiModule) uiModule.showError('Prompt is required');
+        if (uiModule) uiModule.showError('La instrucción es obligatoria');
         return;
       }
       payload.prompt = prompt;
     } else {
       const action = document.getElementById('task-form-action')?.value;
       if (!action) {
-        if (uiModule) uiModule.showError('Select an action');
+        if (uiModule) uiModule.showError('Selecciona una acción');
         return;
       }
       payload.action = action;
@@ -1438,7 +1438,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
         try {
           await _saveUrgentEmailSettings(urgentPrompt);
         } catch (e) {
-          if (uiModule) uiModule.showError('Failed to save urgency rules');
+          if (uiModule) uiModule.showError('No se pudieron guardar las reglas de urgencia');
           return;
         }
       }
@@ -1452,7 +1452,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
       if (payload.schedule === 'cron') {
         const cronVal = document.getElementById('task-form-cron')?.value?.trim();
         if (!cronVal) {
-          if (uiModule) uiModule.showError('Cron expression is required');
+          if (uiModule) uiModule.showError('La expresión cron es obligatoria');
           return;
         }
         payload.cron_expression = cronVal;
@@ -1474,7 +1474,7 @@ function _showForm(existing, initTaskType, initTriggerType) {
       const evSel = document.getElementById('task-form-event');
       const countInput = document.getElementById('task-form-trigger-count');
       if (!evSel?.value) {
-        if (uiModule) uiModule.showError('Select an event');
+        if (uiModule) uiModule.showError('Selecciona un evento');
         return;
       }
       payload.trigger_event = evSel.value;
@@ -1487,10 +1487,10 @@ function _showForm(existing, initTaskType, initTriggerType) {
       // object passed for AI pre-fill has no id → create via POST.
       if (existing && existing.id) {
         await _updateTask(existing.id, payload);
-        if (uiModule) uiModule.showToast('Task updated');
+        if (uiModule) uiModule.showToast('Tarea actualizada');
       } else {
         await _createTask(payload);
-        if (uiModule) uiModule.showToast('Task created');
+        if (uiModule) uiModule.showToast('Tarea creada');
       }
       await _fetchTasks();
       _switchTab('tasks');
@@ -1564,7 +1564,7 @@ async function _showRunHistory(taskId, taskName) {
 async function _doPause(id) {
   try {
     await _pauseTask(id);
-    if (uiModule) uiModule.showToast('Task paused');
+    if (uiModule) uiModule.showToast('Tarea pausada');
     await _fetchTasks();
     _renderMainView();
   } catch (e) { if (uiModule) uiModule.showError(e.message); }
@@ -1573,7 +1573,7 @@ async function _doPause(id) {
 async function _doResume(id) {
   try {
     await _resumeTask(id);
-    if (uiModule) uiModule.showToast('Task resumed');
+    if (uiModule) uiModule.showToast('Tarea reanudada');
     await _fetchTasks();
     _renderMainView();
   } catch (e) { if (uiModule) uiModule.showError(e.message); }
@@ -1582,12 +1582,12 @@ async function _doResume(id) {
 async function _doRunNow(id, force = false) {
   try {
     await _runNow(id, force);
-    if (uiModule) uiModule.showToast(force ? 'Task triggered in parallel' : 'Task triggered');
+    if (uiModule) uiModule.showToast(force ? 'Tarea ejecutada en paralelo' : 'Tarea ejecutada');
   } catch (e) {
     // Mirror the polling notification surface so the user sees the same kind
     // of feedback they get for finished/failed tasks — a real browser
     // Notification when permission is granted, toast fallback otherwise.
-    const msg = e.message || 'Failed to trigger task';
+    const msg = e.message || 'No se pudo ejecutar la tarea';
     let fired = false;
     try {
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
@@ -1601,13 +1601,13 @@ async function _doRunNow(id, force = false) {
 
 async function _doDelete(id) {
   const ok = uiModule?.styledConfirm
-    ? await uiModule.styledConfirm('Delete this task and all its run history?', { confirmText: 'Delete', danger: true })
-    : confirm('Delete this task and all its run history?');
+    ? await uiModule.styledConfirm('¿Eliminar esta tarea y todo su historial de ejecuciones?', { confirmText: 'Eliminar', danger: true })
+    : confirm('¿Eliminar esta tarea y todo su historial de ejecuciones?');
   if (!ok) return;
   try {
     await _deleteTask(id);
     await _animateTaskRemoval([id]);
-    if (uiModule) uiModule.showToast('Task deleted');
+    if (uiModule) uiModule.showToast('Tarea eliminada');
     await _fetchTasks();
     _renderMainView();
   } catch (e) { if (uiModule) uiModule.showError(e.message); }
@@ -1629,7 +1629,7 @@ async function _doRevert(id) {
 
 async function _doClearTaskCache(id, label = 'cache') {
   const ok = uiModule?.styledConfirm
-    ? await uiModule.styledConfirm(`Clear cached ${label} for this task?`, { confirmText: 'Clear' })
+    ? await uiModule.styledConfirm(`Clear cached ${label} for this task?`, { confirmText: 'Borrar' })
     : confirm(`Clear cached ${label} for this task?`);
   if (!ok) return;
   try {

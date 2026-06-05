@@ -715,7 +715,7 @@ function _wireAlbumsEvents(scope) {
       const album = _albums.find(a => a.id === id);
       const ok = await uiModule.styledConfirm(
         `Delete album "${album?.name || ''}"? Photos inside will stay in your library.`,
-        { confirmText: 'Delete', danger: true },
+        { confirmText: 'Eliminar', danger: true },
       );
       if (!ok) return;
       const r = await fetch(`${API_BASE}/api/gallery/albums/${id}`, {
@@ -800,7 +800,7 @@ async function _bulkDeleteAlbums(ids) {
   if (!ids.length) return;
   const ok = await uiModule.styledConfirm(
     `Delete ${ids.length} album${ids.length > 1 ? 's' : ''}? Photos inside will stay in your library.`,
-    { confirmText: 'Delete', danger: true },
+    { confirmText: 'Eliminar', danger: true },
   );
   if (!ok) return;
   let failed = 0;
@@ -955,7 +955,7 @@ function _draftsPaint() {
       const id = btn.dataset.draftId;
       if (!id) return;
       const ok = await uiModule.styledConfirm('Delete this project?', {
-        confirmText: 'Delete', cancelText: 'Cancel', danger: true,
+        confirmText: 'Eliminar', cancelText: 'Cancelar', danger: true,
       });
       if (!ok) return;
       // Graceful exit: fade + shrink the card before the grid re-renders.
@@ -1027,7 +1027,7 @@ function _draftsWireOnce() {
     if (!_draftsSelected.size) return;
     const n = _draftsSelected.size;
     const ok = await uiModule.styledConfirm(`Delete ${n} project${n === 1 ? '' : 's'}?`, {
-      confirmText: 'Delete', cancelText: 'Cancel', danger: true,
+      confirmText: 'Eliminar', cancelText: 'Cancelar', danger: true,
     });
     if (!ok) return;
     const ids = [..._draftsSelected];
@@ -1753,7 +1753,7 @@ function _openDetail(img) {
   });
 
   document.getElementById('gallery-delete-btn').addEventListener('click', async () => {
-    if (!await uiModule.styledConfirm('Delete this photo? This cannot be undone.', { confirmText: 'Delete', danger: true })) return;
+    if (!await uiModule.styledConfirm('Delete this photo? This cannot be undone.', { confirmText: 'Eliminar', danger: true })) return;
     const ok = await _deleteImage(img.id);
     if (!ok) {
       uiModule.showError('Failed to delete photo');
@@ -2574,7 +2574,7 @@ export function openGallery() {
 
   async function _bulkDelete(ids) {
     if (!ids.length) return;
-    if (!await uiModule.styledConfirm(`Delete ${ids.length} photo${ids.length > 1 ? 's' : ''}? This cannot be undone.`, { confirmText: 'Delete', danger: true })) return;
+    if (!await uiModule.styledConfirm(`Delete ${ids.length} photo${ids.length > 1 ? 's' : ''}? This cannot be undone.`, { confirmText: 'Eliminar', danger: true })) return;
     const deleted = [], failed = [];
     for (const id of ids) { const ok = await _deleteImage(id); (ok ? deleted : failed).push(id); }
     if (failed.length) uiModule.showError(`Failed to delete ${failed.length} of ${ids.length} photos`);
